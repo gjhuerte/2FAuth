@@ -44,7 +44,7 @@
                 <LucideTablet v-else-if="log.device=='tablet'" />
                 <LucideMonitor v-else />
                 <span
-                    class="absolute -bottom-0.5 -right-0.5 inline-flex size-5 items-center justify-center rounded-full ring-2 ring-md-surface-container"
+                    class="absolute -bottom-0.5 -right-0.5 inline-flex size-5 items-center justify-center rounded-full ring-1 ring-md-surface-container"
                     :class="isFailedEntry(log) ? 'bg-md-error text-md-on-error' : 'bg-md-success text-md-on-success'"
                 >
                     <LucideX v-if="isFailedEntry(log)" stroke-width="3" class="size-3!" />

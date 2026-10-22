@@ -516,7 +516,7 @@
                             class="group relative rounded-lg bg-md-surface-container shadow-sm transition-[box-shadow,transform,background-color] duration-300 ease-md hover:shadow-md"
                             :class="[
                                 isGrid ? 'tfa-grid flex flex-col items-center px-3 pb-4 pt-5 text-center hover:scale-[1.02]' : 'tfa-list flex items-center gap-3 px-3 py-2.5 sm:px-4',
-                                bus.inManagementMode && twofaccounts.selectedIds.includes(account.id) ? 'bg-md-secondary-container ring-2 ring-md-primary' : '',
+                                bus.inManagementMode && twofaccounts.selectedIds.includes(account.id) ? 'bg-md-secondary-container ring-1 ring-md-primary' : '',
                             ]"
                         >
                             <!-- checkbox -->

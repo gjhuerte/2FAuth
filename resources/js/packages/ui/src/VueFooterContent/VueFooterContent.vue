@@ -58,7 +58,7 @@
             <!-- action buttons -->
             <div
                 v-if="$slots.default"
-                class="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-xl border-2 border-md-outline-variant bg-md-surface-container-high p-2 shadow-md"
+                class="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-xl border border-md-outline-variant bg-md-surface-container-high p-2 shadow-md"
                 :inert="showMenu"
             >
                 <slot name="default" />

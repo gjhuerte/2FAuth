@@ -203,7 +203,7 @@
                 </div>
                 <div v-if="tokens.length > 0" class="mt-8 pb-8">
                     <ul class="flex flex-col gap-2">
-                        <li v-for="token in tokens" :key="token.id" class="group-item md-card px-5 py-4" :class="{ 'ring-2 ring-md-success': token.value }">
+                        <li v-for="token in tokens" :key="token.id" class="group-item md-card px-5 py-4" :class="{ 'ring-1 ring-md-success': token.value }">
                             <div class="flex flex-wrap items-center gap-3">
                                 <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-md" :class="token.value ? 'bg-md-success-container text-md-on-success-container' : 'bg-md-secondary-container text-md-on-secondary-container'">
                                     <LucideCheck v-if="token.value" />

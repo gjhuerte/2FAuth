@@ -20,7 +20,7 @@
 </script>
 
 <template>
-    <div class="options-header sticky top-0 z-[1000] border-b-2 border-md-outline-variant bg-md-surface">
+    <div class="options-header sticky top-0 z-[1000] border-b border-md-outline-variant bg-md-surface">
         <ResponsiveWidthWrapper :is-active="isResponsive" :is-compact="true">
             <nav class="pt-[env(safe-area-inset-top)]">
                 <ul role="menubar" class="tabs flex">

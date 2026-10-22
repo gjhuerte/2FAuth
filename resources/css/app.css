@@ -265,12 +265,13 @@
     --color-md-scrim: var(--md-scrim);
     --color-md-star: var(--md-star);
 
-    /* Solid, offset "sticker" shadows — no blur, no transparency. */
-    --shadow-sm: 0 2px 0 0 var(--md-shadow);
-    --shadow-md: 0 4px 0 0 var(--md-shadow);
-    --shadow-lg: 0 6px 0 0 var(--md-shadow);
-    --shadow-xl: 0 8px 0 0 var(--md-shadow);
-    --inset-shadow-sm: inset 0 2px 0 0 var(--md-shadow);
+    /* Flat surfaces: elevation comes from tonal color, not shadows.
+       (Buttons keep their own solid "press" lip, set explicitly.) */
+    --shadow-sm: 0 0 0 0 var(--md-shadow);
+    --shadow-md: 0 0 0 0 var(--md-shadow);
+    --shadow-lg: 0 0 0 0 var(--md-shadow);
+    --shadow-xl: 0 0 0 0 var(--md-shadow);
+    --inset-shadow-sm: inset 0 0 0 0 var(--md-shadow);
 }
 
 @theme {
@@ -445,7 +446,7 @@
     }
     /* Flat variants: solid tint state layers, playful squish on press. */
     .md-btn-outlined {
-        @apply border-2 border-md-outline-variant bg-transparent text-md-primary hover:border-md-primary hover:bg-md-primary-soft active:scale-95 active:bg-md-primary-soft-press;
+        @apply border border-md-outline bg-transparent text-md-primary hover:border-md-primary hover:bg-md-primary-soft active:scale-95 active:bg-md-primary-soft-press;
     }
     .md-btn-text {
         @apply bg-transparent px-4 text-md-primary hover:bg-md-primary-soft active:scale-95 active:bg-md-primary-soft-press;
@@ -516,7 +517,7 @@
     .md-input,
     .md-textarea,
     .md-select {
-        @apply block w-full rounded-t-sm rounded-b-none border-0 border-b-2 border-md-outline bg-md-surface-container-highest px-4 text-body text-md-on-surface caret-md-primary outline-none transition-[border-color,background-color,box-shadow] duration-200 ease-md placeholder:text-md-outline hover:bg-md-hover focus:border-md-primary focus:bg-md-primary-soft focus-visible:shadow-[0_2px_0_0_var(--md-primary)] disabled:cursor-not-allowed disabled:border-md-disabled disabled:bg-md-disabled disabled:text-md-on-disabled aria-invalid:border-md-error;
+        @apply block w-full rounded-t-sm rounded-b-none border-0 border-b border-md-outline bg-md-surface-container-highest px-4 text-body text-md-on-surface caret-md-primary outline-none transition-[border-color,background-color,box-shadow] duration-200 ease-md placeholder:text-md-outline hover:bg-md-hover focus:border-md-primary focus:bg-md-primary-soft focus:shadow-[0_1px_0_0_var(--md-primary)] disabled:cursor-not-allowed disabled:border-md-disabled disabled:bg-md-disabled disabled:text-md-on-disabled aria-invalid:border-md-error;
     }
     .md-input,
     .md-select {
@@ -533,7 +534,7 @@
     }
     /* Pill search field */
     .md-search {
-        @apply h-12 w-full rounded-full border-2 border-transparent bg-md-surface-container-high px-5 pl-12 text-body text-md-on-surface outline-none transition-[background-color,border-color] duration-200 ease-md placeholder:text-md-on-surface-variant hover:bg-md-surface-container-highest focus:border-md-primary focus:bg-md-surface-container-highest;
+        @apply h-12 w-full rounded-full border border-transparent bg-md-surface-container-high px-5 pl-12 text-body text-md-on-surface outline-none transition-[background-color,border-color] duration-200 ease-md placeholder:text-md-on-surface-variant hover:bg-md-surface-container-highest focus:border-md-primary focus:bg-md-surface-container-highest;
     }
     .md-help {
         @apply mt-1.5 px-4 text-label-sm text-md-on-surface-variant;
@@ -565,10 +566,10 @@
 
     /* ---- Segmented button (MD3) ------------------------------------------- */
     .md-segmented {
-        @apply inline-flex max-w-full overflow-hidden rounded-full border-2 border-md-outline-variant bg-md-surface;
+        @apply inline-flex max-w-full overflow-hidden rounded-full border border-md-outline-variant bg-md-surface;
     }
     .md-segment {
-        @apply relative inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center gap-1.5 border-l-2 border-md-outline-variant px-4 py-2 text-label text-md-on-surface outline-none transition-[background-color,color] duration-200 ease-md first:border-l-0 hover:bg-md-hover focus-visible:z-10 focus-visible:bg-md-press disabled:cursor-not-allowed disabled:bg-md-disabled disabled:text-md-on-disabled;
+        @apply relative inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center gap-1.5 border-l border-md-outline-variant px-4 py-2 text-label text-md-on-surface outline-none transition-[background-color,color] duration-200 ease-md first:border-l-0 hover:bg-md-hover focus-visible:z-10 focus-visible:bg-md-press disabled:cursor-not-allowed disabled:bg-md-disabled disabled:text-md-on-disabled;
     }
     .md-segment[aria-checked='true'] {
         @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
@@ -579,7 +580,7 @@
 
     /* ---- Chips ------------------------------------------------------------ */
     .md-chip {
-        @apply inline-flex h-8 max-w-48 shrink-0 cursor-pointer select-none items-center gap-1.5 rounded-full border-2 border-md-outline-variant bg-md-surface px-3.5 text-label text-md-on-surface-variant no-underline outline-none transition-[background-color,border-color,color,scale,rotate] duration-200 ease-spring hover:-rotate-2 hover:bg-md-hover active:scale-90 focus-visible:ring-2 focus-visible:ring-md-primary;
+        @apply inline-flex h-8 max-w-48 shrink-0 cursor-pointer select-none items-center gap-1.5 rounded-full border border-md-outline-variant bg-md-surface px-3.5 text-label text-md-on-surface-variant no-underline outline-none transition-[background-color,border-color,color,scale,rotate] duration-200 ease-spring hover:-rotate-2 hover:bg-md-hover active:scale-90 focus-visible:ring-2 focus-visible:ring-md-primary;
     }
     .md-chip[aria-pressed='true'],
     .md-chip-selected {
@@ -606,7 +607,7 @@
         @apply bg-md-warning-container text-md-on-warning-container;
     }
     .md-badge-outline {
-        @apply border-2 border-md-outline-variant bg-md-surface text-md-on-surface-variant;
+        @apply border border-md-outline-variant bg-md-surface text-md-on-surface-variant;
     }
 
     /* ---- Cards & surfaces ------------------------------------------------- */
@@ -614,17 +615,17 @@
         @apply rounded-lg bg-md-surface-container p-6 shadow-sm transition-[box-shadow,translate,scale,background-color] duration-300 ease-spring;
     }
     .md-card-interactive {
-        @apply cursor-pointer hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:shadow-sm;
+        @apply cursor-pointer hover:-translate-y-1 hover:bg-md-surface-container-high active:translate-y-0 active:bg-md-surface-container-highest;
     }
     .md-card-outlined {
-        @apply rounded-lg border-2 border-md-outline-variant bg-md-surface p-6;
+        @apply rounded-lg border border-md-outline-variant bg-md-surface p-6;
     }
     /* Grouped list (settings-style) */
     .md-list {
         @apply overflow-hidden rounded-lg bg-md-surface-container shadow-sm;
     }
     .md-list-item {
-        @apply flex min-h-14 items-center gap-4 border-b-2 border-md-surface px-5 py-3 last:border-b-0;
+        @apply flex min-h-14 items-center gap-4 border-b border-md-surface-container-highest px-5 py-3 last:border-b-0;
     }
 
     /* Inline alert / callout */
@@ -649,15 +650,15 @@
 
     /* Option groups (settings) are tinted rails rather than borders. */
     .md-rail-warning {
-        @apply rounded-r-sm border-l-4 border-md-warning bg-md-warning-soft py-2 pl-4;
+        @apply rounded-r-sm border-l-2 border-md-warning bg-md-warning-soft py-2 pl-4;
     }
     .md-rail-danger {
-        @apply rounded-r-sm border-l-4 border-md-error bg-md-error-soft py-2 pl-4;
+        @apply rounded-r-sm border-l-2 border-md-error bg-md-error-soft py-2 pl-4;
     }
 
     /* Danger-zone section */
     .md-danger-zone {
-        @apply bg-md-error-soft shadow-[0_4px_0_0_var(--md-error-container)] ring-2 ring-md-error-container;
+        @apply bg-md-error-soft ring-1 ring-md-error-container;
     }
 
     /* ---- Tables ----------------------------------------------------------- */
@@ -665,7 +666,7 @@
         @apply w-full border-collapse text-left text-label;
     }
     .md-table th {
-        @apply border-b-2 border-md-outline-variant px-4 py-3 text-label-sm font-medium uppercase tracking-[0.06em] text-md-on-surface-variant;
+        @apply border-b border-md-outline-variant px-4 py-3 text-label-sm font-medium uppercase tracking-[0.06em] text-md-on-surface-variant;
     }
     .md-table td {
         @apply border-b border-md-outline-variant px-4 py-3 align-middle text-md-on-surface;
@@ -676,7 +677,7 @@
 
     /* ---- Menus ------------------------------------------------------------ */
     .md-menu {
-        @apply z-40 w-64 rounded-md border-2 border-md-outline-variant bg-md-surface-container p-2 shadow-lg;
+        @apply z-40 w-64 rounded-md border border-md-outline-variant bg-md-surface-container p-2 shadow-lg;
     }
     .md-menu-item {
         @apply flex h-12 w-full cursor-pointer items-center gap-3 rounded-sm px-4 text-left text-label text-md-on-surface no-underline outline-none transition-colors duration-200 ease-md hover:bg-md-hover focus-visible:bg-md-press;
@@ -699,13 +700,13 @@
         @apply text-md-primary;
     }
     .md-tab[aria-current='page']::after {
-        @apply absolute inset-x-[22%] bottom-0 h-1 rounded-t-full bg-md-primary content-[''];
+        @apply absolute inset-x-[22%] bottom-0 h-[3px] rounded-t-full bg-md-primary content-[''];
         animation: md-tab-in 400ms var(--ease-spring) both;
     }
 
     /* ---- Snackbars (vue-notification) ------------------------------------- */
     .md-snackbar {
-        @apply mx-auto mt-3 flex w-[min(36rem,calc(100%-2rem))] items-center justify-center gap-3 rounded-md bg-md-inverse-surface px-5 py-3.5 text-center text-label font-normal text-md-inverse-on-surface shadow-[0_4px_0_0_var(--md-shadow)];
+        @apply mx-auto mt-3 flex w-[min(36rem,calc(100%-2rem))] items-center justify-center gap-3 rounded-md bg-md-inverse-surface px-5 py-3.5 text-center text-label font-normal text-md-inverse-on-surface;
         animation: md-snack 500ms var(--ease-spring) both;
     }
     .md-snackbar.is-success { @apply bg-md-success-container text-md-on-success-container; }

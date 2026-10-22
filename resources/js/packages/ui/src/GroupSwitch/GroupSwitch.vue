@@ -64,7 +64,7 @@
                                     v-if="group.id > 0"
                                     type="button"
                                     class="group-item md-card md-card-interactive flex min-h-20 items-end p-4 text-left text-title text-md-on-surface hover:scale-[1.02]"
-                                    :class="{ 'ring-2 ring-md-primary': activeGroup == group.id }"
+                                    :class="{ 'ring-1 ring-md-primary': activeGroup == group.id }"
                                     @click="setActiveGroup(group.id)"
                                 >
                                     <span class="line-clamp-2 break-words">{{ group.name }}</span>

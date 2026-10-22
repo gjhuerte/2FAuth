@@ -154,7 +154,7 @@
                         <span class="relative flex items-center gap-2">
                             <LucideLock class="size-4!" />
                             <span class="relative inline-flex">
-                                <span class="absolute -inset-1.5 rounded-full ring-2 ring-md-error"></span>
+                                <span class="absolute -inset-1.5 rounded-full ring-1 ring-md-error"></span>
                                 <LucideVideoOff class="size-4!" />
                             </span>
                         </span>
