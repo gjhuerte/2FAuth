@@ -30,28 +30,28 @@
 </script>
 
 <template>
-    <div v-if="isVisible" id="groupSwitch" class="fixed inset-0 z-[1500] bg-md-surface/90 backdrop-blur-xl">
+    <div v-if="isVisible" id="groupSwitch" class="fixed inset-0 z-[1500] bg-md-surface">
         <StackLayout :should-grow="true">
             <template #content>
                 <div class="mx-auto w-full max-w-md pb-6 pt-10 animate-enter">
                     <p class="md-overline mb-4 px-2">{{ $t('label.active_group') }}</p>
                     <div class="md-list shadow-sm">
-                        <button type="button" class="group-item flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-on-surface/8" @click="setActiveGroup(0)">
+                        <button type="button" class="group-item flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-hover" @click="setActiveGroup(0)">
                             <span class="flex-1">{{ $t('label.all_accounts') }}</span>
                             <span v-if="activeGroup == 0" class="size-2 rounded-full bg-md-primary" aria-hidden="true"></span>
                         </button>
-                        <button v-if="groups.length > 1" type="button" class="group-item flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-on-surface/8" @click="setActiveGroup(-1)">
+                        <button v-if="groups.length > 1" type="button" class="group-item flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-hover" @click="setActiveGroup(-1)">
                             <LucideSquareSlash class="text-md-on-surface-variant" />
                             <span class="flex-1">{{ $t('label.group_less_accounts') }}</span>
                         </button>
-                        <button v-if="useShare" type="button" class="group-item flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-on-surface/8" @click="setActiveGroup(-2)">
+                        <button v-if="useShare" type="button" class="group-item flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-hover" @click="setActiveGroup(-2)">
                             <span class="flex items-center gap-1 text-md-on-surface-variant">
                                 <LucideUsers v-if="useShareAllScope" />
                                 <LucideUserCheck />
                             </span>
                             <span class="flex-1">{{ $t('label.accounts_I_m_sharing') }}</span>
                         </button>
-                        <button v-if="useShare" type="button" class="group-item flex min-h-14 w-full items-center gap-4 px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-on-surface/8" @click="setActiveGroup(-3)">
+                        <button v-if="useShare" type="button" class="group-item flex min-h-14 w-full items-center gap-4 px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-hover" @click="setActiveGroup(-3)">
                             <LucideAtSign class="text-md-on-surface-variant" />
                             <span class="flex-1">{{ $t('label.accounts_shared_with_me') }}</span>
                         </button>

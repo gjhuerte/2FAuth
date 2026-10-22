@@ -184,7 +184,7 @@
                 </div>
                 <TwofaccountMedia :twofaccount="twofaccount" />
                 <!-- sharing scope selector -->
-                <div class="toggle-wrapper mb-6 inline-flex max-w-full rounded-full bg-md-surface-container-highest p-1 shadow-inner">
+                <div class="toggle-wrapper mb-6 inline-flex max-w-full rounded-full bg-md-surface-container-highest p-1 inset-shadow-sm">
                     <div class="toggle relative">
                         <div class="toggle-buttons flex gap-1">
                             <button
@@ -194,7 +194,7 @@
                                 :id="'btn' + sharingScope.id"
                                 type="button"
                                 @click="confirmToggleSharing(sharingScope.id)"
-                                class="relative z-[1] h-10 cursor-pointer whitespace-nowrap rounded-full px-4 text-label text-md-on-surface-variant transition-colors duration-200 ease-md hover:bg-md-on-surface/8"
+                                class="relative z-[1] h-10 cursor-pointer whitespace-nowrap rounded-full px-4 text-label text-md-on-surface-variant transition-colors duration-200 ease-md hover:bg-md-hover"
                             >
                                 {{ $t(sharingScope.label) }}
                             </button>
@@ -221,7 +221,7 @@
                             </div>
                             <ul class="md-list">
                                 <li v-for="user in visibleUsershares" :key="user.id" class="md-list-item">
-                                    <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-md-primary-container text-title text-md-on-primary-container" aria-hidden="true">
+                                    <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full font-display text-title font-semibold" :class="'md-tone-' + (user.id % 5)" aria-hidden="true">
                                         {{ user.name.charAt(0).toUpperCase() }}
                                     </span>
                                     <div class="min-w-0 flex-1">

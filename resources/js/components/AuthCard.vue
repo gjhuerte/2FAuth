@@ -18,14 +18,10 @@
 
 <template>
     <div class="mx-auto w-full max-w-md px-0 pb-6 pt-6 sm:max-w-lg sm:pt-14">
-        <section class="relative overflow-hidden rounded-xl bg-md-surface-container px-6 py-8 shadow-lg animate-enter sm:rounded-3xl sm:px-10 sm:py-12">
-            <!-- atmosphere -->
-            <div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-24 size-64 rounded-full bg-md-primary/20 blur-3xl"></div>
-            <div aria-hidden="true" class="pointer-events-none absolute -bottom-28 -left-16 size-56 rounded-[80px] rounded-tr-[20px] bg-md-tertiary/15 blur-3xl"></div>
-
+        <section class="relative overflow-hidden rounded-xl rounded-tr-md bg-md-surface-container px-6 py-8 shadow-lg animate-enter sm:rounded-3xl sm:rounded-tr-lg sm:px-10 sm:py-12">
             <div class="relative">
                 <div class="mb-6 flex items-center gap-3">
-                    <span class="inline-flex size-12 items-center justify-center rounded-md bg-md-primary shadow-md dark:bg-md-primary-container">
+                    <span class="inline-flex size-12 -rotate-6 items-center justify-center rounded-md bg-md-primary shadow-[0_3px_0_0_var(--md-primary-press)] transition-transform duration-300 ease-spring hover:rotate-6 hover:scale-110 dark:bg-md-primary-container dark:shadow-[0_3px_0_0_var(--md-shadow)]">
                         <img :src="$2fauth.config.subdirectory + '/logo.svg'" alt="" class="h-7 w-auto" />
                     </span>
                     <span class="md-overline">2FAuth</span>

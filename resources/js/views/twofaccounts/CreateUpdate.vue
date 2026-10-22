@@ -585,16 +585,15 @@
             </Modal>
             <!-- Quick form (right after a qr code upload) -->
             <div v-if="!isEditMode && showQuickForm" class="modal modal-otp is-active fixed inset-0 z-[2000] flex flex-col overflow-y-auto px-4 py-6" role="dialog" aria-modal="true">
-                <div class="modal-background fixed inset-0 bg-md-surface/80 backdrop-blur-xl"></div>
+                <div class="modal-background fixed inset-0 bg-md-surface"></div>
                 <section class="modal-slot relative m-auto w-full max-w-md overflow-hidden rounded-xl bg-md-surface-container px-6 py-10 text-center shadow-xl animate-enter sm:rounded-2xl sm:px-10">
-                    <div aria-hidden="true" class="pointer-events-none absolute -top-24 left-1/2 size-56 -translate-x-1/2 rounded-full bg-md-primary/20 blur-3xl"></div>
                     <form class="relative" @submit.prevent="createAccount" @keydown="form.onKeydown($event)">
                         <div class="relative">
                             <FormFieldError v-if="iconForm.errors.hasAny('icon')" :error="iconForm.errors.get('icon')" :field="'icon'" />
                             <label
                                 for="filUploadIcon"
                                 v-if="!tempIcon"
-                                class="add-icon-button absolute left-1/2 top-0 z-10 flex size-20 -translate-x-1/2 cursor-pointer items-center justify-center rounded-lg text-md-on-surface-variant transition-colors duration-200 ease-md hover:bg-md-primary/10 hover:text-md-primary"
+                                class="add-icon-button absolute left-1/2 top-0 z-10 flex size-20 -translate-x-1/2 cursor-pointer items-center justify-center rounded-lg text-md-on-surface-variant transition-colors duration-200 ease-md hover:bg-md-primary-soft hover:text-md-primary"
                                 :title="$t('label.choose_image')"
                             >
                                 <input id="filUploadIcon" class="file-input sr-only" type="file" accept="image/*" v-on:change="uploadIcon" ref="iconInput">
@@ -603,7 +602,7 @@
                             <button
                                 v-if="tempIcon"
                                 type="button"
-                                class="delete-icon-button md-icon-btn md-icon-btn-sm absolute left-1/2 top-0 z-10 ml-7 -mt-2 bg-md-error-container text-md-on-error-container hover:bg-md-error-container/80"
+                                class="delete-icon-button md-icon-btn md-icon-btn-sm absolute left-1/2 top-0 z-10 ml-7 -mt-2 bg-md-error-container text-md-on-error-container hover:bg-md-error-container-hover"
                                 @click.prevent="deleteTempIcon"
                                 :aria-label="$t('label.remove_icon')"
                             >

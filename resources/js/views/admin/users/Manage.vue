@@ -232,13 +232,12 @@
                 <!-- user info -->
                 <div v-if="! isFetching && managedUser" class="animate-enter pb-8">
                     <section class="relative mb-4 overflow-hidden rounded-xl bg-md-surface-container p-6 shadow-md sm:p-8">
-                        <div aria-hidden="true" class="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-md-primary/20 blur-3xl"></div>
                         <div class="relative flex items-center gap-4">
-                            <span class="inline-flex size-16 shrink-0 items-center justify-center rounded-full bg-md-primary-container text-title-lg text-md-on-primary-container">
+                            <span class="inline-flex size-16 shrink-0 -rotate-6 items-center justify-center rounded-full font-display text-title-lg font-semibold shadow-md" :class="'md-tone-' + (managedUser.info.id % 5)">
                                 {{ managedUser.info.name.charAt(0).toUpperCase() }}
                             </span>
                             <div class="min-w-0 flex-1">
-                                <p class="flex items-center gap-2 text-title-lg text-md-on-surface">
+                                <p class="flex items-center gap-2 font-display text-title-lg font-semibold text-md-on-surface">
                                     <span class="truncate">{{ managedUser.info.name }}</span>
                                     <span class="md-badge md-badge-outline shrink-0 font-mono">#{{ managedUser.info.id }}</span>
                                 </p>
@@ -321,7 +320,7 @@
                     <!-- preferences -->
                     <section class="md-card mb-4 sm:p-8">
                         <h2 ref="heading-preferences" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.preferences') }}</h2>
-                        <div class="about-debug relative rounded-md bg-md-surface-container-highest p-5 font-mono text-label-sm shadow-inner">
+                        <div class="about-debug relative rounded-md bg-md-surface-container-highest p-5 font-mono text-label-sm inset-shadow-sm">
                             <CopyButton id="btnCopyEnvVars" :token="listUserPreferences?.innerText" />
                             <ul ref="listUserPreferences" id="listUserPreferences" class="flex flex-col gap-1">
                                 <li v-for="(value, preference) in managedUser.info.preferences" :value="value" :key="preference" class="break-all">
@@ -331,7 +330,7 @@
                         </div>
                     </section>
                     <!-- danger zone -->
-                    <section class="md-card mb-4 sm:p-8 bg-md-error-container/40 ring-1 ring-md-error/30">
+                    <section class="md-card mb-4 sm:p-8 bg-md-error-soft ring-1 ring-md-error-container">
                         <h2 ref="heading-dangerZone" class="md-section-title mb-4 flex scroll-mt-6 items-center gap-2 text-md-error!">
                             <LucideTriangleAlert class="size-6!" />
                             {{ $t('heading.danger_zone') }}

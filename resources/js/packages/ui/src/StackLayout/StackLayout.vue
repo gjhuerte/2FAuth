@@ -27,7 +27,7 @@
         <div
             v-if="$slots.content"
             class="stack-content-wrapper overflow-y-auto"
-            :class="{ 'flex flex-col justify-center': isVerticalCentered, 'flex-1': shouldGrow, '[mask-image:linear-gradient(to_bottom,black_calc(100%-1.5rem),transparent)]': shouldGrow && $slots.footer }"
+            :class="{ 'flex flex-col justify-center': isVerticalCentered, 'flex-1': shouldGrow }"
         >
             <div class="stack-content px-4 lg:px-0">
                 <slot name="content" />

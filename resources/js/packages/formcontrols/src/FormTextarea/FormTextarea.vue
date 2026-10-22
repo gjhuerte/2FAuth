@@ -69,7 +69,7 @@
         <LucideCornerDownRight
             v-if="isIndented"
             class="mt-9 ml-1 shrink-0 text-md-outline"
-            :class="{ 'opacity-50' : isDisabled || isLocked }"
+            :class="{ 'text-md-on-disabled!' : isDisabled || isLocked }"
             aria-hidden="true"
         />
         <div class="min-w-0 flex-1">

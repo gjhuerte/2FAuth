@@ -551,28 +551,28 @@
                                     <img
                                         v-if="account.icon"
                                         role="presentation"
-                                        class="tfa-icon md-account-icon transition-transform duration-300 ease-md group-hover:scale-105"
-                                        :class="isGrid ? 'size-16 rounded-md p-2' : 'size-11'"
+                                        class="tfa-icon md-account-icon transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
+                                        :class="[isGrid ? 'size-16 rounded-md p-2.5' : 'size-11', 'md-tone-' + (account.id % 5)]"
                                         :src="$2fauth.config.subdirectory + '/storage/icons/' + account.icon"
                                         alt=""
                                     >
                                     <img
                                         v-else-if="account.icon == null"
                                         role="presentation"
-                                        class="tfa-icon md-account-icon"
-                                        :class="isGrid ? 'size-16 rounded-md p-3' : 'size-11 p-2'"
+                                        class="tfa-icon md-account-icon transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
+                                        :class="[isGrid ? 'size-16 rounded-md p-3' : 'size-11 p-2', 'md-tone-' + (account.id % 5)]"
                                         :src="$2fauth.config.subdirectory + '/storage/noicon.svg'"
                                         alt=""
                                     >
                                     <span
                                         v-else
                                         aria-hidden="true"
-                                        class="md-account-icon bg-md-primary-container font-medium text-md-on-primary-container"
-                                        :class="isGrid ? 'size-16 rounded-md text-title-lg' : 'size-11 text-title'"
+                                        class="md-account-icon font-display font-semibold transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
+                                        :class="[isGrid ? 'size-16 rounded-md text-title-lg' : 'size-11 text-title', 'md-tone-' + (account.id % 5)]"
                                     >{{ initialOf(account) }}</span>
                                 </template>
                                 <div class="tfa-text min-w-0 max-w-full" :class="{ 'flex-1': !isGrid }">
-                                    <p class="flex items-center gap-1.5 truncate text-title text-md-on-surface" :class="{ 'justify-center': isGrid }">
+                                    <p class="flex items-center gap-1.5 truncate font-display text-title text-md-on-surface" :class="{ 'justify-center': isGrid }">
                                         <span class="truncate">{{ account.service ? account.service : $t('message.no_service') }}</span>
                                         <LucideCircleAlert class="shrink-0 text-md-error" v-if="account.account === $t('error.indecipherable')" />
                                     </p>
@@ -638,8 +638,9 @@
                                     >
                                         <template v-if="account.otp != undefined">
                                             <button
+                                                :key="account.otp.password"
                                                 type="button"
-                                                class="always-on-otp cursor-pointer whitespace-nowrap rounded-sm px-2 font-mono text-title-lg leading-tight font-medium tabular-nums tracking-wide text-md-primary transition-[background-color,transform] duration-200 ease-md hover:bg-md-primary/10 active:scale-95"
+                                                class="always-on-otp animate-pop cursor-pointer whitespace-nowrap rounded-sm px-2 font-mono text-title-lg leading-tight font-medium tabular-nums tracking-wide text-md-primary transition-[background-color,transform] duration-200 ease-md hover:bg-md-primary-soft active:scale-90"
                                                 @click="copyToClipboard(account.otp.password)"
                                                 :title="$t('tooltip.copy_to_clipboard')"
                                             >
@@ -661,7 +662,7 @@
                                             <button
                                                 v-if="user.preferences.showNextOtp"
                                                 type="button"
-                                                class="always-on-otp cursor-pointer whitespace-nowrap rounded-xs px-2 font-mono text-label-sm tabular-nums text-md-on-surface-variant transition-[background-color,opacity] duration-300 ease-md hover:bg-md-primary/10"
+                                                class="always-on-otp cursor-pointer whitespace-nowrap rounded-xs px-2 font-mono text-label-sm tabular-nums text-md-on-surface-variant transition-[background-color,opacity] duration-300 ease-md hover:bg-md-primary-soft"
                                                 :class="opacities[account.period]"
                                                 @click="copyToClipboard(account.otp.next_password)"
                                                 :title="$t('tooltip.copy_next_password')"
@@ -714,7 +715,7 @@
                             <transition name="fadeInOut">
                                 <div
                                     v-if="bus.inManagementMode"
-                                    class="drag-handle tfa-dots flex shrink-0 cursor-grab touch-none items-center rounded-full p-1.5 text-md-on-surface-variant hover:bg-md-on-surface/8 active:cursor-grabbing"
+                                    class="drag-handle tfa-dots flex shrink-0 cursor-grab touch-none items-center rounded-full p-1.5 text-md-on-surface-variant hover:bg-md-hover active:cursor-grabbing"
                                     :class="{ 'absolute right-2 top-2': isGrid }"
                                 >
                                     <LucideGripVertical />
@@ -833,14 +834,14 @@
                         </router-link>
                     </li>
                     <!-- action buttons -->
-                    <li class="mt-1 flex items-center justify-center gap-2 border-t border-md-outline-variant/60 pt-2">
+                    <li class="mt-1 flex items-center justify-center gap-2 border-t border-md-outline-variant pt-2">
                         <router-link id="lnkQrCode" :to="{ name: 'showQRcode', params: { twofaccountId: visibleAccount.id }}" class="md-icon-btn md-icon-btn-tonal" :title="$t('tooltip.show_qrcode')" :aria-label="$t('tooltip.show_qrcode')">
                             <LucideQrCode />
                         </router-link>
                         <router-link id="lnkEdit" :to="{ name: 'editAccount', params: { twofaccountId: visibleAccount.id }}" class="md-icon-btn md-icon-btn-tonal" :title="$t('tooltip.edit_account')" :aria-label="$t('tooltip.edit_account')">
                             <LucidePencil />
                         </router-link>
-                        <button id="btnDelete" type="button" @click="deleteAccount(visibleAccount)" class="md-icon-btn bg-md-error-container text-md-on-error-container hover:bg-md-error-container/80" :title="$t('tooltip.delete_account')" :aria-label="$t('tooltip.delete_account')">
+                        <button id="btnDelete" type="button" @click="deleteAccount(visibleAccount)" class="md-icon-btn bg-md-error-container text-md-on-error-container hover:bg-md-error-container-hover" :title="$t('tooltip.delete_account')" :aria-label="$t('tooltip.delete_account')">
                             <LucideTrash2 />
                         </button>
                     </li>

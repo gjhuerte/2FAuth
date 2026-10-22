@@ -151,7 +151,7 @@
                             <LucideSend v-if="!isSendingTestEmail" />
                             {{ $t('label.send') }}
                         </VueButton>
-                        <div v-if="testEmailError" class="about-debug mt-4 rounded-sm bg-md-error-container/50 p-4 font-mono text-label-sm text-md-on-error-container">
+                        <div v-if="testEmailError" class="about-debug mt-4 rounded-sm bg-md-error-soft p-4 font-mono text-label-sm text-md-on-error-container">
                             <FormFieldError v-if="testEmailError" :error="$t('error.email_sending_failed')" :field="'testEmail'" />
                             {{ testEmailError }}
                         </div>
@@ -206,7 +206,7 @@
                     </div>
                 <!-- env vars -->
                 <label for="btnCopyEnvVars" class="mb-2 block px-1 text-label text-md-on-surface-variant">{{ $t('label.variables') }}</label>
-                <div v-if="infos" class="about-debug relative rounded-md bg-md-surface-container-highest p-5 font-mono text-label-sm shadow-inner">
+                <div v-if="infos" class="about-debug relative rounded-md bg-md-surface-container-highest p-5 font-mono text-label-sm inset-shadow-sm">
                     <CopyButton id="btnCopyEnvVars" :token="listInfos?.innerText" />
                     <ul ref="listInfos" id="listInfos" class="flex flex-col gap-1">
                         <li v-for="(value, preference) in infos" :value="value" :key="preference" class="break-all">

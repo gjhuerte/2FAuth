@@ -395,12 +395,12 @@
 <template>
     <div class="flex flex-col items-center">
         <figure
-            class="mb-5 inline-flex size-20 items-center justify-center overflow-hidden rounded-lg bg-md-surface-container-highest shadow-sm"
-            :class="{ 'no-icon border-2 border-dashed border-md-outline-variant bg-transparent shadow-none': !otpauthParams.icon }"
+            class="mb-5 inline-flex size-20 rotate-[-4deg] items-center justify-center overflow-hidden rounded-lg shadow-md animate-pop"
+            :class="otpauthParams.icon ? 'md-tone-' + ((otpauthParams.service || '').length % 5) : 'no-icon border-2 border-dashed border-md-outline-variant bg-md-surface shadow-none'"
         >
             <img class="size-14 object-contain" :src="iconPathPrefix + '/storage/icons/' + otpauthParams.icon" v-if="otpauthParams.icon" :alt="$t('alttext.icon_to_illustrate_the_account')">
         </figure>
-        <p class="flex max-w-full items-center justify-center gap-1 text-title-lg text-md-on-surface">
+        <p class="flex max-w-full items-center justify-center gap-1 font-display text-title-lg font-semibold text-md-on-surface">
             <button
                 v-if="id && props.can_showFavorite && props.preferences.enableFavorites && otpauthParams.is_favorite != null"
                 type="button"
@@ -418,11 +418,12 @@
         <div class="mt-8 flex min-h-20 items-center justify-center">
             <span
                 v-if="!showMainSpinner"
+                :key="visiblePassword"
                 id="otp"
                 role="log"
                 ref="otpSpanTag"
                 tabindex="0"
-                class="otp group relative cursor-pointer rounded-lg px-5 py-2 font-mono text-[2.75rem] font-medium leading-none tracking-[0.06em] text-md-on-surface tabular-nums outline-none transition-[background-color,transform] duration-200 ease-md hover:bg-md-primary/10 active:scale-95 focus-visible:ring-2 focus-visible:ring-md-primary sm:text-display"
+                class="otp group relative animate-pop cursor-pointer rounded-lg px-5 py-2 font-mono text-[2.75rem] font-medium leading-none tracking-[0.06em] text-md-on-surface tabular-nums outline-none transition-[background-color,transform] duration-200 ease-md hover:bg-md-primary-soft active:scale-90 focus-visible:ring-2 focus-visible:ring-md-primary sm:text-display"
                 @click="copyOTP(password, true)"
                 @keyup.enter="copyOTP(password, true)"
                 :title="$t('tooltip.copy_to_clipboard')"
@@ -442,7 +443,7 @@
         <p v-if="props.can_showNextOtp && props.preferences.showNextOtp" class="mt-4 min-h-8 font-mono text-title tabular-nums text-md-on-surface-variant">
             <span
                 v-if="next_password"
-                class="cursor-pointer rounded-sm px-2 py-1 transition-[background-color,opacity] duration-300 ease-md hover:bg-md-primary/10"
+                class="cursor-pointer rounded-sm px-2 py-1 transition-[background-color,opacity] duration-300 ease-md hover:bg-md-primary-soft"
                 :class="opacity"
                 @click="copyOTP(next_password, true)"
                 @keyup.enter="copyOTP(next_password, true)"

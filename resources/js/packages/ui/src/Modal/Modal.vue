@@ -29,10 +29,9 @@
             aria-modal="true"
             @keyup.esc="closeModal"
         >
-            <div class="modal-background absolute inset-0 bg-md-surface/80 backdrop-blur-xl" @click.stop="closeModal"></div>
+            <div class="modal-background absolute inset-0 bg-md-surface" @click.stop="closeModal"></div>
             <div class="pointer-events-none relative flex flex-1 flex-col overflow-y-auto px-4 pt-[max(1rem,env(safe-area-inset-top))]">
                 <section class="modal-slot pointer-events-auto relative m-auto w-full max-w-md overflow-hidden rounded-xl bg-md-surface-container px-6 py-10 text-center shadow-xl sm:rounded-2xl sm:px-10">
-                    <div aria-hidden="true" class="pointer-events-none absolute -top-24 left-1/2 size-56 -translate-x-1/2 rounded-full bg-md-primary/20 blur-3xl"></div>
                     <div class="relative">
                         <slot name="default" />
                     </div>

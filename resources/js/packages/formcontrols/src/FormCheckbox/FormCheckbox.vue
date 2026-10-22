@@ -53,7 +53,7 @@
         <LucideCornerDownRight
             v-if="isIndented"
             class="mt-2.5 ml-1 shrink-0 text-md-outline"
-            :class="{ 'opacity-50' : isDisabled || isLocked }"
+            :class="{ 'text-md-on-disabled!' : isDisabled || isLocked }"
             aria-hidden="true"
         />
         <div class="flex items-start gap-4 rounded-md py-2 pl-3 pr-2">
@@ -66,12 +66,12 @@
                 :disabled="isDisabled || isLocked"
                 :aria-describedby="help ? legendId : undefined"
             />
-            <div class="min-w-0" :class="{ 'opacity-50' : isDisabled || isLocked }">
-                <label :for="fieldName" class="flex items-center gap-1.5 text-body font-medium text-md-on-surface" :class="labelClass">
+            <div class="min-w-0">
+                <label :for="fieldName" class="flex items-center gap-1.5 text-body font-medium" :class="[labelClass, isDisabled || isLocked ? 'text-md-on-disabled' : 'text-md-on-surface']">
                     {{ $t(props.label) }}
-                    <LucideLock v-if="isLocked" class="size-4 text-md-on-surface-variant" />
+                    <LucideLock v-if="isLocked" class="size-4" />
                 </label>
-                <p :id="legendId" class="mt-0.5 text-label font-normal leading-relaxed text-md-on-surface-variant" v-if="help">{{ $t(help) }}</p>
+                <p :id="legendId" class="mt-0.5 text-label font-normal leading-relaxed" :class="isDisabled || isLocked ? 'text-md-on-disabled' : 'text-md-on-surface-variant'" v-if="help">{{ $t(help) }}</p>
             </div>
         </div>
     </div>

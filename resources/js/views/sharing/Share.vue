@@ -233,7 +233,7 @@
                     <div v-if="recipients.length > 0" class="mb-6 flex flex-wrap gap-2">
                         <span v-for="recipient in recipients" :key="recipient.id" class="md-chip md-chip-selected cursor-default pr-1">
                             {{ recipient.name }}
-                            <button type="button" @click="removeRecipient(recipient)" class="is-delete inline-flex size-6 items-center justify-center rounded-full hover:bg-md-on-secondary-container/10" :aria-label="$t('tooltip.revoke')">
+                            <button type="button" @click="removeRecipient(recipient)" class="is-delete inline-flex size-6 items-center justify-center rounded-full hover:bg-md-secondary-container-hover" :aria-label="$t('tooltip.revoke')">
                                 <LucideX class="size-3.5!" />
                             </button>
                         </span>

@@ -20,11 +20,10 @@
 
 <template>
     <div class="modal modal-otp is-active fixed inset-0 z-[2000] flex flex-col" role="dialog" aria-modal="true">
-        <div class="modal-background absolute inset-0 bg-md-surface/80 backdrop-blur-xl"></div>
+        <div class="modal-background absolute inset-0 bg-md-surface"></div>
         <section class="modal-slot relative flex flex-1 items-center justify-center overflow-y-auto px-4 pt-[max(1rem,env(safe-area-inset-top))]">
             <div class="relative rounded-2xl bg-md-surface-container p-6 shadow-xl animate-enter sm:p-8">
-                <div aria-hidden="true" class="pointer-events-none absolute -top-16 left-1/2 size-48 -translate-x-1/2 rounded-full bg-md-primary/25 blur-3xl"></div>
-                <div class="relative flex min-h-64 min-w-64 items-center justify-center overflow-hidden rounded-lg bg-white p-4 shadow-inner">
+                <div class="relative flex min-h-64 min-w-64 items-center justify-center overflow-hidden rounded-lg bg-white p-4 inset-shadow-sm">
                     <img v-if="qrcode" :src="qrcode" class="qrcode w-full max-w-80 max-h-[50vh] object-contain" :alt="$t('alttext.image_of_qrcode_to_scan')">
                     <Spinner :isVisible="!qrcode" :type="'raw'" :rawSize="32" />
                 </div>

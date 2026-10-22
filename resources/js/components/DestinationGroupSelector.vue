@@ -41,7 +41,7 @@
                             type="button"
                             role="radio"
                             :aria-checked="destinationGroupId === group.id"
-                            class="flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-on-surface/8 aria-checked:bg-md-secondary-container aria-checked:text-md-on-secondary-container"
+                            class="flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-hover aria-checked:bg-md-secondary-container aria-checked:text-md-on-secondary-container"
                             @click="destinationGroupId = group.id"
                         >
                             <span class="flex size-5 shrink-0 items-center justify-center rounded-full border-2" :class="destinationGroupId === group.id ? 'border-md-primary' : 'border-md-on-surface-variant'">

@@ -58,7 +58,7 @@
             <!-- action buttons -->
             <div
                 v-if="$slots.default"
-                class="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-xl bg-md-surface-container-high/85 p-2 shadow-lg ring-1 ring-md-outline-variant/40 backdrop-blur-xl"
+                class="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-xl border-2 border-md-outline-variant bg-md-surface-container-high p-2 shadow-md"
                 :inert="showMenu"
             >
                 <slot name="default" />
@@ -88,7 +88,7 @@
                                 </router-link>
                             </li>
                             <!-- sign-out button -->
-                            <li v-if="showLogout" role="none" class="mt-1 border-t border-md-outline-variant/60 pt-1">
+                            <li v-if="showLogout" role="none" class="mt-1 border-t border-md-outline-variant pt-1">
                                 <button type="button" id="lnkSignOut" class="md-menu-item" role="menuitem" @click="logout($t('confirmation.logout'))">
                                     <LucideLogOut />
                                     {{ $t('label.sign_out') }}

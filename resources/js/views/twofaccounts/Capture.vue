@@ -168,22 +168,22 @@
                 </div>
                 <p v-else class="mt-3 text-label font-normal text-md-on-surface-variant">{{ $t('message.stream.' + errorPhrase + '.solution') }}</p>
             </div>
-            <span v-else-if="!cameraIsOn" class="relative z-10 inline-flex size-16 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+            <span v-else-if="!cameraIsOn" class="relative z-10 inline-flex size-16 items-center justify-center rounded-full bg-[#26262a]">
                 <Spinner :isVisible="true" :type="'raw'" :rawSize="32" />
             </span>
             <!-- stream -->
             <div v-show="!errorPhrase" class="fullscreen-streamer absolute inset-x-0 top-[6%] mx-auto flex h-[68%] max-w-3xl flex-col gap-3 px-4">
                 <!-- device selector -->
                 <div v-if="cameraIsOn && cameras.length > 1" class="relative z-10 mx-auto w-full max-w-xs">
-                    <LucideCamera class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/80" />
-                    <select v-model="selectedCamera" class="h-11 w-full cursor-pointer appearance-none rounded-full border border-white/20 bg-white/10 pl-12 pr-10 text-label text-white outline-none backdrop-blur-md focus-visible:ring-2 focus-visible:ring-white" :aria-label="$t('label.default')">
+                    <LucideCamera class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#c6c2cc]" />
+                    <select v-model="selectedCamera" class="h-11 w-full cursor-pointer appearance-none rounded-full border border-[#3a3a3e] bg-[#26262a] pl-12 pr-10 text-label text-white outline-none focus-visible:ring-2 focus-visible:ring-white" :aria-label="$t('label.default')">
                         <option v-for="camera in cameras" :key="camera.label" :value="camera" class="text-black">
                             {{ camera.label ? camera.label : $t('label.default') }}
                         </option>
                     </select>
-                    <LucideChevronDown class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/80" />
+                    <LucideChevronDown class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#c6c2cc]" />
                 </div>
-                <div class="relative flex-1 overflow-hidden rounded-2xl ring-1 ring-white/10">
+                <div class="relative flex-1 overflow-hidden rounded-2xl ring-1 ring-[#2a2a2e]">
                     <qrcode-stream
                         v-if="selectedCamera !== null"
                         :track="paintOutline"
@@ -194,10 +194,10 @@
                     ></qrcode-stream>
                     <!-- viewfinder -->
                     <div v-if="cameraIsOn" aria-hidden="true" class="pointer-events-none absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 sm:size-64">
-                        <span class="absolute left-0 top-0 size-10 rounded-tl-[28px] border-l-4 border-t-4 border-white/90"></span>
-                        <span class="absolute right-0 top-0 size-10 rounded-tr-[28px] border-r-4 border-t-4 border-white/90"></span>
-                        <span class="absolute bottom-0 left-0 size-10 rounded-bl-[28px] border-b-4 border-l-4 border-white/90"></span>
-                        <span class="absolute bottom-0 right-0 size-10 rounded-br-[28px] border-b-4 border-r-4 border-white/90"></span>
+                        <span class="absolute left-0 top-0 size-10 rounded-tl-[28px] border-l-4 border-t-4 border-white"></span>
+                        <span class="absolute right-0 top-0 size-10 rounded-tr-[28px] border-r-4 border-t-4 border-white"></span>
+                        <span class="absolute bottom-0 left-0 size-10 rounded-bl-[28px] border-b-4 border-l-4 border-white"></span>
+                        <span class="absolute bottom-0 right-0 size-10 rounded-br-[28px] border-b-4 border-r-4 border-white"></span>
                     </div>
                 </div>
             </div>

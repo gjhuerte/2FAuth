@@ -46,11 +46,11 @@
         <LucideCornerDownRight
             v-if="isIndented"
             class="mt-9 ml-1 shrink-0 text-md-outline"
-            :class="{ 'opacity-50' : isDisabled || isLocked }"
+            :class="{ 'text-md-on-disabled!' : isDisabled || isLocked }"
             aria-hidden="true"
         />
         <div class="min-w-0">
-            <label :for="inputId" class="md-label" :class="{ 'opacity-50' : isDisabled || isLocked }">
+            <label :for="inputId" class="md-label" :class="{ 'text-md-on-disabled!' : isDisabled || isLocked }">
                 {{ $t(props.label) }}
                 <LucideLock v-if="isLocked" class="size-4" />
             </label>

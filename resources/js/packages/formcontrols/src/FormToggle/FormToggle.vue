@@ -42,7 +42,7 @@
 
 <template>
     <div class="md-field" :class="{ 'pt-4': hasOffset }">
-        <span v-if="label" class="md-label" :class="{ 'opacity-50' : isDisabled || isLocked }">
+        <span v-if="label" class="md-label" :class="{ 'text-md-on-disabled!' : isDisabled || isLocked }">
             {{ $t(props.label) }}
             <LucideLock v-if="isLocked" class="size-4" />
         </span>
@@ -75,7 +75,7 @@
                     :value="choice.value"
                     :disabled="isDisabled || isLocked"
                 />
-                <span v-if="choice.legend" class="block text-label-sm font-medium opacity-70">{{ $t(choice.legend) }}</span>
+                <span v-if="choice.legend" class="block text-label-sm font-medium">{{ $t(choice.legend) }}</span>
                 <span class="inline-flex items-center gap-1.5">
                     <LucideCheck v-if="modelValue===choice.value && !choice.icon" class="size-4" aria-hidden="true" />
                     <LucideGenericIcon :name="choice.icon" v-if="choice.icon" class="size-[1.125rem]" />

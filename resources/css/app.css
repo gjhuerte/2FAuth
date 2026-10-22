@@ -1,16 +1,15 @@
 /*
- * 2FAuth — Material You (Material Design 3) design system
+ * 2FAuth — Material You (Material Design 3) design system, playful edition
  *
  * Single source of truth for the UI:
  *   1. Fonts
- *   2. Color tokens (light + dark), driven by CSS variables so the
- *      user's light / dark / system preference only swaps variables
- *   3. Tailwind theme mapping (colors, type scale, radii, easing)
+ *   2. Color tokens (light + blackish dark). Every color is SOLID: hover /
+ *      press states, soft tints and shadows have their own pre-mixed tokens
+ *      instead of translucent overlays, gradients or blur.
+ *   3. Tailwind theme mapping (colors, type scale, radii, shadows, easing)
  *   4. Base element styles
- *   5. Component classes (buttons, fields, chips, cards, …) shared by
- *      every view, so templates compose them instead of repeating
- *      long utility strings
- *   6. Motion: Vue transitions + reduced-motion support
+ *   5. Component classes shared by every view
+ *   6. Motion: springy transitions + reduced-motion support
  *
  * Seed color: #6750A4 (MD3 baseline purple).
  */
@@ -21,12 +20,16 @@
 @import '@fontsource/roboto/500.css';
 @import '@fontsource/roboto/700.css';
 @import '@fontsource/roboto-mono/500.css';
+@import '@fontsource/fredoka/500.css';
+@import '@fontsource/fredoka/600.css';
 
 /* Scan the vendored component packages and the app sources. */
 @source '../js';
 @source '../views';
-/* Built at runtime ('opacity-step-' + n), so not visible to the scanner. */
+@source not '../views/health.blade.php';
+/* Built at runtime ('opacity-step-' + n / 'md-tone-' + n), so not visible to the scanner. */
 @source inline('opacity-step-{0,1,2,3,4,5,6,7,8,9,10}');
+@source inline('md-tone-{0,1,2,3,4}');
 
 /* The user store toggles a `dark` class on <html> (light / dark / system). */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -39,24 +42,37 @@
     color-scheme: light;
 
     --md-primary: #6750a4;
+    --md-primary-hover: #5b4597;
+    --md-primary-press: #4a3480;
     --md-on-primary: #ffffff;
     --md-primary-container: #eaddff;
     --md-on-primary-container: #21005d;
+    --md-primary-soft: #f1eafc;
+    --md-primary-soft-press: #e6dbf9;
 
     --md-secondary: #625b71;
     --md-on-secondary: #ffffff;
     --md-secondary-container: #e8def8;
+    --md-secondary-container-hover: #dccff2;
+    --md-secondary-container-press: #cbbbe6;
     --md-on-secondary-container: #1d192b;
 
     --md-tertiary: #7d5260;
+    --md-tertiary-hover: #6e4554;
+    --md-tertiary-press: #5d3846;
     --md-on-tertiary: #ffffff;
     --md-tertiary-container: #ffd8e4;
+    --md-tertiary-container-hover: #f9c6d5;
     --md-on-tertiary-container: #31111d;
 
     --md-error: #b3261e;
+    --md-error-hover: #9e1f18;
+    --md-error-press: #7f1610;
     --md-on-error: #ffffff;
     --md-error-container: #f9dedc;
+    --md-error-container-hover: #f2cbc8;
     --md-on-error-container: #410e0b;
+    --md-error-soft: #fcefee;
 
     /* Not part of the MD3 baseline; derived for OTP timers and status. */
     --md-success: #146c2e;
@@ -67,6 +83,7 @@
     --md-on-warning: #ffffff;
     --md-warning-container: #ffdea5;
     --md-on-warning-container: #261900;
+    --md-warning-soft: #fff4de;
 
     /* Tonal surfaces: background → container → container-highest (muted). */
     --md-surface: #fffbfe;
@@ -79,36 +96,65 @@
     --md-outline: #79747e;
     --md-outline-variant: #cac4d0;
 
+    /* Solid state layers (replace on-surface @ 8% / 12%). */
+    --md-hover: #e9e1ef;
+    --md-press: #ddd3e6;
+
+    /* Solid "sticker" shadow and disabled colors. */
+    --md-shadow: #d6cbe4;
+    --md-disabled: #e3dde8;
+    --md-on-disabled: #a29ca8;
+
     --md-inverse-surface: #313033;
     --md-inverse-on-surface: #f4eff4;
     --md-inverse-primary: #d0bcff;
 
-    --md-scrim: #000000;
+    --md-scrim: #1c1b1f;
     --md-star: #f5b400;
+
+    /* Playful tile palette (icon backgrounds, avatars). */
+    --md-tone-0-bg: #eaddff; --md-tone-0-fg: #21005d;
+    --md-tone-1-bg: #ffd8e4; --md-tone-1-fg: #31111d;
+    --md-tone-2-bg: #c4eed0; --md-tone-2-fg: #00210e;
+    --md-tone-3-bg: #ffdea5; --md-tone-3-fg: #261900;
+    --md-tone-4-bg: #cde5ff; --md-tone-4-fg: #001d32;
 }
 
 .dark {
     color-scheme: dark;
 
     --md-primary: #d0bcff;
-    --md-on-primary: #381e72;
+    --md-primary-hover: #c1a8fc;
+    --md-primary-press: #8f73d6;
+    --md-on-primary: #2a1460;
     --md-primary-container: #4f378b;
     --md-on-primary-container: #eaddff;
+    --md-primary-soft: #1f1a2b;
+    --md-primary-soft-press: #2a2239;
 
     --md-secondary: #ccc2dc;
     --md-on-secondary: #332d41;
-    --md-secondary-container: #4a4458;
+    --md-secondary-container: #2f2c36;
+    --md-secondary-container-hover: #3a3643;
+    --md-secondary-container-press: #46414f;
     --md-on-secondary-container: #e8def8;
 
     --md-tertiary: #efb8c8;
+    --md-tertiary-hover: #eaa5b9;
+    --md-tertiary-press: #c4889a;
     --md-on-tertiary: #492532;
     --md-tertiary-container: #633b48;
+    --md-tertiary-container-hover: #714655;
     --md-on-tertiary-container: #ffd8e4;
 
     --md-error: #f2b8b5;
+    --md-error-hover: #eea4a0;
+    --md-error-press: #c98783;
     --md-on-error: #601410;
     --md-error-container: #8c1d18;
+    --md-error-container-hover: #9e2620;
     --md-on-error-container: #f9dedc;
+    --md-error-soft: #26100f;
 
     --md-success: #9ad69c;
     --md-on-success: #00390f;
@@ -118,22 +164,38 @@
     --md-on-warning: #402d00;
     --md-warning-container: #5c4300;
     --md-on-warning-container: #ffdea5;
+    --md-warning-soft: #221a06;
 
-    --md-surface: #141218;
-    --md-on-surface: #e6e0e9;
-    --md-surface-container-low: #1d1b20;
-    --md-surface-container: #211f26;
-    --md-surface-container-high: #2b2930;
-    --md-surface-container-highest: #36343b;
-    --md-on-surface-variant: #cac4d0;
-    --md-outline: #938f99;
-    --md-outline-variant: #49454f;
+    /* Blackish, neutral surfaces. */
+    --md-surface: #0e0e10;
+    --md-on-surface: #e6e1e9;
+    --md-surface-container-low: #141416;
+    --md-surface-container: #19191c;
+    --md-surface-container-high: #212124;
+    --md-surface-container-highest: #2a2a2e;
+    --md-on-surface-variant: #c6c2cc;
+    --md-outline: #8c8892;
+    --md-outline-variant: #3a383e;
 
-    --md-inverse-surface: #e6e0e9;
-    --md-inverse-on-surface: #313033;
+    --md-hover: #26262a;
+    --md-press: #313136;
+
+    --md-shadow: #000000;
+    --md-disabled: #232326;
+    --md-on-disabled: #5d5a62;
+
+    --md-inverse-surface: #e6e1e9;
+    --md-inverse-on-surface: #1c1b1f;
     --md-inverse-primary: #6750a4;
 
+    --md-scrim: #000000;
     --md-star: #ffc94a;
+
+    --md-tone-0-bg: #3b2d63; --md-tone-0-fg: #eaddff;
+    --md-tone-1-bg: #5a2f3f; --md-tone-1-fg: #ffd8e4;
+    --md-tone-2-bg: #1d4a2c; --md-tone-2-fg: #c4eed0;
+    --md-tone-3-bg: #4d3800; --md-tone-3-fg: #ffdea5;
+    --md-tone-4-bg: #173a57; --md-tone-4-fg: #cde5ff;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -142,24 +204,38 @@
 
 @theme inline {
     --font-sans: 'Roboto', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-display: 'Fredoka', 'Roboto', ui-rounded, ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'Roboto Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
     --color-md-primary: var(--md-primary);
+    --color-md-primary-hover: var(--md-primary-hover);
+    --color-md-primary-press: var(--md-primary-press);
     --color-md-on-primary: var(--md-on-primary);
     --color-md-primary-container: var(--md-primary-container);
     --color-md-on-primary-container: var(--md-on-primary-container);
+    --color-md-primary-soft: var(--md-primary-soft);
+    --color-md-primary-soft-press: var(--md-primary-soft-press);
     --color-md-secondary: var(--md-secondary);
     --color-md-on-secondary: var(--md-on-secondary);
     --color-md-secondary-container: var(--md-secondary-container);
+    --color-md-secondary-container-hover: var(--md-secondary-container-hover);
+    --color-md-secondary-container-press: var(--md-secondary-container-press);
     --color-md-on-secondary-container: var(--md-on-secondary-container);
     --color-md-tertiary: var(--md-tertiary);
+    --color-md-tertiary-hover: var(--md-tertiary-hover);
+    --color-md-tertiary-press: var(--md-tertiary-press);
     --color-md-on-tertiary: var(--md-on-tertiary);
     --color-md-tertiary-container: var(--md-tertiary-container);
+    --color-md-tertiary-container-hover: var(--md-tertiary-container-hover);
     --color-md-on-tertiary-container: var(--md-on-tertiary-container);
     --color-md-error: var(--md-error);
+    --color-md-error-hover: var(--md-error-hover);
+    --color-md-error-press: var(--md-error-press);
     --color-md-on-error: var(--md-on-error);
     --color-md-error-container: var(--md-error-container);
+    --color-md-error-container-hover: var(--md-error-container-hover);
     --color-md-on-error-container: var(--md-on-error-container);
+    --color-md-error-soft: var(--md-error-soft);
     --color-md-success: var(--md-success);
     --color-md-on-success: var(--md-on-success);
     --color-md-success-container: var(--md-success-container);
@@ -168,6 +244,7 @@
     --color-md-on-warning: var(--md-on-warning);
     --color-md-warning-container: var(--md-warning-container);
     --color-md-on-warning-container: var(--md-on-warning-container);
+    --color-md-warning-soft: var(--md-warning-soft);
     --color-md-surface: var(--md-surface);
     --color-md-on-surface: var(--md-on-surface);
     --color-md-surface-container-low: var(--md-surface-container-low);
@@ -177,27 +254,37 @@
     --color-md-on-surface-variant: var(--md-on-surface-variant);
     --color-md-outline: var(--md-outline);
     --color-md-outline-variant: var(--md-outline-variant);
+    --color-md-hover: var(--md-hover);
+    --color-md-press: var(--md-press);
+    --color-md-shadow: var(--md-shadow);
+    --color-md-disabled: var(--md-disabled);
+    --color-md-on-disabled: var(--md-on-disabled);
     --color-md-inverse-surface: var(--md-inverse-surface);
     --color-md-inverse-on-surface: var(--md-inverse-on-surface);
     --color-md-inverse-primary: var(--md-inverse-primary);
     --color-md-scrim: var(--md-scrim);
     --color-md-star: var(--md-star);
+
+    /* Solid, offset "sticker" shadows — no blur, no transparency. */
+    --shadow-sm: 0 2px 0 0 var(--md-shadow);
+    --shadow-md: 0 4px 0 0 var(--md-shadow);
+    --shadow-lg: 0 6px 0 0 var(--md-shadow);
+    --shadow-xl: 0 8px 0 0 var(--md-shadow);
+    --inset-shadow-sm: inset 0 2px 0 0 var(--md-shadow);
 }
 
 @theme {
     /* MD3 type scale (size / line-height / tracking / weight) */
     --text-display: 3.5rem;
-    --text-display--line-height: 1.15;
-    --text-display--letter-spacing: -0.015em;
-    --text-display--font-weight: 400;
+    --text-display--line-height: 1.1;
+    --text-display--letter-spacing: -0.01em;
+    --text-display--font-weight: 500;
     --text-headline-lg: 3rem;
-    --text-headline-lg--line-height: 1.2;
-    --text-headline-lg--letter-spacing: -0.01em;
-    --text-headline-lg--font-weight: 500;
-    --text-headline: 2rem;
-    --text-headline--line-height: 1.25;
-    --text-headline--letter-spacing: -0.005em;
-    --text-headline--font-weight: 500;
+    --text-headline-lg--line-height: 1.15;
+    --text-headline-lg--font-weight: 600;
+    --text-headline: 2.125rem;
+    --text-headline--line-height: 1.2;
+    --text-headline--font-weight: 600;
     --text-title-lg: 1.5rem;
     --text-title-lg--line-height: 1.3;
     --text-title-lg--font-weight: 500;
@@ -216,25 +303,43 @@
     --text-label-sm--line-height: 1.35;
     --text-label-sm--letter-spacing: 0.02em;
 
-    /* MD3 shape scale */
-    --radius-xs: 8px;
-    --radius-sm: 12px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
-    --radius-xl: 28px;
-    --radius-2xl: 32px;
+    /* MD3 shape scale (a touch rounder for a playful feel) */
+    --radius-xs: 10px;
+    --radius-sm: 14px;
+    --radius-md: 18px;
+    --radius-lg: 26px;
+    --radius-xl: 30px;
+    --radius-2xl: 36px;
     --radius-3xl: 48px;
 
-    /* MD3 emphasized-decelerate easing */
+    /* Easing: MD3 emphasized for color, a gentle overshoot for movement. */
     --ease-md: cubic-bezier(0.2, 0, 0, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
     --animate-spin-md: spin 1s linear infinite;
-    --animate-enter: md-enter 300ms var(--ease-md) both;
+    --animate-enter: md-enter 450ms var(--ease-spring) both;
+    --animate-pop: md-pop 420ms var(--ease-spring) both;
+    --animate-wiggle: md-wiggle 500ms var(--ease-md) both;
+    --animate-float: md-float 3.2s ease-in-out infinite;
 }
 
 @keyframes md-enter {
-    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
     to   { opacity: 1; transform: none; }
+}
+@keyframes md-pop {
+    0%   { opacity: 0; transform: scale(0.7); }
+    100% { opacity: 1; transform: none; }
+}
+@keyframes md-float {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    50%      { transform: translateY(-6px) rotate(-4deg); }
+}
+@keyframes md-wiggle {
+    0%, 100% { transform: rotate(0); }
+    25%      { transform: rotate(-9deg) scale(1.08); }
+    55%      { transform: rotate(7deg) scale(1.08); }
+    80%      { transform: rotate(-3deg); }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -249,13 +354,12 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         scrollbar-width: thin;
-        scrollbar-color: var(--md-outline-variant) transparent;
+        scrollbar-color: var(--md-outline-variant) var(--md-surface);
     }
 
-    /* Transparent so the AppBackdrop shapes (z-index -10) show through. */
     body {
         min-height: 100dvh;
-        background-color: transparent;
+        background-color: var(--md-surface);
         font-size: var(--text-body);
         line-height: 1.5;
     }
@@ -266,7 +370,8 @@
     }
 
     ::selection {
-        background-color: color-mix(in oklab, var(--md-primary) 30%, transparent);
+        background-color: var(--md-primary-container);
+        color: var(--md-on-primary-container);
     }
 
     a {
@@ -300,54 +405,63 @@
 @layer components {
     /* ---- Typography -------------------------------------------------------- */
     .md-page-title {
-        @apply text-headline text-md-on-surface max-md:text-[1.75rem];
+        @apply font-display text-headline text-md-on-surface max-md:text-[1.875rem];
     }
     .md-section-title {
-        @apply text-title-lg text-md-on-surface max-md:text-[1.25rem];
+        @apply font-display text-title-lg font-semibold text-md-on-surface max-md:text-[1.3rem];
     }
     .md-overline {
-        @apply text-label-sm font-medium uppercase tracking-[0.08em] text-md-primary;
+        @apply font-display text-label font-semibold uppercase tracking-[0.08em] text-md-primary;
     }
     .md-link {
-        @apply rounded-xs font-medium text-md-primary underline-offset-4 transition-colors duration-200 ease-md hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-md-primary;
+        @apply rounded-xs font-medium text-md-primary underline decoration-2 decoration-md-primary-container underline-offset-4 transition-colors duration-200 ease-md hover:decoration-md-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-md-primary;
     }
     .md-muted-link {
         @apply rounded-xs text-md-on-surface-variant underline-offset-4 transition-colors duration-200 ease-md hover:text-md-primary hover:underline;
     }
 
-    /* ---- Buttons (pill-shaped, state layers, tactile press) --------------- */
+    /* ---- Buttons: pill-shaped, "pushable" with a solid lip ---------------- */
     .md-btn {
-        @apply relative inline-flex h-10 shrink-0 cursor-pointer select-none items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 text-label no-underline outline-none transition-[background-color,box-shadow,color,transform,opacity] duration-200 ease-md active:scale-95 focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2 focus-visible:ring-offset-md-surface disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50;
+        @apply relative inline-flex h-10 shrink-0 cursor-pointer select-none items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 text-label no-underline outline-none transition-[background-color,box-shadow,color,translate,scale] duration-200 ease-md focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2 focus-visible:ring-offset-md-surface disabled:pointer-events-none disabled:cursor-not-allowed disabled:text-md-on-disabled disabled:shadow-none aria-disabled:pointer-events-none aria-disabled:text-md-on-disabled;
     }
+    /* Raised variants sit on a lip and sink into it when pressed. */
     .md-btn-filled {
-        @apply bg-md-primary text-md-on-primary hover:bg-md-primary/90 hover:shadow-md active:bg-md-primary/80;
+        @apply bg-md-primary text-md-on-primary shadow-[0_3px_0_0_var(--md-primary-press)] hover:-translate-y-px hover:bg-md-primary-hover hover:shadow-[0_4px_0_0_var(--md-primary-press)] active:translate-y-[3px] active:shadow-none;
     }
     .md-btn-tonal {
-        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container/80 hover:shadow-sm active:bg-md-secondary-container/70;
-    }
-    .md-btn-outlined {
-        @apply border border-md-outline bg-transparent text-md-primary hover:bg-md-primary/5 active:bg-md-primary/10;
-    }
-    .md-btn-text {
-        @apply bg-transparent px-4 text-md-primary hover:bg-md-primary/10 active:bg-md-primary/5;
-    }
-    .md-btn-neutral {
-        @apply bg-transparent px-4 text-md-on-surface-variant hover:bg-md-on-surface/8 active:bg-md-on-surface/5;
-    }
-    .md-btn-elevated {
-        @apply bg-md-surface-container-low text-md-primary shadow-sm hover:bg-md-surface-container hover:shadow-md;
+        @apply bg-md-secondary-container text-md-on-secondary-container shadow-[0_3px_0_0_var(--md-secondary-container-press)] hover:-translate-y-px hover:bg-md-secondary-container-hover hover:shadow-[0_4px_0_0_var(--md-secondary-container-press)] active:translate-y-[3px] active:shadow-none;
     }
     .md-btn-danger {
-        @apply bg-md-error text-md-on-error hover:bg-md-error/90 hover:shadow-md active:bg-md-error/80;
+        @apply bg-md-error text-md-on-error shadow-[0_3px_0_0_var(--md-error-press)] hover:-translate-y-px hover:bg-md-error-hover hover:shadow-[0_4px_0_0_var(--md-error-press)] active:translate-y-[3px] active:shadow-none;
     }
     .md-btn-danger-tonal {
-        @apply bg-md-error-container text-md-on-error-container hover:bg-md-error-container/80 active:bg-md-error-container/70;
-    }
-    .md-btn-danger-text {
-        @apply bg-transparent px-4 text-md-error hover:bg-md-error/10 active:bg-md-error/5;
+        @apply bg-md-error-container text-md-on-error-container shadow-[0_3px_0_0_var(--md-error-container-hover)] hover:-translate-y-px hover:bg-md-error-container-hover active:translate-y-[3px] active:shadow-none;
     }
     .md-btn-tertiary {
-        @apply bg-md-tertiary text-md-on-tertiary hover:bg-md-tertiary/90 hover:shadow-md active:bg-md-tertiary/80;
+        @apply bg-md-tertiary text-md-on-tertiary shadow-[0_3px_0_0_var(--md-tertiary-press)] hover:-translate-y-px hover:bg-md-tertiary-hover active:translate-y-[3px] active:shadow-none;
+    }
+    .md-btn-elevated {
+        @apply bg-md-surface-container-low text-md-primary shadow-md hover:-translate-y-px hover:bg-md-surface-container active:translate-y-1 active:shadow-none;
+    }
+    /* Flat variants: solid tint state layers, playful squish on press. */
+    .md-btn-outlined {
+        @apply border-2 border-md-outline-variant bg-transparent text-md-primary hover:border-md-primary hover:bg-md-primary-soft active:scale-95 active:bg-md-primary-soft-press;
+    }
+    .md-btn-text {
+        @apply bg-transparent px-4 text-md-primary hover:bg-md-primary-soft active:scale-95 active:bg-md-primary-soft-press;
+    }
+    .md-btn-neutral {
+        @apply bg-transparent px-4 text-md-on-surface-variant hover:bg-md-hover active:scale-95 active:bg-md-press;
+    }
+    .md-btn-danger-text {
+        @apply bg-transparent px-4 text-md-error hover:bg-md-error-soft active:scale-95;
+    }
+    .md-btn:is(.md-btn-filled, .md-btn-tonal, .md-btn-danger, .md-btn-danger-tonal, .md-btn-tertiary, .md-btn-elevated):disabled,
+    .md-btn:is(.md-btn-filled, .md-btn-tonal, .md-btn-danger, .md-btn-danger-tonal, .md-btn-tertiary, .md-btn-elevated)[aria-disabled='true'] {
+        @apply bg-md-disabled;
+    }
+    .md-btn-outlined:disabled {
+        @apply border-md-disabled;
     }
     .md-btn-sm {
         @apply h-9 px-4 text-[0.8125rem];
@@ -362,12 +476,15 @@
         @apply size-[1.125rem];
     }
 
-    /* Icon button: 40px circle, 48px touch target via padding when needed. */
+    /* Icon button: 40px circle */
     .md-icon-btn {
-        @apply inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-md-on-surface-variant outline-none transition-[background-color,color,transform] duration-200 ease-md hover:bg-md-on-surface/8 active:scale-90 active:bg-md-on-surface/12 focus-visible:ring-2 focus-visible:ring-md-primary disabled:pointer-events-none disabled:opacity-40;
+        @apply inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-md-on-surface-variant outline-none transition-[background-color,color,scale,rotate] duration-200 ease-spring hover:bg-md-hover hover:text-md-on-surface active:scale-85 active:bg-md-press focus-visible:ring-2 focus-visible:ring-md-primary disabled:pointer-events-none disabled:text-md-on-disabled;
     }
     .md-icon-btn-tonal {
-        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container/80;
+        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
+    }
+    .md-icon-btn-danger {
+        @apply bg-md-error-container text-md-on-error-container hover:bg-md-error-container-hover hover:text-md-on-error-container;
     }
     .md-icon-btn-sm {
         @apply size-8;
@@ -378,7 +495,7 @@
 
     /* Floating action button (tertiary, squircle). */
     .md-fab {
-        @apply inline-flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-md bg-md-tertiary-container text-md-on-tertiary-container shadow-md outline-none transition-[box-shadow,transform,background-color] duration-300 ease-md hover:shadow-xl active:scale-95 focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2;
+        @apply inline-flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-md bg-md-tertiary-container text-md-on-tertiary-container shadow-md outline-none transition-[box-shadow,translate,rotate] duration-300 ease-spring hover:-translate-y-0.5 hover:-rotate-6 hover:shadow-lg active:translate-y-1 active:shadow-none focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2;
     }
     .md-fab svg.lucide {
         @apply size-6;
@@ -393,10 +510,13 @@
     .md-label {
         @apply mb-1.5 flex items-center gap-1.5 px-1 text-label text-md-on-surface-variant;
     }
+    .md-label-disabled {
+        @apply text-md-on-disabled;
+    }
     .md-input,
     .md-textarea,
     .md-select {
-        @apply block w-full rounded-t-sm rounded-b-none border-0 border-b-2 border-md-outline bg-md-surface-container-highest px-4 text-body text-md-on-surface caret-md-primary outline-none transition-[border-color,background-color,box-shadow] duration-200 ease-md placeholder:text-md-on-surface/50 hover:bg-md-on-surface/[0.06] focus:border-md-primary focus:bg-md-primary/[0.06] focus-visible:shadow-[0_2px_0_0_var(--md-primary)] disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-md-error;
+        @apply block w-full rounded-t-sm rounded-b-none border-0 border-b-2 border-md-outline bg-md-surface-container-highest px-4 text-body text-md-on-surface caret-md-primary outline-none transition-[border-color,background-color,box-shadow] duration-200 ease-md placeholder:text-md-outline hover:bg-md-hover focus:border-md-primary focus:bg-md-primary-soft focus-visible:shadow-[0_2px_0_0_var(--md-primary)] disabled:cursor-not-allowed disabled:border-md-disabled disabled:bg-md-disabled disabled:text-md-on-disabled aria-invalid:border-md-error;
     }
     .md-input,
     .md-select {
@@ -413,7 +533,7 @@
     }
     /* Pill search field */
     .md-search {
-        @apply h-12 w-full rounded-full border-0 bg-md-surface-container-high px-5 pl-12 text-body text-md-on-surface outline-none transition-[background-color,box-shadow] duration-200 ease-md placeholder:text-md-on-surface-variant hover:bg-md-surface-container-highest focus:bg-md-surface-container-highest focus:shadow-[0_0_0_2px_var(--md-primary)];
+        @apply h-12 w-full rounded-full border-2 border-transparent bg-md-surface-container-high px-5 pl-12 text-body text-md-on-surface outline-none transition-[background-color,border-color] duration-200 ease-md placeholder:text-md-on-surface-variant hover:bg-md-surface-container-highest focus:border-md-primary focus:bg-md-surface-container-highest;
     }
     .md-help {
         @apply mt-1.5 px-4 text-label-sm text-md-on-surface-variant;
@@ -433,34 +553,37 @@
 
     /* ---- Checkbox --------------------------------------------------------- */
     .md-checkbox {
-        @apply relative size-[18px] shrink-0 cursor-pointer appearance-none rounded-[3px] border-2 border-md-on-surface-variant bg-transparent bg-center bg-no-repeat outline-none transition-[background-color,border-color,box-shadow] duration-200 ease-md checked:border-md-primary checked:bg-md-primary hover:shadow-[0_0_0_11px_color-mix(in_oklab,var(--md-on-surface)_8%,transparent)] focus-visible:shadow-[0_0_0_11px_color-mix(in_oklab,var(--md-primary)_14%,transparent)] disabled:cursor-not-allowed disabled:opacity-40;
+        @apply relative size-[20px] shrink-0 cursor-pointer appearance-none rounded-[6px] border-2 border-md-on-surface-variant bg-md-surface bg-center bg-no-repeat outline-none transition-[background-color,border-color,box-shadow,scale] duration-200 ease-spring checked:scale-110 checked:border-md-primary checked:bg-md-primary hover:shadow-[0_0_0_10px_var(--md-hover)] focus-visible:shadow-[0_0_0_10px_var(--md-primary-soft-press)] active:scale-90 disabled:cursor-not-allowed disabled:border-md-on-disabled disabled:bg-md-disabled;
         background-size: 14px;
     }
     .md-checkbox:checked {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
     }
     .dark .md-checkbox:checked {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23381e72' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a1460' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
     }
 
     /* ---- Segmented button (MD3) ------------------------------------------- */
     .md-segmented {
-        @apply inline-flex max-w-full overflow-hidden rounded-full border border-md-outline;
+        @apply inline-flex max-w-full overflow-hidden rounded-full border-2 border-md-outline-variant bg-md-surface;
     }
     .md-segment {
-        @apply relative inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center gap-1.5 border-l border-md-outline px-4 py-2 text-label text-md-on-surface outline-none transition-[background-color,color] duration-200 ease-md first:border-l-0 hover:bg-md-on-surface/8 focus-visible:z-10 focus-visible:bg-md-on-surface/12 disabled:cursor-not-allowed disabled:opacity-50;
+        @apply relative inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center gap-1.5 border-l-2 border-md-outline-variant px-4 py-2 text-label text-md-on-surface outline-none transition-[background-color,color] duration-200 ease-md first:border-l-0 hover:bg-md-hover focus-visible:z-10 focus-visible:bg-md-press disabled:cursor-not-allowed disabled:bg-md-disabled disabled:text-md-on-disabled;
     }
     .md-segment[aria-checked='true'] {
-        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container/85;
+        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
+    }
+    .md-segment[aria-checked='true'] svg.lucide {
+        animation: md-pop 380ms var(--ease-spring) both;
     }
 
     /* ---- Chips ------------------------------------------------------------ */
     .md-chip {
-        @apply inline-flex h-8 max-w-48 shrink-0 cursor-pointer select-none items-center gap-1.5 rounded-full border border-md-outline-variant px-3.5 text-label text-md-on-surface-variant no-underline outline-none transition-[background-color,border-color,color,transform,box-shadow] duration-200 ease-md hover:bg-md-on-surface/8 active:scale-95 focus-visible:ring-2 focus-visible:ring-md-primary;
+        @apply inline-flex h-8 max-w-48 shrink-0 cursor-pointer select-none items-center gap-1.5 rounded-full border-2 border-md-outline-variant bg-md-surface px-3.5 text-label text-md-on-surface-variant no-underline outline-none transition-[background-color,border-color,color,scale,rotate] duration-200 ease-spring hover:-rotate-2 hover:bg-md-hover active:scale-90 focus-visible:ring-2 focus-visible:ring-md-primary;
     }
     .md-chip[aria-pressed='true'],
     .md-chip-selected {
-        @apply border-transparent bg-md-secondary-container text-md-on-secondary-container shadow-sm hover:bg-md-secondary-container/85;
+        @apply border-md-secondary-container bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
     }
     .md-chip svg.lucide {
         @apply size-4;
@@ -483,25 +606,25 @@
         @apply bg-md-warning-container text-md-on-warning-container;
     }
     .md-badge-outline {
-        @apply border border-md-outline-variant bg-transparent text-md-on-surface-variant;
+        @apply border-2 border-md-outline-variant bg-md-surface text-md-on-surface-variant;
     }
 
     /* ---- Cards & surfaces ------------------------------------------------- */
     .md-card {
-        @apply rounded-lg bg-md-surface-container p-6 shadow-sm transition-[box-shadow,transform,background-color] duration-300 ease-md;
+        @apply rounded-lg bg-md-surface-container p-6 shadow-sm transition-[box-shadow,translate,scale,background-color] duration-300 ease-spring;
     }
     .md-card-interactive {
-        @apply cursor-pointer hover:shadow-md active:scale-[0.99];
+        @apply cursor-pointer hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:shadow-sm;
     }
     .md-card-outlined {
-        @apply rounded-lg border border-md-outline-variant bg-transparent p-6;
+        @apply rounded-lg border-2 border-md-outline-variant bg-md-surface p-6;
     }
     /* Grouped list (settings-style) */
     .md-list {
-        @apply overflow-hidden rounded-lg bg-md-surface-container;
+        @apply overflow-hidden rounded-lg bg-md-surface-container shadow-sm;
     }
     .md-list-item {
-        @apply flex min-h-14 items-center gap-4 border-b border-md-surface px-5 py-3 last:border-b-0;
+        @apply flex min-h-14 items-center gap-4 border-b-2 border-md-surface px-5 py-3 last:border-b-0;
     }
 
     /* Inline alert / callout */
@@ -526,10 +649,15 @@
 
     /* Option groups (settings) are tinted rails rather than borders. */
     .md-rail-warning {
-        @apply rounded-r-sm border-l-4 border-md-warning bg-md-warning-container/40 py-2 pl-4;
+        @apply rounded-r-sm border-l-4 border-md-warning bg-md-warning-soft py-2 pl-4;
     }
     .md-rail-danger {
-        @apply rounded-r-sm border-l-4 border-md-error bg-md-error-container/40 py-2 pl-4;
+        @apply rounded-r-sm border-l-4 border-md-error bg-md-error-soft py-2 pl-4;
+    }
+
+    /* Danger-zone section */
+    .md-danger-zone {
+        @apply bg-md-error-soft shadow-[0_4px_0_0_var(--md-error-container)] ring-2 ring-md-error-container;
     }
 
     /* ---- Tables ----------------------------------------------------------- */
@@ -537,21 +665,21 @@
         @apply w-full border-collapse text-left text-label;
     }
     .md-table th {
-        @apply border-b border-md-outline-variant px-4 py-3 text-label-sm font-medium uppercase tracking-[0.06em] text-md-on-surface-variant;
+        @apply border-b-2 border-md-outline-variant px-4 py-3 text-label-sm font-medium uppercase tracking-[0.06em] text-md-on-surface-variant;
     }
     .md-table td {
-        @apply border-b border-md-outline-variant/60 px-4 py-3 align-middle text-md-on-surface;
+        @apply border-b border-md-outline-variant px-4 py-3 align-middle text-md-on-surface;
     }
     .md-table tbody tr {
-        @apply transition-colors duration-200 hover:bg-md-on-surface/[0.04];
+        @apply transition-colors duration-200 hover:bg-md-hover;
     }
 
     /* ---- Menus ------------------------------------------------------------ */
     .md-menu {
-        @apply z-40 w-64 rounded-md bg-md-surface-container p-2 shadow-xl ring-1 ring-md-outline-variant/40;
+        @apply z-40 w-64 rounded-md border-2 border-md-outline-variant bg-md-surface-container p-2 shadow-lg;
     }
     .md-menu-item {
-        @apply flex h-12 w-full cursor-pointer items-center gap-3 rounded-sm px-4 text-left text-label text-md-on-surface no-underline outline-none transition-colors duration-200 ease-md hover:bg-md-on-surface/8 focus-visible:bg-md-on-surface/12;
+        @apply flex h-12 w-full cursor-pointer items-center gap-3 rounded-sm px-4 text-left text-label text-md-on-surface no-underline outline-none transition-colors duration-200 ease-md hover:bg-md-hover focus-visible:bg-md-press;
     }
     .md-menu-item svg.lucide {
         @apply text-md-on-surface-variant;
@@ -565,19 +693,20 @@
 
     /* ---- Navigation tabs (primary tabs) ----------------------------------- */
     .md-tab {
-        @apply relative flex min-h-12 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-t-md px-3 pb-2.5 pt-2 text-label text-md-on-surface-variant no-underline outline-none transition-colors duration-200 ease-md hover:bg-md-on-surface/8 hover:text-md-on-surface focus-visible:bg-md-on-surface/12;
+        @apply relative flex min-h-12 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-t-md px-3 pb-2.5 pt-2 text-label text-md-on-surface-variant no-underline outline-none transition-colors duration-200 ease-md hover:bg-md-hover hover:text-md-on-surface focus-visible:bg-md-press;
     }
     .md-tab[aria-current='page'] {
         @apply text-md-primary;
     }
     .md-tab[aria-current='page']::after {
-        @apply absolute inset-x-[22%] bottom-0 h-[3px] rounded-t-full bg-md-primary content-[''];
+        @apply absolute inset-x-[22%] bottom-0 h-1 rounded-t-full bg-md-primary content-[''];
+        animation: md-tab-in 400ms var(--ease-spring) both;
     }
 
     /* ---- Snackbars (vue-notification) ------------------------------------- */
     .md-snackbar {
-        @apply mx-auto mt-3 flex w-[min(36rem,calc(100%-2rem))] items-center justify-center gap-3 rounded-sm bg-md-inverse-surface px-5 py-3.5 text-center text-label font-normal text-md-inverse-on-surface shadow-lg;
-        animation: md-enter 300ms var(--ease-md) both;
+        @apply mx-auto mt-3 flex w-[min(36rem,calc(100%-2rem))] items-center justify-center gap-3 rounded-md bg-md-inverse-surface px-5 py-3.5 text-center text-label font-normal text-md-inverse-on-surface shadow-[0_4px_0_0_var(--md-shadow)];
+        animation: md-snack 500ms var(--ease-spring) both;
     }
     .md-snackbar.is-success { @apply bg-md-success-container text-md-on-success-container; }
     .md-snackbar.is-warning { @apply bg-md-warning-container text-md-on-warning-container; }
@@ -591,40 +720,50 @@
         @apply m-0 inline-flex list-none items-center gap-1.5 p-0;
     }
     .md-dots li {
-        @apply h-1.5 w-1.5 rounded-full bg-md-success transition-[background-color,width] duration-300 ease-md;
+        @apply h-2 w-2 rounded-full bg-md-success transition-[background-color,width] duration-300 ease-spring;
     }
     .md-dots li:nth-child(n + 7) { background-color: var(--md-warning); }
     .md-dots li:nth-child(n + 10) { background-color: var(--md-error); }
     .md-dots li[data-is-active] {
-        @apply w-3.5;
+        @apply w-4;
     }
     .md-dots li[data-is-active] ~ li,
     .md-dots.is-off li {
-        @apply w-1.5 bg-md-outline-variant;
+        @apply w-2 bg-md-outline-variant;
     }
     .md-dots.is-condensed {
         @apply gap-[3px];
     }
     .md-dots.is-condensed li {
-        @apply h-1 w-1;
+        @apply h-1.5 w-1.5;
     }
     .md-dots.is-condensed li[data-is-active] {
-        @apply w-2.5;
+        @apply w-3;
     }
     .md-dots.is-condensed li[data-is-active] ~ li,
     .md-dots.is-condensed.is-off li {
-        @apply w-1;
+        @apply w-1.5;
     }
 
     /* ---- Account icon ------------------------------------------------------ */
     .md-account-icon {
         @apply inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm bg-md-surface-container-highest object-contain p-1.5;
     }
+
+    /* ---- Playful tiles (icons / avatars), declared last so they win -------- */
+    .md-tone-0 { background-color: var(--md-tone-0-bg); color: var(--md-tone-0-fg); }
+    .md-tone-1 { background-color: var(--md-tone-1-bg); color: var(--md-tone-1-fg); }
+    .md-tone-2 { background-color: var(--md-tone-2-bg); color: var(--md-tone-2-fg); }
+    .md-tone-3 { background-color: var(--md-tone-3-bg); color: var(--md-tone-3-fg); }
+    .md-tone-4 { background-color: var(--md-tone-4-bg); color: var(--md-tone-4-fg); }
 }
 
-/* Opacity steps used to fade in the "next" OTP as the period elapses. */
+/*
+ * Next-OTP emphasis grows as the period elapses. Rendered as SOLID colors
+ * stepping from the outline tone to on-surface — no opacity involved.
+ */
 @utility opacity-step-* {
-    opacity: calc(--value(integer) * 0.1);
+    color: color-mix(in oklab, var(--md-on-surface) calc(--value(integer) * 10%), var(--md-outline-variant));
 }
 
 @utility scrollbar-none {
@@ -637,44 +776,46 @@
 /* -------------------------------------------------------------------------- */
 
 .fadeInOut-enter-active {
-    animation: md-fade-in 300ms var(--ease-md) both;
+    animation: md-pop 350ms var(--ease-spring) both;
 }
 .fadeInOut-leave-active {
-    animation: md-fade-in 200ms var(--ease-md) reverse both;
+    animation: md-pop 180ms var(--ease-md) reverse both;
 }
 .popLater-enter-active {
-    animation: md-pop 300ms 150ms var(--ease-md) both;
+    animation: md-pop 420ms 120ms var(--ease-spring) both;
 }
 .popLater-leave-active {
     display: none;
 }
 .slideCheckbox-enter-active {
-    animation: md-slide-in 300ms var(--ease-md) both;
+    animation: md-slide-in 400ms var(--ease-spring) both;
 }
 .slideCheckbox-leave-active {
     animation: md-slide-in 200ms var(--ease-md) reverse both;
 }
-.md-sheet-enter-active,
+.md-sheet-enter-active {
+    transition: opacity 250ms var(--ease-md), transform 450ms var(--ease-spring);
+}
 .md-sheet-leave-active {
-    transition: opacity 300ms var(--ease-md), transform 400ms var(--ease-md);
+    transition: opacity 180ms var(--ease-md), transform 200ms var(--ease-md);
 }
 .md-sheet-enter-from,
 .md-sheet-leave-to {
     opacity: 0;
-    transform: translateY(24px) scale(0.98);
+    transform: translateY(28px) scale(0.96);
 }
 
-@keyframes md-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-@keyframes md-pop {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: none; }
-}
 @keyframes md-slide-in {
-    from { opacity: 0; transform: translateX(-12px); }
+    from { opacity: 0; transform: translateX(-14px) scale(0.8); }
     to { opacity: 1; transform: none; }
+}
+@keyframes md-snack {
+    from { opacity: 0; transform: translateY(-24px) scale(0.9); }
+    to { opacity: 1; transform: none; }
+}
+@keyframes md-tab-in {
+    from { transform: scaleX(0.2); }
+    to { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -690,7 +831,11 @@
     .md-chip,
     .md-fab,
     .md-icon-btn,
-    .md-card-interactive {
+    .md-card,
+    .md-checkbox {
         transform: none !important;
+        translate: none !important;
+        scale: none !important;
+        rotate: none !important;
     }
 }

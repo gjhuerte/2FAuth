@@ -306,7 +306,7 @@
                         <!-- sort case sensitive -->
                         <FormCheckbox v-model="user.preferences.sortCaseSensitive" @update:model-value="val => savePreference('sortCaseSensitive', val)" fieldName="sortCaseSensitive" :isLocked="appSettings.lockedPreferences.includes('sortCaseSensitive')" label="field.sort_case_sensitive" help="field.sort_case_sensitive.help" />
 
-                        <h3 ref="heading-otp" class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant/60 pt-6 text-title text-md-primary">{{ $t('heading.one_time_passwords') }}</h3>
+                        <h3 ref="heading-otp" class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant pt-6 text-title text-md-primary">{{ $t('heading.one_time_passwords') }}</h3>
                         <!-- get OTP on request -->
                         <FormToggle v-model="user.preferences.getOtpOnRequest" @update:model-value="val => savePreference('getOtpOnRequest', val)" :choices="getOtpTriggers" fieldName="getOtpOnRequest" :isLocked="appSettings.lockedPreferences.includes('getOtpOnRequest')" label="field.otp_generation" help="field.otp_generation.help"/>
                             <!-- close otp on copy -->
@@ -327,7 +327,7 @@
                         <!-- clear search on copy -->
                         <FormCheckbox v-model="user.preferences.clearSearchOnCopy" @update:model-value="val => savePreference('clearSearchOnCopy', val)" fieldName="clearSearchOnCopy" :isLocked="appSettings.lockedPreferences.includes('clearSearchOnCopy')" label="field.clear_search_on_copy" help="field.clear_search_on_copy.help" />
 
-                        <h3 ref="heading-icons" class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant/60 pt-6 text-title text-md-primary">{{ $t('heading.icons') }}</h3>
+                        <h3 ref="heading-icons" class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant pt-6 text-title text-md-primary">{{ $t('heading.icons') }}</h3>
                         <!-- show icon -->
                         <FormCheckbox v-model="user.preferences.showAccountsIcons" @update:model-value="val => savePreference('showAccountsIcons', val)" fieldName="showAccountsIcons" :isLocked="appSettings.lockedPreferences.includes('showAccountsIcons')" label="field.show_accounts_icons" help="field.show_accounts_icons.help" />
                         <!-- Official icons -->
@@ -368,7 +368,7 @@
                         <h2 ref="heading-session" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.session') }}</h2>
                         <!-- auto lock -->
                         <FormSelect v-model="user.preferences.kickUserAfter" @update:model-value="val => savePreference('kickUserAfter', val)" :options="kickUserAfters" fieldName="kickUserAfter" :isLocked="appSettings.lockedPreferences.includes('kickUserAfter')" label="field.auto_lock" help="field.auto_lock.help" />
-                        <h3 class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant/60 pt-6 text-title text-md-primary">{{ $t('heading.notifications') }}</h3>
+                        <h3 class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant pt-6 text-title text-md-primary">{{ $t('heading.notifications') }}</h3>
                         <!-- on new device -->
                         <FormCheckbox v-model="user.preferences.notifyOnNewAuthDevice" @update:model-value="val => savePreference('notifyOnNewAuthDevice', val)" fieldName="notifyOnNewAuthDevice" :isLocked="appSettings.lockedPreferences.includes('notifyOnNewAuthDevice')" label="field.notify_on_new_auth_device" help="field.notify_on_new_auth_device.help" />
                         <!-- on failed login -->

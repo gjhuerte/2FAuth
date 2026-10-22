@@ -63,7 +63,7 @@
     >
         <button type="button" class="md-chip" :aria-pressed="activeGroup == 0" @click="setActiveGroup(-0)" :title="$t('label.all_accounts')">
             {{ $t('label.all') }}
-            <span v-if="activeGroup == 0" class="text-label-sm opacity-80">{{ filteredCount }}</span>
+            <span v-if="activeGroup == 0" class="text-label-sm">{{ filteredCount }}</span>
         </button>
         <button
             v-if="useFavorites"
@@ -84,7 +84,7 @@
                 :aria-pressed="activeGroup == group.id"
                 @click="setActiveGroup(group.id)">
                 <span class="chip-label truncate">{{ group.name }}</span>
-                <span v-if="activeGroup == group.id" class="text-label-sm opacity-80">{{ filteredCount }}</span>
+                <span v-if="activeGroup == group.id" class="text-label-sm">{{ filteredCount }}</span>
             </button>
         </template>
         <button type="button" class="md-chip px-3" @click="showGroupSwitch = true" :title="$t('tooltip.show_group_selector')" :aria-label="$t('tooltip.show_group_selector')">
@@ -94,15 +94,15 @@
             <button v-if="useShare" type="button" class="md-chip" :aria-pressed="activeGroup == -2" @click="setActiveGroup(-2)" :title="$t('label.accounts_I_m_sharing')">
                 <LucideUsers v-if="useShareAllScope" />
                 <LucideUserCheck />
-                <span v-if="activeGroup == -2" class="text-label-sm opacity-80">{{ filteredCount }}</span>
+                <span v-if="activeGroup == -2" class="text-label-sm">{{ filteredCount }}</span>
             </button>
             <button v-if="useShare" type="button" class="md-chip" :aria-pressed="activeGroup == -3" @click="setActiveGroup(-3)" :title="$t('label.accounts_shared_with_me')">
                 <LucideAtSign />
-                <span v-if="activeGroup == -3" class="text-label-sm opacity-80">{{ filteredCount }}</span>
+                <span v-if="activeGroup == -3" class="text-label-sm">{{ filteredCount }}</span>
             </button>
             <button type="button" class="md-chip" :aria-pressed="activeGroup == -1" @click="setActiveGroup(-1)" :title="$t('label.group_less_accounts')">
                 <LucideSquareSlash />
-                <span v-if="activeGroup == -1" class="text-label-sm opacity-80">{{ filteredCount }}</span>
+                <span v-if="activeGroup == -1" class="text-label-sm">{{ filteredCount }}</span>
             </button>
         </template>
     </div>

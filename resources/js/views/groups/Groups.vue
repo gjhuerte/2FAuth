@@ -81,11 +81,11 @@
                 <div v-if="!groups.isEmpty" class="mt-8 animate-enter pb-8">
                     <ul id="dv" class="flex flex-col gap-2">
                         <li v-for="group in groups.withoutTheAllGroup" :key="group.id" class="group-item md-card flex items-center gap-3 px-4 py-3 hover:shadow-md sm:px-5">
-                            <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-md-secondary-container text-title text-md-on-secondary-container" aria-hidden="true">
+                            <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-md font-display text-title font-semibold" :class="'md-tone-' + (group.id % 5)" aria-hidden="true">
                                 {{ group.name.charAt(0).toUpperCase() }}
                             </span>
                             <div class="tfa-content min-w-0 flex-1">
-                                <p class="truncate text-title text-md-on-surface">{{ group.name }}</p>
+                                <p class="truncate font-display text-title text-md-on-surface">{{ group.name }}</p>
                                 <p class="text-label font-normal text-md-on-surface-variant">
                                     {{ $t('message.x_accounts', { count: group.twofaccounts_count }) }}
                                 </p>
@@ -99,10 +99,10 @@
                                     <LucidePencil />
                                 </RouterLink>
                                 <!-- delete icon -->
-                                <button type="button" class="md-icon-btn md-icon-btn-sm hover:bg-md-error/10 hover:text-md-error" @click="groups.remove(group.id)" :title="$t('tooltip.delete')" :aria-label="$t('tooltip.delete')">
+                                <button type="button" class="md-icon-btn md-icon-btn-sm hover:bg-md-error-soft hover:text-md-error" @click="groups.remove(group.id)" :title="$t('tooltip.delete')" :aria-label="$t('tooltip.delete')">
                                     <LucideTrash2 />
                                 </button>
-                                <span class="drag-handle is-draggable ml-1 inline-flex cursor-grab touch-none items-center rounded-full p-1.5 text-md-on-surface-variant hover:bg-md-on-surface/8 active:cursor-grabbing">
+                                <span class="drag-handle is-draggable ml-1 inline-flex cursor-grab touch-none items-center rounded-full p-1.5 text-md-on-surface-variant hover:bg-md-hover active:cursor-grabbing">
                                     <LucideGripVertical />
                                 </span>
                             </div>

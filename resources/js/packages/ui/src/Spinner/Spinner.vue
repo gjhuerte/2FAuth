@@ -32,7 +32,6 @@
         >
             <div class="flex flex-col items-center gap-5 rounded-xl bg-md-surface-container px-10 py-8 shadow-lg animate-enter">
                 <span id="icnSpinnerFull" class="relative inline-flex size-16 items-center justify-center">
-                    <span class="absolute inset-0 rounded-full bg-md-primary/20 blur-xl" aria-hidden="true"></span>
                     <LucideLoaderCircle class="relative size-12! animate-spin-md text-md-primary" />
                 </span>
                 <span class="text-label text-md-on-surface-variant">{{ $t(message) }}</span>

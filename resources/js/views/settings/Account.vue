@@ -167,7 +167,7 @@
                         <FormButtons :isBusy="formPassword.isBusy" submitId="btnSubmitChangePwd" submitLabel="label.change_password" />
                     </fieldset>
                 </form>
-                <form id="frmDeleteAccount" @submit.prevent="submitDelete" @keydown="formDelete.onKeydown($event)" class="md-card mb-4 bg-md-error-container/40 ring-1 ring-md-error/30 sm:p-8">
+                <form id="frmDeleteAccount" @submit.prevent="submitDelete" @keydown="formDelete.onKeydown($event)" class="md-card mb-4 bg-md-error-soft ring-1 ring-md-error-container sm:p-8">
                     <input hidden type="text" name="name" :value="formProfile.name" autocomplete="username" />
                     <input hidden type="text" name="email" :value="formProfile.email" autocomplete="email" />
                     <h2 ref="heading-deleteAccount" class="md-section-title mb-4 flex scroll-mt-6 items-center gap-2 text-md-error!">

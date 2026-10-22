@@ -25,15 +25,14 @@
             <ResponsiveWidthWrapper>
                 <div class="animate-enter pb-8">
                     <!-- hero -->
-                    <section class="relative overflow-hidden rounded-2xl bg-md-surface-container p-8 shadow-lg sm:rounded-3xl sm:p-12">
-                        <div aria-hidden="true" class="pointer-events-none absolute -right-20 -top-28 size-72 rounded-full bg-md-primary/25 blur-3xl"></div>
+                    <section class="relative overflow-hidden rounded-2xl rounded-tr-md bg-md-surface-container p-8 shadow-lg sm:rounded-3xl sm:rounded-tr-lg sm:p-12">
                         <div class="relative flex flex-col gap-6 sm:flex-row sm:items-center">
-                            <span class="inline-flex size-20 shrink-0 items-center justify-center rounded-xl bg-md-primary shadow-md dark:bg-md-primary-container">
+                            <span class="inline-flex size-20 shrink-0 -rotate-6 items-center justify-center rounded-xl bg-md-primary shadow-[0_4px_0_0_var(--md-primary-press)] transition-transform duration-300 ease-spring hover:rotate-6 hover:scale-110 dark:bg-md-primary-container dark:shadow-[0_4px_0_0_var(--md-shadow)]">
                                 <img class="about-logo h-11 w-auto" :src="$2fauth.config.subdirectory + '/logo.svg'" alt="2FAuth logo" />
                             </span>
                             <div>
                                 <p class="md-overline">{{ $t('heading.about') }}</p>
-                                <h1 class="mt-1 text-headline text-md-on-surface">
+                                <h1 class="mt-1 font-display text-headline text-md-on-surface">
                                     2FAuth
                                     <span v-if="user.isAuthenticated" class="md-badge ml-1 align-middle">v{{ $2fauth.version }}</span>
                                 </h1>
@@ -48,10 +47,10 @@
                     <h2 class="md-section-title mb-4 mt-10">{{ $t('heading.resources') }}</h2>
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
                         <a v-for="res in resources" :key="res.href" :href="res.href" target="_blank" rel="noopener" class="md-card md-card-interactive group flex flex-col gap-3 p-5 no-underline hover:scale-[1.02]">
-                            <span class="inline-flex size-11 items-center justify-center rounded-md bg-md-secondary-container text-md-on-secondary-container transition-transform duration-300 ease-md group-hover:scale-110">
+                            <span class="inline-flex size-11 items-center justify-center rounded-md transition-transform duration-300 ease-md group-hover:animate-wiggle" :class="'md-tone-' + (resources.indexOf(res) % 5)">
                                 <component :is="res.icon" />
                             </span>
-                            <span class="text-title text-md-on-surface">{{ res.label }}</span>
+                            <span class="font-display text-title text-md-on-surface">{{ res.label }}</span>
                         </a>
                     </div>
                     <!-- credits -->
