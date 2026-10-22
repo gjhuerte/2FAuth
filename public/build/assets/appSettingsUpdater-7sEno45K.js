@@ -1,1 +1,0 @@
-import{ar as o,E as p}from"./app-DkQ_QuOs.js";async function l(a,t,n=!1){let r=null,s=null;return await o.update(a,t,{returnError:!0}).then(e=>{r=t}).catch(e=>{n&&e.response.status===422?s=e.response.data.message:p().show(e)}),{data:r,error:s}}export{l as u};

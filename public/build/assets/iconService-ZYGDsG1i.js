@@ -1,1 +1,0 @@
-import{al as i}from"./app-DkQ_QuOs.js";const o=i("api"),a={getLogo(e,t,c,n={}){return o.post("/icons/default",{service:e,iconCollection:t,variant:c},{...n})},getLogoFromPack(e,t,c={}){return o.post("/icons/default",{service:e,iconPack:t},{...c})},getIconPacks(e={}){return o.get("/icons/packs",{...e})},deleteIcon(e,t={}){return o.delete("/icons/"+e,{...t})}};export{a as i};
