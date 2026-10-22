@@ -1,9 +1,8 @@
 <script setup>
-    import { UseColorMode } from '@vueuse/components'
     import { useGroups } from '@/stores/groups'
     import { useBusStore } from '@/stores/bus'
     import { useUserStore } from '@/stores/user'
-    import { LucideBookmarkCheck, LucideCirclePlus, LucideMenu, LucideSquareStar, LucideStar, LucideToggleRight, LucideTrash2 } from '@lucide/vue'
+    import { LucideBookmarkCheck, LucideCirclePlus, LucideGripVertical, LucideInfo, LucidePencil, LucideTrash2 } from '@lucide/vue'
     import { useSortable, moveArrayElement } from '@vueuse/integrations/useSortable'
 
     const router = useRouter()
@@ -66,53 +65,53 @@
     <StackLayout>
         <template #content>
             <ResponsiveWidthWrapper>
-                <h1 class="title">
-                    {{ $t('heading.groups') }}
-                </h1>
-                <div class="is-size-7-mobile">
-                    {{ $t('message.manage_groups_legend')}}
-                </div>
-                <div class="mt-3 mb-6">
-                    <RouterLink class="is-link mt-5" :to="{ name: 'createGroup' }">
+                <div class="flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                        <h1 class="md-page-title">
+                            {{ $t('heading.groups') }}
+                        </h1>
+                        <p class="mt-2 max-w-prose text-body text-md-on-surface-variant">
+                            {{ $t('message.manage_groups_legend')}}
+                        </p>
+                    </div>
+                    <RouterLink class="md-btn md-btn-tonal" :to="{ name: 'createGroup' }">
                         <LucideCirclePlus /> {{ $t('link.create_group') }}
                     </RouterLink>
                 </div>
-                <div v-if="!groups.isEmpty">
-                    <UseColorMode v-slot="{ mode }">
-                        <span id="dv">
-                            <div v-for="group in groups.withoutTheAllGroup" :key="group.id" class="group-item">
-                                <div class="is-flex is-align-items-center">
-                                    <div class="tfa-content is-size-5 is-size-6-mobile pr-2">
-                                        <div class="has-ellipsis">
-                                            {{ group.name }}
-                                            <span class="is-family-primary is-size-6 is-size-7-mobile has-text-grey">
-                                                {{ $t('message.x_accounts', { count: group.twofaccounts_count }) }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div v-if="user.preferences.useGroupChips && group.show_in_chips" class="tfa-cell">
-                                        <LucideBookmarkCheck class="icon mr-2" />
-                                    </div>
-                                    <div class="tfa-cell">
-                                        <!-- edit button -->
-                                        <RouterLink :to="{ name: 'editGroup', params: { groupId: group.id }}" class="button tag mr-1" :class="mode == 'dark' ? 'is-dark' : 'is-white'" :title="$t('tooltip.edit_group')">
-                                            {{ $t('label.edit') }}
-                                        </RouterLink>
-                                        <!-- delete icon -->
-                                        <button type="button" class="button tag" :class="mode == 'dark' ? 'is-dark' : 'is-white'" @click="groups.remove(group.id)"  :title="$t('tooltip.delete')">
-                                            <LucideTrash2 class="icon-size-1" />
-                                        </button>
-                                    </div>
-                                    <div class="tfa-cell ml-4">
-                                        <LucideMenu class="drag-handle has-text-grey is-draggable" />
-                                    </div>
-                                </div>
+                <div v-if="!groups.isEmpty" class="mt-8 animate-enter pb-8">
+                    <ul id="dv" class="flex flex-col gap-2">
+                        <li v-for="group in groups.withoutTheAllGroup" :key="group.id" class="group-item md-card flex items-center gap-3 px-4 py-3 hover:shadow-md sm:px-5">
+                            <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-md-secondary-container text-title text-md-on-secondary-container" aria-hidden="true">
+                                {{ group.name.charAt(0).toUpperCase() }}
+                            </span>
+                            <div class="tfa-content min-w-0 flex-1">
+                                <p class="truncate text-title text-md-on-surface">{{ group.name }}</p>
+                                <p class="text-label font-normal text-md-on-surface-variant">
+                                    {{ $t('message.x_accounts', { count: group.twofaccounts_count }) }}
+                                </p>
                             </div>
-                        </span>
-                    </UseColorMode>
-                    <div class="mt-2 is-size-7 is-pulled-right">
+                            <span v-if="user.preferences.useGroupChips && group.show_in_chips" class="md-badge shrink-0 px-1.5" :title="$t('field.show_in_chips')">
+                                <LucideBookmarkCheck />
+                            </span>
+                            <div class="flex shrink-0 items-center gap-0.5">
+                                <!-- edit button -->
+                                <RouterLink :to="{ name: 'editGroup', params: { groupId: group.id }}" class="md-icon-btn md-icon-btn-sm" :title="$t('tooltip.edit_group')" :aria-label="$t('tooltip.edit_group')">
+                                    <LucidePencil />
+                                </RouterLink>
+                                <!-- delete icon -->
+                                <button type="button" class="md-icon-btn md-icon-btn-sm hover:bg-md-error/10 hover:text-md-error" @click="groups.remove(group.id)" :title="$t('tooltip.delete')" :aria-label="$t('tooltip.delete')">
+                                    <LucideTrash2 />
+                                </button>
+                                <span class="drag-handle is-draggable ml-1 inline-flex cursor-grab touch-none items-center rounded-full p-1.5 text-md-on-surface-variant hover:bg-md-on-surface/8 active:cursor-grabbing">
+                                    <LucideGripVertical />
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="mt-4 flex items-center justify-end gap-1.5 text-label-sm text-md-on-surface-variant">
+                        <LucideInfo class="size-4!" />
                         {{ $t('message.deleting_group_does_not_delete_accounts')}}
-                    </div>
+                    </p>
                 </div>
                 <Spinner :isVisible="isFetching && groups.isEmpty" type="list-loading" />
             </ResponsiveWidthWrapper>

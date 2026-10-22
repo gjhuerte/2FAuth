@@ -72,7 +72,7 @@
     <StackLayout>
         <template #content>
             <FormWrapper :title="isEditMode ? 'heading.edit_group' : 'heading.new_group'">
-                <form @submit.prevent="handleSubmit" @keydown="form.onKeydown($event)">
+                <form @submit.prevent="handleSubmit" @keydown="form.onKeydown($event)" class="md-card sm:p-8">
                     <FormField v-model="form.name" fieldName="name" :errorMessage="form.errors.get('name')" label="field.name" autofocus />
                     <FormCheckbox v-model="form.show_in_chips" fieldName="show_in_chips" label="field.show_in_chips" help="field.show_in_chips.help" />
                     <FormButtons

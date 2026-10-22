@@ -1,4 +1,5 @@
 <script setup>
+    import AuthCard from '@/components/AuthCard.vue'
     import Form from '@/components/formElements/Form'
     import { useNotify } from '@2fauth/ui'
     import { useErrorHandler } from '@2fauth/stores'
@@ -47,7 +48,7 @@
 <template>
     <StackLayout>
         <template #content>
-            <FormWrapper title="heading.new_password">
+            <AuthCard title="heading.new_password">
                 <form @submit.prevent="resetPassword" @keydown="form.onKeydown($event)">
                     <FormField v-model="form.email" :isDisabled="true" fieldName="email" :errorMessage="form.errors.get('email')" label="field.email" autofocus />
                     <FormPasswordField v-model="form.password" fieldName="password" :errorMessage="form.errors.get('password')" autocomplete="new-password" :showRules="true" label="field.new_password" />
@@ -58,10 +59,11 @@
                         :isBusy="form.isBusy"
                         submitLabel="label.change_password"
                         :showCancelButton="true"
+                        :isFullWidth="true"
                         @cancel="router.push({ name: 'login' })" />
-                    <RouterLink v-if="!isPending" id="btnContinue" :to="{ name: 'accounts' }" class="button is-link">{{ $t('link.continue') }}</RouterLink>
+                    <RouterLink v-if="!isPending" id="btnContinue" :to="{ name: 'accounts' }" class="md-btn md-btn-filled md-btn-lg mt-8 w-full">{{ $t('link.continue') }}</RouterLink>
                 </form>
-            </FormWrapper>
+            </AuthCard>
         </template>
         <template #footer>
             <VueFooter />

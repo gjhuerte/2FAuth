@@ -26,19 +26,18 @@
 </script>
 
 <template>
-    <div class="columns is-mobile is-vcentered">
-        <div class="column is-narrow">
-            <button type="button" :class="isScanning ? 'is-loading' : ''" class="button is-link is-rounded is-small" @click="getLatestRelease">{{ $t('label.check_now') }}</button>
-        </div>
-        <div class="column has-text-grey">
-            <span v-if="appSettings.latestRelease" class="mt-2 has-text-warning">
-                <span class="release-flag"></span>{{ $t('message.x_is_available', { version: appSettings.latestRelease }) }}&nbsp;<a class="is-size-7 is-link" href="https://github.com/Bubka/2FAuth/releases">{{ $t('link.view_on_github') }}</a>
+    <div class="flex flex-wrap items-center gap-4">
+        <VueButton nativeType="button" color="tonal" size="sm" :isLoading="isScanning" @click="getLatestRelease">{{ $t('label.check_now') }}</VueButton>
+        <div class="text-label font-normal text-md-on-surface-variant">
+            <span v-if="appSettings.latestRelease" class="md-badge md-badge-warning h-auto py-1">
+                <span class="release-flag size-2 rounded-full bg-md-warning"></span>{{ $t('message.x_is_available', { version: appSettings.latestRelease }) }}
+                <a class="underline" href="https://github.com/Bubka/2FAuth/releases" target="_blank" rel="noopener">{{ $t('link.view_on_github') }}</a>
             </span>
-            <span v-if="isUpToDate">
-                <LucideCheck v-if="isUpToDate" class="mr-1 has-text-success inline" />{{ $t('message.you_are_up_to_date') }}
+            <span v-if="isUpToDate" class="inline-flex items-center gap-1.5">
+                <LucideCheck class="text-md-success" />{{ $t('message.you_are_up_to_date') }}
             </span>
-            <span v-else-if="isUpToDate === null" >
-                <LucideX class="mr-1 has-text-danger inline" />{{ $t('error.check_failed_try_later') }}
+            <span v-else-if="isUpToDate === null" class="inline-flex items-center gap-1.5">
+                <LucideX class="text-md-error" />{{ $t('error.check_failed_try_later') }}
             </span>
         </div>
     </div>

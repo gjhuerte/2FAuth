@@ -1,5 +1,4 @@
 <script setup>
-    import { UseColorMode } from '@vueuse/components'
 
     const props = defineProps({
         twofaccount: {
@@ -13,20 +12,14 @@
 </script>
 
 <template>
-    <div class="columns is-mobile is-2 is-align-items-center">
-    <UseColorMode v-slot="{ mode }">
-        <div class="column is-narrow">
-            <figure class="image is-32x32">
-                <img v-if="twofaccount.icon" role="presentation" :src="$2fauth.config.subdirectory + '/storage/icons/' + twofaccount.icon" alt="">
-                <img v-else-if="twofaccount.icon == null" role="presentation" :src="$2fauth.config.subdirectory + '/storage/noicon.svg'" alt="">
-            </figure>
-        </div>
-        <div class="column">
-            <p class="title is-5" :class="mode == 'dark' ? 'has-text-grey-lighter' : 'has-text-black'">
+    <div class="md-card mb-6 flex items-center gap-4 p-4">
+        <img v-if="twofaccount.icon" role="presentation" class="md-account-icon size-12" :src="$2fauth.config.subdirectory + '/storage/icons/' + twofaccount.icon" alt="">
+        <img v-else-if="twofaccount.icon == null" role="presentation" class="md-account-icon size-12 p-2.5" :src="$2fauth.config.subdirectory + '/storage/noicon.svg'" alt="">
+        <div class="min-w-0">
+            <p class="truncate text-title text-md-on-surface">
                 {{ twofaccount.service }}
             </p>
-            <p class="subtitle is-7">{{ twofaccount.account }}</p>
+            <p class="truncate text-label font-normal text-md-on-surface-variant">{{ twofaccount.account }}</p>
         </div>
-    </UseColorMode>
     </div>
 </template>

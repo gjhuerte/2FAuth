@@ -31,7 +31,7 @@
     <StackLayout>
         <template #content>
             <FormWrapper title="heading.rename_device">
-                <form @submit.prevent="updateCredential" @keydown="form.onKeydown($event)">
+                <form @submit.prevent="updateCredential" @keydown="form.onKeydown($event)" class="md-card sm:p-8">
                     <FormField v-model="form.name" fieldName="name" :errorMessage="form.errors.get('name')" inputType="text" label="field.new_name" autofocus />
                     <FormButtons
                         :submitId="'btnEditCredential'"

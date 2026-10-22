@@ -1,4 +1,5 @@
 <script setup>
+    import { LucideTriangleAlert } from '@lucide/vue'
     import Form from '@/components/formElements/Form'
     import shareService from '@/services/shareService'
     import TwofaccountMedia from '@/components/TwofaccountMedia.vue'
@@ -7,7 +8,6 @@
     import { useAppSettingsStore } from '@/stores/appSettings'
     import { asArray } from '@/composables/helpers'
     import { useTwofaccounts } from '@/stores/twofaccounts'
-    import { UseColorMode } from '@vueuse/components'
 
     const { t } = useI18n()
     const errorHandler = useErrorHandler()
@@ -103,34 +103,31 @@
 <template>
     <StackLayout>
         <template #content>
-            <UseColorMode v-slot="{ mode }">
-            <FormWrapper :title="'heading.transfer_ownership'">
-                <div class="block is-size-7-mobile">
-                    {{ $t('message.ownership_can_be_transferred_legend')}}
-                </div>
+            <FormWrapper :title="'heading.transfer_ownership'" punchline="message.ownership_can_be_transferred_legend">
                 <TwofaccountMedia :twofaccount="twofaccount" />
-                <div class="block is-size-7-mobile">
-                    <p class="mb-2">
+                <div class="md-callout mb-6 flex-col gap-2">
+                    <p>
                         {{ $t('message.ownership_can_be_transferred_sharing_legend')}}
                         <template v-if="appSettings.enableAllUsersSharingScope">
                             {{ $t('message.ownership_can_be_transferred_sharing_legend_if_with_all')}}
                         </template>
                         {{ $t('message.ownership_can_be_transferred_sharing_legend_if_with_specific_users')}}
                     </p>
-                    <i18n-t keypath="message.this_account_is_currently_x" tag="p" :class="mode == 'dark' ? 'has-text-grey' : 'has-text-black'">
+                    <i18n-t keypath="message.this_account_is_currently_x" tag="p" class="font-medium">
                         <template v-slot:sharing_status>
-                            <RouterLink class="is-link" :to="{ name: 'accountSharing', params: { twofaccountId: props.twofaccountId } }">
+                            <RouterLink class="md-link" :to="{ name: 'accountSharing', params: { twofaccountId: props.twofaccountId } }">
                                 {{ twofaccountShareStatus }}
                             </RouterLink>
                         </template>
                     </i18n-t>
                 </div>
-                <form @submit.prevent="handleSubmit" @keydown="form.onKeydown($event)" class="mb-6">
+                <form @submit.prevent="handleSubmit" @keydown="form.onKeydown($event)" class="md-card mb-8 sm:p-8">
                     <!-- user selector -->
-                    <FormSelect v-model="form.new_owner_id" :options="recipients" fieldName="new_owner_id" :errorMessage="form.errors.get('new_owner_id')" is-loading="isFetchingRecipients" label="field.new_owner" help="field.new_owner.help" />
-                    <div class="is-size-7-mobile mb-3" :class="mode == 'dark' ? 'has-text-grey' : 'has-text-black'">
+                    <FormSelect v-model="form.new_owner_id" :options="recipients" fieldName="new_owner_id" :errorMessage="form.errors.get('new_owner_id')" :isLoading="isFetchingRecipients" label="field.new_owner" help="field.new_owner.help" />
+                    <p class="md-callout md-callout-warning mb-6">
+                        <LucideTriangleAlert />
                         {{ $t('message.double_check_new_owner') }}
-                    </div>
+                    </p>
                     <!-- current password -->
                     <FormPasswordField v-model="form.confirm_password" fieldName="confirm_password" :errorMessage="form.errors.get('confirm_password')" label="field.current_password" help="field.current_password.help" autocomplete="off" />
                     <FormButtons
@@ -141,7 +138,6 @@
                         @cancel="router.push(returnToObject)" />
                 </form>
             </FormWrapper>
-            </UseColorMode>
         </template>
     </StackLayout>
 </template>

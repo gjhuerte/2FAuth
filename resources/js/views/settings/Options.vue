@@ -8,7 +8,7 @@
     import { useAppSettingsStore } from '@/stores/appSettings'
     import { timezones } from './timezones'
     import { useI18n } from 'vue-i18n'
-    import { LucideExternalLink, LucideRefreshCw } from '@lucide/vue'
+    import { LucideExternalLink, LucideLock, LucideRefreshCw } from '@lucide/vue'
     import { useSettingsBreakpoints } from '@/composables/breakpoints'
 
     const { t } = useI18n()
@@ -254,41 +254,42 @@
         </template>
         <template #content>
             <ResponsiveWidthWrapper>
-                <div v-if="isLaptop && user.preferences.showQuickNavMenus" class="pr-5 settings-menu">
+                <div v-if="isLaptop && user.preferences.showQuickNavMenus" class="settings-menu fixed top-32 -ml-60 w-52">
                     <!-- quick nav menu -->
                     <aside class="menu">
-                        <ul class="menu-list">
-                            <li><button @click="scrollTo(generalRef)">{{ $t('heading.general') }}</button></li>
+                        <ul class="menu-list flex flex-col gap-0.5">
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(generalRef)">{{ $t('heading.general') }}</button></li>
                             <li>
-                                <button @click="scrollTo(accountsRef)" class="has-ellipsis">{{ $t('heading.2fa_accounts') }}</button>
-                                <ul class="mt-1">
-                                    <li><button @click="scrollTo(otpRef)">OTP</button></li>
-                                    <li><button @click="scrollTo(iconsRef)">{{ $t('heading.icons') }}</button></li>
+                                <button type="button" class="md-menu-item h-10 truncate rounded-full" @click="scrollTo(accountsRef)">{{ $t('heading.2fa_accounts') }}</button>
+                                <ul class="ml-4 flex flex-col gap-0.5 border-l border-md-outline-variant pl-2">
+                                    <li><button type="button" class="md-menu-item h-9 rounded-full text-md-on-surface-variant" @click="scrollTo(otpRef)">OTP</button></li>
+                                    <li><button type="button" class="md-menu-item h-9 rounded-full text-md-on-surface-variant" @click="scrollTo(iconsRef)">{{ $t('heading.icons') }}</button></li>
                                 </ul>
                             </li>
-                            <li><button @click="scrollTo(groupsRef)">{{ $t('heading.groups') }}</button></li>
-                            <li><button @click="scrollTo(sessionRef)">{{ $t('heading.session') }}</button></li>
-                            <li><button @click="scrollTo(dataInputRef)">{{ $t('heading.data_input') }}</button></li>
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(groupsRef)">{{ $t('heading.groups') }}</button></li>
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(sessionRef)">{{ $t('heading.session') }}</button></li>
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(dataInputRef)">{{ $t('heading.data_input') }}</button></li>
                         </ul>
                     </aside>
                 </div>
-                <form>
+                <form class="animate-enter pb-8">
                     <!-- <input type="hidden" name="isReady" id="isReady" :value="isReady" /> -->
                     <!-- user preferences -->
-                    <div class="block">
-                        <h4 ref="heading-general" class="title is-4">{{ $t('heading.general') }}</h4>
-                        <div v-if="appSettings.lockedPreferences.length > 0" class="notification is-warning">
+                    <section class="md-card mb-4 sm:p-8">
+                        <h2 ref="heading-general" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.general') }}</h2>
+                        <p v-if="appSettings.lockedPreferences.length > 0" class="md-callout md-callout-warning mb-6">
+                            <LucideLock />
                             {{ $t('message.settings_managed_by_administrator') }}
-                        </div>
+                        </p>
                         <!-- Language -->
                         <FormSelect v-model="user.preferences.lang" @update:model-value="val => savePreference('lang', val)" :options="langs" fieldName="lang" :isLocked="appSettings.lockedPreferences.includes('lang')" label="field.language" help="field.language.help" />
-                        <div class="field help">
+                        <p class="-mt-3 mb-6 px-1 text-label-sm text-md-on-surface-variant">
                             {{ $t('message.some_translation_are_missing') }}
-                            <a class="ml-2 is-link" href="https://crowdin.com/project/2fauth">
+                            <a class="md-link ml-1 inline-flex items-center gap-1" href="https://crowdin.com/project/2fauth" target="_blank" rel="noopener">
                                 {{ $t('link.help_translate_2fauth') }}
-                                <LucideExternalLink class="icon-size-1" />
+                                <LucideExternalLink class="size-3.5!" />
                             </a>
-                        </div>
+                        </p>
                         <!-- timezone -->
                         <FormSelect v-model="user.preferences.timezone" @update:model-value="val => savePreference('timezone', val)" :options="timezones" fieldName="timezone" :isLocked="appSettings.lockedPreferences.includes('timezone')" label="field.timezone" help="field.timezone.help" />
                         <!-- theme -->
@@ -297,15 +298,15 @@
                         <FormCheckbox v-model="user.preferences.showEmailInFooter" @update:model-value="val => savePreference('showEmailInFooter', val)" fieldName="showEmailInFooter" :isLocked="appSettings.lockedPreferences.includes('showEmailInFooter')" label="field.show_email_in_footer" help="field.show_email_in_footer.help" />
                         <!-- show quick nav menu -->
                         <FormCheckbox v-model="user.preferences.showQuickNavMenus" @update:model-value="val => savePreference('showQuickNavMenus', val)" fieldName="showQuickNavMenus" :isLocked="appSettings.lockedPreferences.includes('showQuickNavMenus')" label="field.show_quick_nav_menus" help="field.show_quick_nav_menus.help" />
-                    </div>   
-                    <div class="block">
-                        <h4 ref="heading-accounts" class="title is-4 pt-4">{{ $t('heading.2fa_accounts') }}</h4>
+                    </section>
+                    <section class="md-card mb-4 sm:p-8">
+                        <h2 ref="heading-accounts" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.2fa_accounts') }}</h2>
                         <!-- display mode -->
                         <FormToggle v-model="user.preferences.displayMode" @update:model-value="val => savePreference('displayMode', val)" :choices="layouts" fieldName="displayMode" :isLocked="appSettings.lockedPreferences.includes('displayMode')" label="field.display_mode" help="field.display_mode.help" />
                         <!-- sort case sensitive -->
                         <FormCheckbox v-model="user.preferences.sortCaseSensitive" @update:model-value="val => savePreference('sortCaseSensitive', val)" fieldName="sortCaseSensitive" :isLocked="appSettings.lockedPreferences.includes('sortCaseSensitive')" label="field.sort_case_sensitive" help="field.sort_case_sensitive.help" />
 
-                        <h5 ref="heading-otp" class="title is-5 pt-3 mb-3">{{ $t('heading.one_time_passwords') }}</h5>
+                        <h3 ref="heading-otp" class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant/60 pt-6 text-title text-md-primary">{{ $t('heading.one_time_passwords') }}</h3>
                         <!-- get OTP on request -->
                         <FormToggle v-model="user.preferences.getOtpOnRequest" @update:model-value="val => savePreference('getOtpOnRequest', val)" :choices="getOtpTriggers" fieldName="getOtpOnRequest" :isLocked="appSettings.lockedPreferences.includes('getOtpOnRequest')" label="field.otp_generation" help="field.otp_generation.help"/>
                             <!-- close otp on copy -->
@@ -326,7 +327,7 @@
                         <!-- clear search on copy -->
                         <FormCheckbox v-model="user.preferences.clearSearchOnCopy" @update:model-value="val => savePreference('clearSearchOnCopy', val)" fieldName="clearSearchOnCopy" :isLocked="appSettings.lockedPreferences.includes('clearSearchOnCopy')" label="field.clear_search_on_copy" help="field.clear_search_on_copy.help" />
 
-                        <h5 ref="heading-icons" class="title is-5 pt-3 mb-4">{{ $t('heading.icons') }}</h5>
+                        <h3 ref="heading-icons" class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant/60 pt-6 text-title text-md-primary">{{ $t('heading.icons') }}</h3>
                         <!-- show icon -->
                         <FormCheckbox v-model="user.preferences.showAccountsIcons" @update:model-value="val => savePreference('showAccountsIcons', val)" fieldName="showAccountsIcons" :isLocked="appSettings.lockedPreferences.includes('showAccountsIcons')" label="field.show_accounts_icons" help="field.show_accounts_icons.help" />
                         <!-- Official icons -->
@@ -335,7 +336,7 @@
                         <FormToggle v-model="user.preferences.iconSource" @update:model-value="val => savePreference('iconSource', val)" :choices="iconSources" fieldName="iconSource" :isLocked="appSettings.lockedPreferences.includes('iconSource')" :isDisabled="!user.preferences.getOfficialIcons" label="field.icon_source" help="field.icon_source.help" />
                         <!-- icon collections -->
                         <FormSelect v-model="user.preferences.iconCollection" @update:model-value="val => saveIconCollection(val)" :options="iconCollections" fieldName="iconCollection" :isLocked="appSettings.lockedPreferences.includes('iconCollection')" :isDisabled="!user.preferences.getOfficialIcons || user.preferences.iconSource != 'logolib'" label="field.icon_collection" help="field.icon_collection.help" :isIndented="true">
-                            <a class="button is-ghost" :href="iconCollectionUrl" target="_blank" :title="$t('tooltip.visit_x', { website: iconCollectionDomain})">
+                            <a class="md-icon-btn" :href="iconCollectionUrl" target="_blank" rel="noopener" :title="$t('tooltip.visit_x', { website: iconCollectionDomain})" :aria-label="$t('tooltip.visit_x', { website: iconCollectionDomain})">
                                 <LucideExternalLink />
                             </a>
                         </FormSelect>
@@ -345,13 +346,13 @@
                         <FormCheckbox v-model="user.preferences.iconVariantStrictFetch" @update:model-value="val => savePreference('iconVariantStrictFetch', val)" fieldName="iconVariantStrictFetch" :isLocked="appSettings.lockedPreferences.includes('iconVariantStrictFetch')" :isDisabled="!user.preferences.getOfficialIcons || user.preferences.iconVariant == 'regular' || user.preferences.iconSource != 'logolib'" label="field.icon_variant_strict_fetch" help="field.icon_variant_strict_fetch.help" :isIndented="true" />
                         <!-- icon pack -->
                         <FormSelect v-model="iconPack" @update:model-value="val => savePreference('iconPack', val)" :options="iconPacks" fieldName="iconPack" :errorMessage="user.preferences.iconSource == 'iconpack' && ! hasSomeIconPack ? t('message.warning_no_icon_pack') : null" :isLocked="appSettings.lockedPreferences.includes('iconPack')" :isDisabled="!user.preferences.getOfficialIcons || user.preferences.iconSource != 'iconpack' || !hasSomeIconPack" label="field.icon_pack" help="field.icon_pack.help" :isIndented="true">
-                            <button v-if="user.preferences.iconSource == 'iconpack' && user.preferences.getOfficialIcons" class="button is-ghost" @click="refreshIconPackList" type="button" :title="$t('tooltip.refresh_icon_pack_list')">
-                                <LucideRefreshCw :class="{ 'spinning': isLoading }"/>
+                            <button v-if="user.preferences.iconSource == 'iconpack' && user.preferences.getOfficialIcons" class="md-icon-btn" @click="refreshIconPackList" type="button" :title="$t('tooltip.refresh_icon_pack_list')" :aria-label="$t('tooltip.refresh_icon_pack_list')">
+                                <LucideRefreshCw :class="{ 'animate-spin-md': isLoading }"/>
                             </button>
                         </FormSelect>
-                    </div>
-                    <div class="block">
-                        <h4 ref="heading-groups" class="title is-4 pt-4">{{ $t('heading.groups') }}</h4>
+                    </section>
+                    <section class="md-card mb-4 sm:p-8">
+                        <h2 ref="heading-groups" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.groups') }}</h2>
                         <!-- default group -->
                         <FormSelect v-model="user.preferences.defaultGroup" @update:model-value="val => savePreference('defaultGroup', val)" :options="groupsList" fieldName="defaultGroup" label="field.default_group" help="field.default_group.help" />
                         <!-- use chips selector -->
@@ -362,19 +363,19 @@
                         <FormCheckbox v-model="user.preferences.rememberActiveGroup" @update:model-value="val => savePreference('rememberActiveGroup', val)" fieldName="rememberActiveGroup" :isLocked="appSettings.lockedPreferences.includes('rememberActiveGroup')" label="field.remember_active_group" help="field.remember_active_group.help" />
                         <!-- always return to default group after copying -->
                         <FormCheckbox v-model="user.preferences.viewDefaultGroupOnCopy" @update:model-value="val => savePreference('viewDefaultGroupOnCopy', val)" fieldName="viewDefaultGroupOnCopy" :isLocked="appSettings.lockedPreferences.includes('viewDefaultGroupOnCopy')" label="field.view_default_group_on_copy" help="field.view_default_group_on_copy.help" />
-                    </div>
-                    <div class="block">
-                        <h4 ref="heading-session" class="title is-4 pt-4">{{ $t('heading.session') }}</h4>
+                    </section>
+                    <section class="md-card mb-4 sm:p-8">
+                        <h2 ref="heading-session" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.session') }}</h2>
                         <!-- auto lock -->
                         <FormSelect v-model="user.preferences.kickUserAfter" @update:model-value="val => savePreference('kickUserAfter', val)" :options="kickUserAfters" fieldName="kickUserAfter" :isLocked="appSettings.lockedPreferences.includes('kickUserAfter')" label="field.auto_lock" help="field.auto_lock.help" />
-                        <h5 class="title is-5 mb-4">{{ $t('heading.notifications') }}</h5>
+                        <h3 class="mb-4 mt-10 scroll-mt-6 border-t border-md-outline-variant/60 pt-6 text-title text-md-primary">{{ $t('heading.notifications') }}</h3>
                         <!-- on new device -->
                         <FormCheckbox v-model="user.preferences.notifyOnNewAuthDevice" @update:model-value="val => savePreference('notifyOnNewAuthDevice', val)" fieldName="notifyOnNewAuthDevice" :isLocked="appSettings.lockedPreferences.includes('notifyOnNewAuthDevice')" label="field.notify_on_new_auth_device" help="field.notify_on_new_auth_device.help" />
                         <!-- on failed login -->
                         <FormCheckbox v-model="user.preferences.notifyOnFailedLogin" @update:model-value="val => savePreference('notifyOnFailedLogin', val)" fieldName="notifyOnFailedLogin" :isLocked="appSettings.lockedPreferences.includes('notifyOnFailedLogin')" label="field.notify_on_failed_login" help="field.notify_on_failed_login.help" />
-                    </div>
-                    <div class="block">
-                        <h4 ref="heading-dataInput" class="title is-4 pt-4">{{ $t('heading.data_input') }}</h4>
+                    </section>
+                    <section class="md-card mb-4 sm:p-8">
+                        <h2 ref="heading-dataInput" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.data_input') }}</h2>
                         <!-- auto-save QrCoded account -->
                         <FormCheckbox v-model="user.preferences.AutoSaveQrcodedAccount" @update:model-value="val => savePreference('AutoSaveQrcodedAccount', val)" fieldName="AutoSaveQrcodedAccount" :isLocked="appSettings.lockedPreferences.includes('AutoSaveQrcodedAccount')" label="field.auto_save_qrcoded_account" help="field.auto_save_qrcoded_account.help" />
                         <!-- basic qrcode -->
@@ -383,7 +384,7 @@
                         <FormCheckbox v-model="user.preferences.useDirectCapture" @update:model-value="val => savePreference('useDirectCapture', val)" fieldName="useDirectCapture" :isLocked="appSettings.lockedPreferences.includes('useDirectCapture')" label="field.useDirectCapture" help="field.useDirectCapture.help" />
                         <!-- default capture mode -->
                         <FormSelect v-model="user.preferences.defaultCaptureMode" @update:model-value="val => savePreference('defaultCaptureMode', val)" :options="captureModes" fieldName="defaultCaptureMode" :isLocked="appSettings.lockedPreferences.includes('defaultCaptureMode')" :isDisabled="!user.preferences.useDirectCapture" label="field.defaultCaptureMode" help="field.defaultCaptureMode.help" :isIndented="true" />
-                    </div>
+                    </section>
                 </form>
             </ResponsiveWidthWrapper>
         </template>

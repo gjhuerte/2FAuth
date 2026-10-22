@@ -5,10 +5,9 @@
     import { useAppSettingsStore } from '@/stores/appSettings'
     import { useUserStore } from '@/stores/user'
     import { useNotify, TabBar } from '@2fauth/ui'
-    import { UseColorMode } from '@vueuse/components'
     import { useI18n } from 'vue-i18n'
     import { useErrorHandler } from '@2fauth/stores'
-    import { LucideCirclePlus } from '@lucide/vue'
+    import { LucideCirclePlus, LucideFingerprint, LucideInfo, LucideTriangleAlert } from '@lucide/vue'
 
     const errorHandler = useErrorHandler()
     const { t } = useI18n()
@@ -138,54 +137,66 @@
         </template>
         <template #content>
             <FormWrapper>
-                <div v-if="isDisabled && user.oauth_provider" class="notification is-warning has-text-centered">
-                    {{ $t('message.sso_only_x_settings_are_disabled', { auth_method: 'WebAuthn' }) }}
-                </div>
-                <div v-if="isDisabled && user.authenticated_by_proxy" class="notification is-warning has-text-centered">
-                    {{ $t('message.auth_handled_by_proxy') + ' ' + $t('message.manage_auth_at_proxy_level') }}
-                </div>
-                <h4 class="title is-4">{{ $t('heading.security_devices') }}</h4>
-                <div class="is-size-7-mobile">
-                    {{ $t('message.security_devices_legend')}}
-                </div>
-                <div class="mt-3">
-                    <a tabindex="0" class="is-link" @click="register" @keyup.enter="register">
-                        <LucideCirclePlus />&nbsp;{{ $t('link.register_a_new_device')}}
-                    </a>
+                <p v-if="isDisabled && user.oauth_provider" class="md-callout md-callout-warning mb-6">
+                    <LucideTriangleAlert />
+                    <span>{{ $t('message.sso_only_x_settings_are_disabled', { auth_method: 'WebAuthn' }) }}</span>
+                </p>
+                <p v-if="isDisabled && user.authenticated_by_proxy" class="md-callout md-callout-warning mb-6">
+                    <LucideTriangleAlert />
+                    <span>{{ $t('message.auth_handled_by_proxy') + ' ' + $t('message.manage_auth_at_proxy_level') }}</span>
+                </p>
+                <div class="flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                        <h1 class="md-page-title">{{ $t('heading.security_devices') }}</h1>
+                        <p class="mt-2 max-w-prose text-body text-md-on-surface-variant">
+                            {{ $t('message.security_devices_legend')}}
+                        </p>
+                    </div>
+                    <button type="button" class="md-btn md-btn-tonal" @click="register">
+                        <LucideCirclePlus /> {{ $t('link.register_a_new_device')}}
+                    </button>
                 </div>
                 <!-- credentials list -->
-                <div v-if="credentials.length > 0" class="field">
-                    <UseColorMode v-slot="{ mode }">
-                        <div v-for="credential in credentials" :key="credential.id" class="group-item is-size-5 is-size-6-mobile">
-                            {{ displayName(credential) }}
+                <div v-if="credentials.length > 0" class="mt-8">
+                    <ul class="flex flex-col gap-2">
+                        <li v-for="credential in credentials" :key="credential.id" class="group-item md-card flex items-center gap-3 px-5 py-3">
+                            <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-md bg-md-secondary-container text-md-on-secondary-container">
+                                <LucideFingerprint />
+                            </span>
+                            <span class="min-w-0 flex-1 truncate text-title text-md-on-surface">{{ displayName(credential) }}</span>
                             <!-- revoke link -->
-                            <button type="button" class="button tag is-pulled-right" :class="mode === 'dark' ? 'is-dark':'is-white'" @click="revokeCredential(credential.id)" :title="$t('tooltip.revoke')">
+                            <button type="button" class="md-btn md-btn-danger-text md-btn-xs" @click="revokeCredential(credential.id)" :title="$t('tooltip.revoke')">
                                 {{ $t('label.revoke') }}
                             </button>
-                        </div>
-                    </UseColorMode>
-                    <div class="mt-2 is-size-7 is-pulled-right">
+                        </li>
+                    </ul>
+                    <p class="mt-4 flex items-center justify-end gap-1.5 text-label-sm text-md-on-surface-variant">
+                        <LucideInfo class="size-4!" />
                         {{ $t('message.revoking_a_device_is_permanent')}}
-                    </div>
+                    </p>
                 </div>
                 <Spinner :isVisible="isFetching && credentials.length === 0" type="list-loading" />
-                <h4 class="title is-4 pt-6">{{ $t('heading.options') }}</h4>
-                <div class="field">
-                    {{ $t('message.need_a_security_device_to_enable_options')}}
-                </div>
-                <form>
-                    <!-- use webauthn only -->
-                    <FormCheckbox
-                        v-model="user.preferences.useWebauthnOnly"
-                        @update:model-value="val => setActiveLoginForm()"
-                        fieldName="useWebauthnOnly"
-                        label="field.use_webauthn_only"
-                        help="field.use_webauthn_only.help"
-                        :isDisabled="isDisabled || credentials.length === 0"
-                    />
-                    <p class="help">{{ $t('field.use_webauthn_only.help_bis') }}</p>
-                    <p class="help mt-3">{{ $t('field.use_webauthn_only.help_ter') }}</p>
-                </form>
+                <section class="md-card mb-8 mt-8 sm:p-8">
+                    <h2 class="md-section-title">{{ $t('heading.options') }}</h2>
+                    <p class="mb-6 mt-1 text-label font-normal text-md-on-surface-variant">
+                        {{ $t('message.need_a_security_device_to_enable_options')}}
+                    </p>
+                    <form>
+                        <!-- use webauthn only -->
+                        <FormCheckbox
+                            v-model="user.preferences.useWebauthnOnly"
+                            @update:model-value="val => setActiveLoginForm()"
+                            fieldName="useWebauthnOnly"
+                            label="field.use_webauthn_only"
+                            help="field.use_webauthn_only.help"
+                            :isDisabled="isDisabled || credentials.length === 0"
+                        />
+                        <div class="ml-11 flex flex-col gap-2 text-label font-normal leading-relaxed text-md-on-surface-variant">
+                            <p>{{ $t('field.use_webauthn_only.help_bis') }}</p>
+                            <p>{{ $t('field.use_webauthn_only.help_ter') }}</p>
+                        </div>
+                    </form>
+                </section>
             </FormWrapper>
         </template>
         <template #footer>

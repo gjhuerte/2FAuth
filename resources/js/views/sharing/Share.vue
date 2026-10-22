@@ -5,9 +5,8 @@
     import { useBusStore } from '@/stores/bus'
     import { asArray } from '@/composables/helpers'
     import { useFocus, onKeyStroke } from '@vueuse/core'
-    import { LucideLoaderCircle, LucideSearch } from '@lucide/vue'
+    import { LucideInfo, LucideLoaderCircle, LucideSearch, LucideUserCheck, LucideUserPlus, LucideX } from '@lucide/vue'
     import { useTwofaccounts } from '@/stores/twofaccounts'
-    import { UseColorMode } from '@vueuse/components'
 
     const $2fauth = inject('2fauth')
     const router = useRouter()
@@ -187,69 +186,62 @@
 <template>
     <StackLayout>
         <template #content>
-            <UseColorMode v-slot="{ mode }">
             <ResponsiveWidthWrapper>
-                <h1 class="title">
+                <h1 class="md-page-title">
                     {{ $t('heading.new_sharing') }}
                 </h1>
-                <div class="block is-size-7-mobile">
-                    {{ $t('message.share_account_with_other_users')}}<br />
-                    {{ $t('message.this_form_does_not_affect_existing_sharing')}}
+                <div class="mb-6 mt-2 text-body leading-relaxed text-md-on-surface-variant">
+                    <p>{{ $t('message.share_account_with_other_users')}}</p>
+                    <p>{{ $t('message.this_form_does_not_affect_existing_sharing')}}</p>
                 </div>
                 <TwofaccountMedia :twofaccount="twofaccount" />
-                <form @submit.prevent="handleSubmit">
-                    <div class="field">
-                        <label for="findUserForShare" class="label">
+                <form @submit.prevent="handleSubmit" class="md-card animate-enter sm:p-8">
+                    <div class="md-field">
+                        <label for="findUserForShare" class="md-label">
                             {{ $t('field.findUserForShare') }}
                         </label>
-                        <div class="control" :class="{ 'has-icons-left' : leftIcon, 'has-icons-right': rightIcon }">
-                            <div class="dropdown" :class="{ 'is-active': candidates || isSearching }">
-                                <div class="dropdown-trigger">
-                                    <div class="field">
-                                        <p class="control has-icons-right">
-                                            <input ref="findUserForShare" id="findUserForShare" v-model="searchQuery" type="text" class="input" autofocus />
-                                            <span class="icon is-right">
-                                                <button type="button" v-if="searchQuery != ''" id="btnClearSearch" tabindex="1" :title="$t('tooltip.clear_search')" class="clear-selection delete" @click="clearSearch"></button>
-                                                <LucideSearch v-else />
-                                            </span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                    <div class="dropdown-content is-shadowless">
-                                        <template v-if="showCandidates">
-                                            <template v-for="candidate in candidates" :key="candidate.id" >
-                                                <a v-if="!candidate.is_shared_with" @click="addToRecipients(candidate)" class="dropdown-item">{{ candidate.name }}</a>
-                                                <span v-else class="dropdown-item has-text-grey">
-                                                    {{ candidate.name }} ({{ $t('message.already_shared') }})
-                                                </span>
-                                            </template>
-                                        </template>
-                                        <template v-else>
-                                            <span v-if="isSearching" class="dropdown-item has-text-grey">
-                                                <LucideLoaderCircle class="spinning" />
-                                            </span>
-                                            <span v-else class="dropdown-item is-italic">{{ $t('message.no_match') }}</span>
-                                        </template>
-                                    </div>
-                                </div>
+                        <div class="relative">
+                            <input ref="findUserForShare" id="findUserForShare" v-model="searchQuery" type="text" class="md-input pr-14" autocomplete="off" autofocus :aria-expanded="!!(candidates || isSearching)" aria-controls="dropdown-menu" />
+                            <button type="button" v-if="searchQuery != ''" id="btnClearSearch" tabindex="1" :title="$t('tooltip.clear_search')" :aria-label="$t('tooltip.clear_search')" class="clear-selection md-icon-btn absolute right-2 top-2" @click="clearSearch">
+                                <LucideX />
+                            </button>
+                            <LucideSearch v-else class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-md-on-surface-variant" />
+                            <!-- candidates -->
+                            <div v-if="candidates || isSearching" class="dropdown-menu md-menu absolute inset-x-0 top-full mt-2 w-auto" id="dropdown-menu" role="menu">
+                                <template v-if="showCandidates">
+                                    <template v-for="candidate in candidates" :key="candidate.id" >
+                                        <button v-if="!candidate.is_shared_with" type="button" role="menuitem" @click="addToRecipients(candidate)" class="dropdown-item md-menu-item">
+                                            <LucideUserPlus />
+                                            {{ candidate.name }}
+                                        </button>
+                                        <span v-else class="dropdown-item md-menu-item cursor-default text-md-on-surface-variant hover:bg-transparent">
+                                            <LucideUserCheck />
+                                            {{ candidate.name }} ({{ $t('message.already_shared') }})
+                                        </span>
+                                    </template>
+                                </template>
+                                <template v-else>
+                                    <span v-if="isSearching" class="dropdown-item flex h-12 items-center justify-center">
+                                        <LucideLoaderCircle class="animate-spin-md text-md-primary" />
+                                    </span>
+                                    <span v-else class="dropdown-item flex h-12 items-center px-4 text-label italic text-md-on-surface-variant">{{ $t('message.no_match') }}</span>
+                                </template>
                             </div>
                         </div>
-                        <p class="help">{{ $t('field.findUserForShare.help') }}</p>
+                        <p class="md-help">{{ $t('field.findUserForShare.help') }}</p>
                     </div>
-                    <div class="mb-5">
-                        <div v-if="recipients.length > 0" class="field is-grouped is-grouped-multiline">
-                            <div v-for="recipient in recipients" :key="recipient.id" class="control">
-                                <div class="tags has-addons are-medium">
-                                    <span class="tag" :class="mode == 'dark' ? 'is-dark' : 'is-white'">{{ recipient.name }}</span>
-                                    <button @click="removeRecipient(recipient)" class="tag is-delete" :class="mode == 'dark' ? 'is-black' : 'is-dark'"></button>
-                                </div>
-                            </div>
-                        </div>
+                    <div v-if="recipients.length > 0" class="mb-6 flex flex-wrap gap-2">
+                        <span v-for="recipient in recipients" :key="recipient.id" class="md-chip md-chip-selected cursor-default pr-1">
+                            {{ recipient.name }}
+                            <button type="button" @click="removeRecipient(recipient)" class="is-delete inline-flex size-6 items-center justify-center rounded-full hover:bg-md-on-secondary-container/10" :aria-label="$t('tooltip.revoke')">
+                                <LucideX class="size-3.5!" />
+                            </button>
+                        </span>
                     </div>
-                    <div class="block is-size-7-mobile has-text-grey">
+                    <p class="md-callout">
+                        <LucideInfo />
                         {{ $t('message.keep_in_mind_share_principle') }}
-                    </div>
+                    </p>
                     <FormButtons
                         :isDisabled="!hasRecipients"
                         :isBusy="isSending"
@@ -258,7 +250,6 @@
                         @cancel="router.push(returnToObject)" />
                 </form>
             </ResponsiveWidthWrapper>
-            </UseColorMode>
         </template>
     </StackLayout>
 </template>

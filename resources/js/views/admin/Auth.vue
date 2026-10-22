@@ -90,15 +90,18 @@
         </template>
         <template #content>
             <FormWrapper>
-                <form>
-                    <h4 class="title is-4">{{ $t('heading.single_sign_on') }}</h4>
+                <form class="pb-8">
+                    <section class="md-card mb-4 sm:p-8">
+                    <h2 class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.single_sign_on') }}</h2>
                     <!-- enable SSO -->
                     <FormCheckbox v-model="appSettings.enableSso" @update:model-value="val => saveSetting('enableSso', val)" fieldName="enableSso" label="field.enable_sso" help="field.enable_sso.help" />
                         <!-- use SSO only -->
                         <FormCheckbox v-model="appSettings.useSsoOnly" @update:model-value="val => saveSetting('useSsoOnly', val)" fieldName="useSsoOnly" label="field.use_sso_only" help="field.use_sso_only.help" :isDisabled="!appSettings.enableSso" :isIndented="true" />
                         <!-- Allow Pat In SSO Only -->
                         <FormCheckbox v-model="appSettings.allowPatWhileSsoOnly" @update:model-value="val => saveSetting('allowPatWhileSsoOnly', val)" fieldName="allowPatWhileSsoOnly" label="field.allow_pat_in_sso_only" help="field.allow_pat_in_sso_only.help" :isDisabled="!appSettings.useSsoOnly" :isIndented="true" />
-                    <h4 class="title is-4 pt-4">{{ $t('heading.registrations') }}</h4>
+                    </section>
+                    <section class="md-card mb-4 sm:p-8">
+                    <h2 class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.registrations') }}</h2>
                     <!-- restrict registration -->
                     <FormCheckbox v-model="appSettings.restrictRegistration" @update:model-value="val => saveSetting('restrictRegistration', val)" fieldName="restrictRegistration" :isDisabled="appSettings.disableRegistration" label="field.restrict_registration" help="field.restrict_registration.help" />
                         <!-- restrict list -->
@@ -109,6 +112,7 @@
                     <FormCheckbox v-model="appSettings.disableRegistration" @update:model-value="val => saveSetting('disableRegistration', val)" fieldName="disableRegistration" label="field.disable_registration" help="field.disable_registration.help" />
                         <!-- keep sso registration -->
                         <FormCheckbox v-model="appSettings.keepSsoRegistrationEnabled" @update:model-value="val => saveSetting('keepSsoRegistrationEnabled', val)" fieldName="keepSsoRegistrationEnabled" :isDisabled="!appSettings.enableSso || !appSettings.disableRegistration" label="field.keep_sso_registration_enabled" help="field.keep_sso_registration_enabled.help" :isIndented="true" />
+                    </section>
                 </form>
             </FormWrapper>
         </template>

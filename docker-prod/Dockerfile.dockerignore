@@ -1,0 +1,23 @@
+# Build-context filter for docker-prod/Dockerfile only (BuildKit picks up
+# <Dockerfile>.dockerignore). The repository's root .dockerignore is left
+# untouched for the upstream Dockerfile.
+.git
+.github
+.env
+.env.*
+!.env.example
+node_modules
+vendor
+public/hot
+storage/logs/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/*.key
+bootstrap/cache/*.php
+database/*.sqlite
+tests
+docs
+docker
+docker-dev
+docker-prod/.env

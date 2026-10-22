@@ -5,10 +5,9 @@
     import TwofaccountMedia from '@/components/TwofaccountMedia.vue'
     import { asArray } from '@/composables/helpers'
     import { useI18n } from 'vue-i18n'
-    import { UseColorMode } from '@vueuse/components'
     import { useTwofaccounts } from '@/stores/twofaccounts'
     import { useAppSettingsStore } from '@/stores/appSettings'
-    import { LucideUsers, LucideCirclePlus } from '@lucide/vue'
+    import { LucideUsers, LucideCirclePlus, LucideInfo } from '@lucide/vue'
 
     const props = defineProps({
         twofaccountId: [Number, String]
@@ -166,6 +165,7 @@
         const btnRef = shareButtonRefs.value.find((btn) => btn.id == 'btn' + newScope)
 
         activeScopeRef.value.style.setProperty('transform', `translateX(${btnRef.offsetLeft}px)`)
+        activeScopeRef.value.style.setProperty('width', `${btnRef.offsetWidth}px`)
         activeScopeRef.value.textContent = btnRef.textContent
     }
 
@@ -174,79 +174,88 @@
 <template>
     <StackLayout>
         <template #content>
-            <UseColorMode v-slot="{ mode }">
             <ResponsiveWidthWrapper>
-                <h1 class="title">
+                <h1 class="md-page-title">
                     {{ $t('heading.sharing_setting') }}
                 </h1>
-                <div class="block is-size-7-mobile">
-                    {{ $t('message.share_account_with_other_users')}}<br />
-                    {{ $t('message.shared_account_can_be_viewed_not_full_controlled')}}
+                <div class="mb-6 mt-2 text-body leading-relaxed text-md-on-surface-variant">
+                    <p>{{ $t('message.share_account_with_other_users')}}</p>
+                    <p>{{ $t('message.shared_account_can_be_viewed_not_full_controlled')}}</p>
                 </div>
                 <TwofaccountMedia :twofaccount="twofaccount" />
-                <div class="columns is-mobile is-multiline">
-                    <div class="column is-narrow">
-                    <div class="toggle-wrapper has-background-dark p-1">
-                        <div class="toggle">
-                            <div class="toggle-buttons">
-                                <button 
-                                    v-for="sharingScope in availableSharingScopes" 
-                                    :key="sharingScope.id"
-                                    ref="shareButtonRefs"
-                                    :id="'btn' + sharingScope.id"
-                                    @click="confirmToggleSharing(sharingScope.id)"
-                                    class="button px-3 is-dark">
-                                    {{ $t(sharingScope.label) }}
-                                </button>
-                            </div>
-                            <label ref="activeScopeRef" :class="{ 'is-black' : activeSharingScope == 'NotShared', 'is-link' : activeSharingScope != 'NotShared', 'is-loading': isFetching}" class="toggle-active button px-3">{{ $t(activeScopeLabel) }}</label>
+                <!-- sharing scope selector -->
+                <div class="toggle-wrapper mb-6 inline-flex max-w-full rounded-full bg-md-surface-container-highest p-1 shadow-inner">
+                    <div class="toggle relative">
+                        <div class="toggle-buttons flex gap-1">
+                            <button
+                                v-for="sharingScope in availableSharingScopes"
+                                :key="sharingScope.id"
+                                ref="shareButtonRefs"
+                                :id="'btn' + sharingScope.id"
+                                type="button"
+                                @click="confirmToggleSharing(sharingScope.id)"
+                                class="relative z-[1] h-10 cursor-pointer whitespace-nowrap rounded-full px-4 text-label text-md-on-surface-variant transition-colors duration-200 ease-md hover:bg-md-on-surface/8"
+                            >
+                                {{ $t(sharingScope.label) }}
+                            </button>
                         </div>
-                    </div>
+                        <label
+                            ref="activeScopeRef"
+                            class="toggle-active pointer-events-none absolute left-0 top-0 z-[2] inline-flex h-10 items-center justify-center whitespace-nowrap rounded-full px-4 text-label shadow-md transition-[transform,width,background-color] duration-300 ease-md"
+                            :class="activeSharingScope == 'NotShared' ? 'bg-md-inverse-surface text-md-inverse-on-surface' : 'bg-md-primary text-md-on-primary'"
+                            :aria-busy="isFetching"
+                        >{{ $t(activeScopeLabel) }}</label>
                     </div>
                 </div>
-                <template v-if="isFetching == false">
+                <div v-if="isFetching == false" class="animate-enter pb-8">
                     <template v-if="isSharedWithUsers">
-                        <div class="pt-2 mb-4">
-                            <RouterLink class="is-link" :to="{ name: 'shareAccount', params: { twofaccountId: props.twofaccountId } }">
-                                <LucideCirclePlus class="mr-2" /> {{ $t('link.add_users') }}
-                            </RouterLink>
-                        </div>
-                        <div v-if="usershares.length == 0" class="list-item is-size-6 is-size-7-mobile has-text-grey pt-2">
+                        <RouterLink class="md-btn md-btn-tonal mb-4" :to="{ name: 'shareAccount', params: { twofaccountId: props.twofaccountId } }">
+                            <LucideCirclePlus /> {{ $t('link.add_users') }}
+                        </RouterLink>
+                        <p v-if="usershares.length == 0" class="md-card text-body text-md-on-surface-variant">
                             {{ $t('message.add_your_first_user_to_share_this_account_with') }}
-                        </div>
+                        </p>
                         <template v-if="usershares.length > 0">
-                            <SearchBox v-if="usershares.length > 5" v-model:keyword="userFilter" :hasNoBackground="true" :isSmall="true" />
-                            <div v-for="user in visibleUsershares" :key="user.id" class="list-item is-size-5 is-size-6-mobile">
-                                {{ user.name }}
-                                <!-- revoke icon -->
-                                <button type="button" class="button tag is-pulled-right" :class="mode == 'dark' ? 'is-dark' : 'is-white'" @click="unshareUser(user.id)"  :title="$t('tooltip.revoke')">
-                                    {{ $t('label.revoke') }}
-                                </button>
-                                <span class="is-block is-family-primary is-size-7 has-text-grey">{{ $t('message.shared_since_x', { date: user.is_shared_since }) }}</span>
+                            <div v-if="usershares.length > 5" class="mb-3">
+                                <SearchBox v-model:keyword="userFilter" :hasNoBackground="true" :isSmall="true" />
                             </div>
+                            <ul class="md-list">
+                                <li v-for="user in visibleUsershares" :key="user.id" class="md-list-item">
+                                    <span class="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-md-primary-container text-title text-md-on-primary-container" aria-hidden="true">
+                                        {{ user.name.charAt(0).toUpperCase() }}
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="truncate text-title text-md-on-surface">{{ user.name }}</p>
+                                        <p class="text-label-sm text-md-on-surface-variant">{{ $t('message.shared_since_x', { date: user.is_shared_since }) }}</p>
+                                    </div>
+                                    <!-- revoke icon -->
+                                    <button type="button" class="md-btn md-btn-danger-text md-btn-xs" @click="unshareUser(user.id)" :title="$t('tooltip.revoke')">
+                                        {{ $t('label.revoke') }}
+                                    </button>
+                                </li>
+                            </ul>
                         </template>
                     </template>
-                    <template v-else-if="appSettings.enableAllUsersSharingScope && isSharedWithAll == true">
-                        <div class="list-item is-size-5 is-size-6-mobile">
-                            <span class="icon-text">
-                                <span class="icon">
-                                    <LucideUsers class="icon-size-1" />
-                                </span>
-                                <span>{{ $t('message.is_shared_with_all_users') }}</span>
-                            </span>
-                            <p class="is-size-6 is-size-7-mobile has-text-grey pt-2">{{ $t('message.is_shared_with_all_users_legend') }}</p>
+                    <div v-else-if="appSettings.enableAllUsersSharingScope && isSharedWithAll == true" class="md-card flex gap-4">
+                        <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-md bg-md-primary-container text-md-on-primary-container">
+                            <LucideUsers />
+                        </span>
+                        <div>
+                            <p class="text-title text-md-on-surface">{{ $t('message.is_shared_with_all_users') }}</p>
+                            <p class="mt-1 text-label font-normal text-md-on-surface-variant">{{ $t('message.is_shared_with_all_users_legend') }}</p>
                         </div>
-                    </template>
-                    <div v-else class="list-item pt-0">
-                        <p v-if="appSettings.enableAllUsersSharingScope" class="is-size-6 is-size-7-mobile has-text-grey pt-2">{{ $t('message.all_users_meaning') }}</p>
-                        <p class="is-size-6 is-size-7-mobile has-text-grey pt-2">{{ $t('message.selected_users_meaning') }}</p>
                     </div>
-                    <div class="mt-2 is-size-7 is-pulled-right">
+                    <div v-else class="md-card flex flex-col gap-2 text-body text-md-on-surface-variant">
+                        <p v-if="appSettings.enableAllUsersSharingScope">{{ $t('message.all_users_meaning') }}</p>
+                        <p>{{ $t('message.selected_users_meaning') }}</p>
+                    </div>
+                    <p class="mt-4 flex items-center justify-end gap-1.5 text-label-sm text-md-on-surface-variant">
+                        <LucideInfo class="size-4!" />
                         {{ $t('message.you_can_toggle_sharing_setting_at_any_time')}}
-                    </div>
-                 </template>
+                    </p>
+                </div>
+                <Spinner v-else :isVisible="true" type="list-loading" />
             </ResponsiveWidthWrapper>
-            </UseColorMode>
         </template>
         <template #footer>
             <VueFooter>

@@ -1,6 +1,6 @@
 <script setup>
     import { RouterView } from 'vue-router'
-    import { Kicker } from '@2fauth/ui'
+    import { AppBackdrop, Kicker } from '@2fauth/ui'
 
     const { t } = useI18n()
     const { language } = useNavigatorLanguage()
@@ -54,8 +54,9 @@
         :duration="4000"
         :speed="0"
         :max="1"
-        classes="notification notification-banner is-radiusless" />
-    <main class="main-section">
+        classes="md-snackbar notification-banner" />
+    <AppBackdrop />
+    <main class="main-section relative">
         <RouterView />
     </main>
     <Kicker

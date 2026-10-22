@@ -1,0 +1,84 @@
+# 2FAuth — production stack
+#
+#   cp docker-prod/.env.example docker-prod/.env     # compose settings (ports, limits)
+#   cp .env.example .env                            # application settings
+#   docker compose -f docker-prod/docker-compose.yml up -d --build
+#
+# First start: set RUN_MIGRATIONS=true in docker-prod/.env so the schema and
+# the Passport personal access client are created.
+#
+# One container, like the nyxbin docker-prod setup: nginx + PHP-FPM + scheduler
+# under supervisord. Hardened: non-root, read-only root
+# filesystem, no Linux capabilities, CPU/memory/PID limits, no Docker socket.
+# The database is your existing MariaDB on the external `proxy` network, or
+# SQLite kept in the storage volume (DB_CONNECTION=sqlite).
+
+name: 2fauth
+
+services:
+  app:
+    container_name: 2fauth
+    image: ${TWOFAUTH_IMAGE:-2fauth}:${TWOFAUTH_TAG:-latest}
+    build:
+      context: ..
+      dockerfile: docker-prod/Dockerfile
+    restart: always
+    # Application settings come from the project .env at runtime and are
+    # never baked into the image.
+    env_file: ../.env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-false}
+      # 2FAuth has no jobs table; Laravel's default would be "database".
+      QUEUE_CONNECTION: sync
+    # Published on localhost only; the reverse proxy reaches the container as
+    # http://2fauth:8080 over the `proxy` network. Use TWOFAUTH_BIND=0.0.0.0 only
+    # when nothing sits in front of it.
+    ports:
+      - "${TWOFAUTH_BIND:-127.0.0.1}:${TWOFAUTH_HTTP_PORT:-8010}:8080"
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777,noexec,nosuid,nodev
+      - /var/www/html/bootstrap/cache:size=16m,uid=33,gid=33,mode=0750,noexec,nosuid,nodev
+    volumes:
+      - storage:/var/www/html/storage
+      - /etc/localtime:/etc/localtime:ro
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    ulimits:
+      nofile: { soft: 8192, hard: 16384 }
+    deploy:
+      resources:
+        limits:
+          cpus: "${TWOFAUTH_CPUS:-2.0}"
+          memory: ${TWOFAUTH_MEMORY:-1G}
+          pids: 256
+        reservations:
+          memory: 256M
+    stop_grace_period: 100s
+    healthcheck:
+      # /up boots Laravel, so this checks nginx, PHP-FPM and the app together.
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8080/up') === false ? 1 : 0);"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: ${TWOFAUTH_PROXY_NETWORK:-proxy}
+
+volumes:
+  storage:
+    name: twofauth_storage

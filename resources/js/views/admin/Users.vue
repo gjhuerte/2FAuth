@@ -2,9 +2,8 @@
     import tabs from './tabs'
     import userService from '@/services/userService'
     import { useNotify, TabBar, SearchBox } from '@2fauth/ui'
-    import { UseColorMode } from '@vueuse/components'
     import { useErrorHandler } from '@2fauth/stores'
-    import { LucideCirclePlus } from '@lucide/vue'
+    import { LucideShieldUser, LucideUserPlus } from '@lucide/vue'
 
     const errorHandler = useErrorHandler()
     const $2fauth = inject('2fauth')
@@ -111,67 +110,56 @@
         </template>
         <template #content>
             <FormWrapper>
-            <UseColorMode v-slot="{ mode }">
-                <h4 class="title is-4">{{ $t('heading.users') }}</h4>
-                <div class="is-size-7-mobile">
-                    {{ $t('message.admin_users_legend')}}
-                </div>
-                <div class="mb-6 mt-3">
-                    <RouterLink class="is-link mt-5" :to="{ name: 'admin.createUser' }">
-                        <LucideCirclePlus /> {{ $t('link.create_new_user') }}
+                <div class="flex flex-wrap items-end justify-between gap-4">
+                    <div>
+                        <h1 class="md-page-title">{{ $t('heading.users') }}</h1>
+                        <p class="mt-2 max-w-prose text-body text-md-on-surface-variant">
+                            {{ $t('message.admin_users_legend')}}
+                        </p>
+                    </div>
+                    <RouterLink class="md-btn md-btn-tonal" :to="{ name: 'admin.createUser' }">
+                        <LucideUserPlus /> {{ $t('link.create_new_user') }}
                     </RouterLink>
                 </div>
                 <!-- search -->
-                <div class="columns">
-                    <div class="column pb-0">
-                        <SearchBox v-model:keyword="searched" :hasNoBackground="true" :placeholder="$t('placeholder.search_user_placeholder')" />
-                    </div>
+                <div class="mt-8">
+                    <SearchBox v-model:keyword="searched" :hasNoBackground="true" :placeholder="$t('placeholder.search_user_placeholder')" />
                 </div>
-                <div class="level has-text-centered is-mobile mb-0">
-                    <div class="level-item">
-                        <div id="groupChips" class="tags">
-                            <button @click="addFilter('admin:1')" class="button tag" :class="{'has-text-grey' : mode == 'dark', 'is-white has-text-grey' : mode != 'dark' }" >
-                                admin
-                            </button>
-                            <button @click="addFilter('oauth:github')" class="button tag" :class="{'has-text-grey' : mode == 'dark', 'is-white has-text-grey' : mode != 'dark' }" >
-                                github
-                            </button>
-                            <button @click="addFilter('oauth:openid')" class="button tag" :class="{'has-text-grey' : mode == 'dark', 'is-white has-text-grey' : mode != 'dark' }" >
-                                openId
-                            </button>
-                        </div>
-                    </div>
+                <div id="groupChips" class="mb-4 mt-3 flex flex-wrap justify-center gap-2">
+                    <button type="button" @click="addFilter('admin:1')" class="md-chip">
+                        <LucideShieldUser />
+                        admin
+                    </button>
+                    <button type="button" @click="addFilter('oauth:github')" class="md-chip">
+                        github
+                    </button>
+                    <button type="button" @click="addFilter('oauth:openid')" class="md-chip">
+                        openId
+                    </button>
                 </div>
-                <div v-if="visibleUsers.length > 0">
-                    <div v-for="user in visibleUsers" :key="user.id" class="list-item is-size-5 is-size-6-mobile is-flex is-justify-content-space-between">
-                        <div class="has-ellipsis">
-                            <span>{{ user.name }}</span>
-                            <!-- set as admin link -->
-                            <!-- admin tag -->
-                            <span class="is-block has-ellipsis is-family-primary is-size-6 is-size-7-mobile has-text-grey">{{ user.email }}</span>
-                            <!-- tag -->
-                            <div class="tags mt-2">
-                                <span v-if="user.is_admin" class="tag is-rounded" :class="mode == 'dark' ? 'has-text-warning-40 has-background-black-bis' : 'has-text-warning-35 has-background-grey-lighter'" >admin</span>
-                                <span v-if="user.oauth_provider" class="tag is-rounded  has-text-grey" :class="mode == 'dark' ? 'has-background-black-bis' : 'has-background-grey-lighter'" >oauth: {{ user.oauth_provider }}</span>
+                <ul v-if="visibleUsers.length > 0" class="flex flex-col gap-2 pb-8">
+                    <li v-for="user in visibleUsers" :key="user.id" class="md-card flex items-center gap-4 px-4 py-3 sm:px-5">
+                        <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-md-primary-container text-title text-md-on-primary-container" aria-hidden="true">
+                            {{ user.name.charAt(0).toUpperCase() }}
+                        </span>
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-title text-md-on-surface">{{ user.name }}</p>
+                            <p class="truncate text-label font-normal text-md-on-surface-variant">{{ user.email }}</p>
+                            <div v-if="user.is_admin || user.oauth_provider" class="mt-2 flex flex-wrap gap-1.5">
+                                <span v-if="user.is_admin" class="md-badge md-badge-warning">admin</span>
+                                <span v-if="user.oauth_provider" class="md-badge md-badge-outline">oauth: {{ user.oauth_provider }}</span>
                             </div>
                         </div>
-                        <div class="ml-3">
-                            <!-- manage link -->
-                            <RouterLink :to="{ name: 'admin.manageUser', params: { userId: user.id }}" class="button is-small has-normal-radius" :class="{'is-dark' : mode == 'dark'}" :title="$t('tooltip.manage')">
-                                {{ $t('link.manage') }}
-                            </RouterLink>
-
-                        </div>
-                    </div>
-                    <!-- <div class="mt-2 is-size-7 is-pulled-right">
-                        {{ $t('message.revoking_a_token_is_permanent')}}
-                    </div> -->
-                </div>
+                        <!-- manage link -->
+                        <RouterLink :to="{ name: 'admin.manageUser', params: { userId: user.id }}" class="md-btn md-btn-tonal md-btn-sm shrink-0" :title="$t('tooltip.manage')">
+                            {{ $t('link.manage') }}
+                        </RouterLink>
+                    </li>
+                </ul>
                 <Spinner v-else-if="isFetching" :isVisible="true" type="list-loading" />
-                <div v-else class="mt-4 pl-3">
+                <p v-else class="mt-4 px-3 text-body text-md-on-surface-variant">
                     {{ $t('message.no_result') }}
-                </div>
-            </UseColorMode>
+                </p>
             </FormWrapper>
         </template>
         <template #footer>

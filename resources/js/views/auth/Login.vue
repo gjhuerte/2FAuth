@@ -1,6 +1,8 @@
 <script setup>
     import Form from '@/components/formElements/Form'
     import SsoConnectLink from '@/components/SsoConnectLink.vue'
+    import AuthCard from '@/components/AuthCard.vue'
+    import { LucideFingerprint, LucideFlaskConical, LucideSparkles, LucideTriangleAlert } from '@lucide/vue'
     import { useUserStore } from '@/stores/user'
     import { useNotify } from '@2fauth/ui'
     import { useAppSettingsStore } from '@/stores/appSettings'
@@ -126,156 +128,176 @@
     <StackLayout>
         <template #content>
             <!-- webauthn authentication -->
-            <FormWrapper v-if="activeLoginForm == 'webauthn'" title="heading.webauthn_login" punchline="message.welcome_to_2fauth">
-                <div v-if="appSettings.enableSso == true && appSettings.useSsoOnly == true" class="notification is-warning has-text-centered">{{ $t('message.sso_only_form_restricted_to_admin') }}</div>
-                <div class="block">
-                    {{ $t('message.use_security_device_to_sign_in') }}
+            <AuthCard v-if="activeLoginForm == 'webauthn'" title="heading.webauthn_login" punchline="message.welcome_to_2fauth">
+                <div v-if="appSettings.enableSso == true && appSettings.useSsoOnly == true" class="md-callout md-callout-warning mb-6">
+                    <LucideTriangleAlert />
+                    <p>{{ $t('message.sso_only_form_restricted_to_admin') }}</p>
                 </div>
+                <p class="mb-6 text-body text-md-on-surface-variant">
+                    {{ $t('message.use_security_device_to_sign_in') }}
+                </p>
                 <form id="frmWebauthnLogin" @submit.prevent="webauthnLogin" @keydown="form.onKeydown($event)">
                     <FormField v-model="form.email" fieldName="email" :errorMessage="form.errors.get('email')" inputType="email" label="field.email" autofocus />
-                    <FormButtons :isBusy="isBusy" submitLabel="label.continue" submitId="btnContinue"/>
+                    <FormButtons :isBusy="isBusy" submitLabel="label.continue" submitId="btnContinue" :isFullWidth="true" />
                 </form>
-                <div class="nav-links">
+                <div v-if="appSettings.enableSso == true && Object.values($2fauth.config.sso).includes(true)" class="mt-8">
+                    <div class="mb-4 flex items-center gap-3 text-label-sm text-md-on-surface-variant">
+                        <span class="h-px flex-1 bg-md-outline-variant"></span>
+                        {{ $t('message.or_continue_with') }}
+                        <span class="h-px flex-1 bg-md-outline-variant"></span>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <template v-for="(isEnabled, provider) in $2fauth.config.sso" :key="provider">
+                            <SsoConnectLink v-if="isEnabled" :provider="provider" />
+                        </template>
+                    </div>
+                </div>
+                <template #links>
                     <p>
-                        {{ $t('message.lost_your_device') }}&nbsp;
-                        <RouterLink id="lnkRecoverAccount" :to="{ name: 'webauthn.lost' }" class="is-link">
+                        {{ $t('message.lost_your_device') }}
+                        <RouterLink id="lnkRecoverAccount" :to="{ name: 'webauthn.lost' }" class="md-link">
                             {{ $t('link.recover_your_account') }}
                         </RouterLink>
                     </p>
-                    <p>{{ $t('message.sign_in_using') }}&nbsp;
-                        <a id="lnkSignWithLegacy" role="button" class="is-link" @keyup.enter="switchToForm('legacy')" @click="switchToForm('legacy')" tabindex="0">
+                    <p>{{ $t('message.sign_in_using') }}
+                        <a id="lnkSignWithLegacy" href="#" role="button" class="md-link" @click.prevent="switchToForm('legacy')">
                             {{ $t('link.login_and_password') }}
                         </a>
                     </p>
-                    <p v-if="appSettings.disableRegistration == false && appSettings.useSsoOnly == false" class="mt-4">
-                        {{ $t('message.dont_have_account_yet') }}&nbsp;
-                        <RouterLink id="lnkRegister" :to="{ name: 'register' }" class="is-link">
-                            {{ $t('link.register') }}
-                        </RouterLink>
-                    </p>
-                    <div v-if="appSettings.enableSso == true && Object.values($2fauth.config.sso).includes(true)" class="columns mt-4 is-variable is-1">
-                        <div class="column is-narrow py-1">
-                            {{ $t('message.or_continue_with') }}
-                        </div>
-                        <div class="column py-1">
-                            <div class="buttons">
-                                <template v-for="(isEnabled, provider) in $2fauth.config.sso" :key="provider">
-                                    <SsoConnectLink v-if="isEnabled" :class="'is-outlined is-small'" :provider="provider" />
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </FormWrapper>
+                <p v-if="appSettings.disableRegistration == false && appSettings.useSsoOnly == false">
+                    {{ $t('message.dont_have_account_yet') }}
+                    <RouterLink id="lnkRegister" :to="{ name: 'register' }" class="md-link">
+                        {{ $t('link.register') }}
+                    </RouterLink>
+                </p>
+                </template>
+            </AuthCard>
             <!-- SSO only links -->
-            <FormWrapper v-else-if="activeLoginForm == 'sso'" title="heading.sso_login" punchline="message.welcome_to_2fauth">
-                <div v-if="$2fauth.isDemoApp" class="notification is-info has-text-centered is-radiusless">
-                    {{ $t('message.welcome_to_demo_app') }}<br />
-                    <i18n-t keypath="message.sign_in_using_email_password" tag="span">
-                        <template v-slot:email>
-                            <strong>demo@2fauth.app</strong>
-                        </template>
-                        <template v-slot:password>
-                            <strong>demo</strong>
-                        </template>
-                    </i18n-t>
+            <AuthCard v-else-if="activeLoginForm == 'sso'" title="heading.sso_login" punchline="message.welcome_to_2fauth">
+                <div v-if="$2fauth.isDemoApp" class="md-callout md-callout-info mb-6">
+                    <LucideSparkles />
+                    <p>
+                        {{ $t('message.welcome_to_demo_app') }}<br />
+                        <i18n-t keypath="message.sign_in_using_email_password" tag="span">
+                            <template v-slot:email>
+                                <strong>demo@2fauth.app</strong>
+                            </template>
+                            <template v-slot:password>
+                                <strong>demo</strong>
+                            </template>
+                        </i18n-t>
+                    </p>
                 </div>
-                <div v-if="$2fauth.isTestingApp" class="notification is-warning has-text-centered is-radiusless">
-                    {{ $t('message.welcome_to_testing_app') }}
-                    <i18n-t keypath="message.use_those_credentials" tag="span">
-                        <template v-slot:email>
-                            <strong>testing@2fauth.app</strong>
-                        </template>
-                        <template v-slot:password>
-                            <strong>password</strong>
-                        </template>
-                    </i18n-t>
+                <div v-if="$2fauth.isTestingApp" class="md-callout md-callout-warning mb-6">
+                    <LucideFlaskConical />
+                    <p>
+                        {{ $t('message.welcome_to_testing_app') }}
+                        <i18n-t keypath="message.use_those_credentials" tag="span">
+                            <template v-slot:email>
+                                <strong>testing@2fauth.app</strong>
+                            </template>
+                            <template v-slot:password>
+                                <strong>password</strong>
+                            </template>
+                        </i18n-t>
+                    </p>
                 </div>
-                <div class="nav-links">
-                    <p class="">{{ $t('message.password_login_and_webauthn_are_disabled') }}</p>
-                    <p class="">{{ $t('message.sign_in_using_sso') }}</p>
-                </div>
-                <div v-if="Object.values($2fauth.config.sso).includes(true)" class="buttons mt-4">
+                <p class="text-body text-md-on-surface">{{ $t('message.password_login_and_webauthn_are_disabled') }}</p>
+                <p class="mt-1 text-body text-md-on-surface-variant">{{ $t('message.sign_in_using_sso') }}</p>
+                <div v-if="Object.values($2fauth.config.sso).includes(true)" class="mt-6 flex flex-wrap gap-2">
                     <template v-for="(isEnabled, provider) in $2fauth.config.sso" :key="provider">
                         <SsoConnectLink v-if="isEnabled" :provider="provider" />
                     </template>
                 </div>
-                <p v-else class="is-italic">- {{ $t('message.no_provider') }} -</p>
-                <div class="nav-links">
+                <p v-else class="mt-6 text-label italic text-md-on-surface-variant">{{ $t('message.no_provider') }}</p>
+                <template #links>
                     <p>
-                        {{ $t('message.no_sso_provider_or_provider_is_missing') }}&nbsp;
-                        <a id="lnkSsoDocs" class="is-link" tabindex="0" :href="$2fauth.urls.ssoDocUrl" target="_blank">
+                        {{ $t('message.no_sso_provider_or_provider_is_missing') }}
+                        <a id="lnkSsoDocs" class="md-link" :href="$2fauth.urls.ssoDocUrl" target="_blank" rel="noopener">
                             {{ $t('link.see_how_to_enable_sso') }}
                         </a>
                     </p>
-                    <p >{{ $t('message.if_administrator') }}&nbsp;
-                        <a id="lnkSignWithLegacy" role="button" class="is-link" @keyup.enter="switchToForm('legacy')" @click="switchToForm('legacy')" tabindex="0">
+                    <p>{{ $t('message.if_administrator') }}
+                        <a id="lnkSignWithLegacy" href="#" role="button" class="md-link" @click.prevent="switchToForm('legacy')">
                             {{ $t('link.sign_in_here') }}
                         </a>
                     </p>
-                </div>
-            </FormWrapper>
+                </template>
+            </AuthCard>
             <!-- login/password legacy form -->
-            <FormWrapper v-else-if="activeLoginForm == 'legacy'" title="heading.login" punchline="message.welcome_to_2fauth">
-                <div v-if="$2fauth.isDemoApp" class="notification is-info has-text-centered is-radiusless">
-                    {{ $t('message.welcome_to_demo_app') }}<br />
-                    <i18n-t keypath="message.sign_in_using_email_password" tag="span">
-                        <template v-slot:email>
-                            <strong>demo@2fauth.app</strong>
-                        </template>
-                        <template v-slot:password>
-                            <strong>demo</strong>
-                        </template>
-                    </i18n-t>
+            <AuthCard v-else-if="activeLoginForm == 'legacy'" title="heading.login" punchline="message.welcome_to_2fauth">
+                <div v-if="$2fauth.isDemoApp" class="md-callout md-callout-info mb-6">
+                    <LucideSparkles />
+                    <p>
+                        {{ $t('message.welcome_to_demo_app') }}<br />
+                        <i18n-t keypath="message.sign_in_using_email_password" tag="span">
+                            <template v-slot:email>
+                                <strong>demo@2fauth.app</strong>
+                            </template>
+                            <template v-slot:password>
+                                <strong>demo</strong>
+                            </template>
+                        </i18n-t>
+                    </p>
                 </div>
-                <div v-if="$2fauth.isTestingApp" class="notification is-warning has-text-centered is-radiusless">
-                    {{ $t('message.welcome_to_testing_app') }}
-                    <i18n-t keypath="message.use_those_credentials" tag="span">
-                        <template v-slot:email>
-                            <strong>testing@2fauth.app</strong>
-                        </template>
-                        <template v-slot:password>
-                            <strong>password</strong>
-                        </template>
-                    </i18n-t>
+                <div v-if="$2fauth.isTestingApp" class="md-callout md-callout-warning mb-6">
+                    <LucideFlaskConical />
+                    <p>
+                        {{ $t('message.welcome_to_testing_app') }}
+                        <i18n-t keypath="message.use_those_credentials" tag="span">
+                            <template v-slot:email>
+                                <strong>testing@2fauth.app</strong>
+                            </template>
+                            <template v-slot:password>
+                                <strong>password</strong>
+                            </template>
+                        </i18n-t>
+                    </p>
                 </div>
-                <div v-if="appSettings.enableSso == true && appSettings.useSsoOnly == true" class="notification is-warning has-text-centered">{{ $t('message.sso_only_form_restricted_to_admin') }}</div>
+                <div v-if="appSettings.enableSso == true && appSettings.useSsoOnly == true" class="md-callout md-callout-warning mb-6">
+                    <LucideTriangleAlert />
+                    <p>{{ $t('message.sso_only_form_restricted_to_admin') }}</p>
+                </div>
                 <form id="frmLegacyLogin" @submit.prevent="LegacysignIn" @keydown="form.onKeydown($event)">
                     <FormField v-model="form.email" fieldName="email" :errorMessage="form.errors.get('email')" inputType="email" label="field.email" autocomplete="username" autofocus />
                     <FormPasswordField v-model="form.password" fieldName="password" :errorMessage="form.errors.get('password')" label="field.password" autocomplete="current-password" />
-                    <FormButtons :isBusy="form.isBusy" submitLabel="label.sign_in" submitId="btnSignIn"/>
+                    <div class="-mt-2 flex justify-end">
+                        <RouterLink id="lnkResetPwd" :to="{ name: 'password.request' }" class="md-link text-label" :aria-label="$t('label.reset_your_password')">
+                            {{ $t('message.forgot_your_password') }}
+                        </RouterLink>
+                    </div>
+                    <FormButtons :isBusy="form.isBusy" submitLabel="label.sign_in" submitId="btnSignIn" :isFullWidth="true" />
                 </form>
-                <div class="nav-links">
-                    <p>{{ $t('message.forgot_your_password') }}&nbsp;
-                        <RouterLink id="lnkResetPwd" :to="{ name: 'password.request' }" class="is-link" :aria-label="$t('label.reset_your_password')">
-                            {{ $t('link.request_password_reset') }}
-                        </RouterLink>
-                    </p>
-                    <p >{{ $t('message.sign_in_using') }}&nbsp;
-                        <a id="lnkSignWithWebauthn" role="button" class="is-link" @keyup.enter="switchToForm('webauthn')" @click="switchToForm('webauthn')" tabindex="0" :aria-label="$t('tooltip.sign_in_using_security_device')">
-                            {{ $t('link.security_device') }}
-                        </a>
-                    </p>
-                    <p v-if="appSettings.disableRegistration == false && appSettings.useSsoOnly == false" class="mt-4">
-                        {{ $t('message.dont_have_account_yet') }}&nbsp;
-                        <RouterLink id="lnkRegister" :to="{ name: 'register' }" class="is-link">
-                            {{ $t('link.register') }}
-                        </RouterLink>
-                    </p>
-                    <div v-if="appSettings.enableSso && Object.values($2fauth.config.sso).includes(true)" class="columns mt-4 is-variable is-1">
-                        <div class="column is-narrow py-1">
-                            {{ $t('message.or_continue_with') }}
-                        </div>
-                        <div class="column py-1">
-                            <div class="buttons">
-                                <template v-for="(isEnabled, provider) in $2fauth.config.sso" :key="provider">
-                                    <SsoConnectLink v-if="isEnabled" :class="'is-outlined is-small'" :provider="provider" />
-                                </template>
-                            </div>
-                        </div>
+                <button
+                    id="lnkSignWithWebauthn"
+                    type="button"
+                    class="md-btn md-btn-outlined md-btn-lg mt-3 w-full"
+                    @click="switchToForm('webauthn')"
+                >
+                    <LucideFingerprint />
+                    {{ $t('tooltip.sign_in_using_security_device') }}
+                </button>
+                <div v-if="appSettings.enableSso == true && Object.values($2fauth.config.sso).includes(true)" class="mt-8">
+                    <div class="mb-4 flex items-center gap-3 text-label-sm text-md-on-surface-variant">
+                        <span class="h-px flex-1 bg-md-outline-variant"></span>
+                        {{ $t('message.or_continue_with') }}
+                        <span class="h-px flex-1 bg-md-outline-variant"></span>
+                    </div>
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <template v-for="(isEnabled, provider) in $2fauth.config.sso" :key="provider">
+                            <SsoConnectLink v-if="isEnabled" :provider="provider" />
+                        </template>
                     </div>
                 </div>
-            </FormWrapper>
+                <template #links>
+                <p v-if="appSettings.disableRegistration == false && appSettings.useSsoOnly == false">
+                    {{ $t('message.dont_have_account_yet') }}
+                    <RouterLink id="lnkRegister" :to="{ name: 'register' }" class="md-link">
+                        {{ $t('link.register') }}
+                    </RouterLink>
+                </p>
+                </template>
+            </AuthCard>
         </template>
         <template #footer>
             <VueFooter />

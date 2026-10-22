@@ -1,7 +1,6 @@
 <script setup>
-    import { UseColorMode  } from '@vueuse/components'
     import { useUserStore } from '@/stores/user'
-    import { LucideTrash2, LucideScanQrCode, LucideUserX, LucidePackage, FolderInput } from '@lucide/vue'
+    import { LucideListChecks, LucideTrash2, LucideScanQrCode, LucideUserX, LucidePackage, FolderInput } from '@lucide/vue'
 
     const router = useRouter()
     const user = useUserStore()
@@ -68,75 +67,74 @@
 </script>
 
 <template>
-    <UseColorMode v-slot="{ mode }">
-        <!-- New item buttons -->
-        <p class="control" v-if="!inManagementMode">
-            <button type="button" class="button is-link is-rounded is-focus" @click="goAddNewAccount">
-                <span>{{ $t('label.new') }}</span>
-                <span class="icon is-small">
-                    <LucideScanQrCode />
-                </span>
-            </button>
-        </p>
+    <template v-if="!inManagementMode">
+        <!-- New item button -->
+        <button type="button" class="md-btn md-btn-filled md-btn-lg" @click="goAddNewAccount">
+            <LucideScanQrCode />
+            <span>{{ $t('label.new') }}</span>
+        </button>
         <!-- Manage button -->
-        <p class="control" v-if="!inManagementMode">
-            <button type="button" id="btnManage" class="button is-rounded" :class="{'is-dark' : mode == 'dark'}" @click="$emit('update:inManagementMode', true)">{{ $t('label.manage') }}</button>
-        </p>
+        <button type="button" id="btnManage" class="md-btn md-btn-tonal md-btn-lg" @click="$emit('update:inManagementMode', true)">
+            <LucideListChecks />
+            <span>{{ $t('label.manage') }}</span>
+        </button>
+    </template>
+    <template v-else>
         <!-- move button -->
-        <p class="control" v-if="inManagementMode && showMove">
-            <button
-                id="btnMove" 
-                :disabled='areDisabled || !canMove' class="button is-rounded"
-                :class="[{ 'is-outlined': mode == 'dark' || areDisabled }, areDisabled ? 'is-dark': 'is-link']"
-                @click="$emit('move-button-clicked')"
-                :title="$t('tooltip.move_selected_to_group')" >
-                <span class="is-hidden-desktop icon is-small mx-0">
-                    <FolderInput />
-                </span>
-                <span class="is-hidden-touch">{{ $t('label.move') }}</span>
-            </button>
-        </p>
+        <button
+            v-if="showMove"
+            id="btnMove"
+            type="button"
+            :disabled="areDisabled || !canMove"
+            class="md-btn md-btn-tonal max-lg:px-3"
+            @click="$emit('move-button-clicked')"
+            :title="$t('tooltip.move_selected_to_group')"
+            :aria-label="$t('tooltip.move_selected_to_group')"
+        >
+            <FolderInput />
+            <span class="max-lg:sr-only">{{ $t('label.move') }}</span>
+        </button>
         <!-- unshare button -->
-        <p class="control" v-if="inManagementMode && showUnshare">
-            <button
-                id="btnShare" 
-                :disabled='areDisabled || !canUnshare' class="button is-rounded"
-                :class="[{ 'is-outlined': mode == 'dark' || areDisabled }, areDisabled ? 'is-dark': 'is-link']"
-                @click="$emit('unshare-button-clicked')"
-                :title="$t('tooltip.unshare_selected_accounts')" >
-                <span class="is-hidden-desktop icon is-small mx-0">
-                    <LucideUserX />
-                </span>
-                <span class="is-hidden-touch">{{ $t('label.unshare') }}</span>
-            </button>
-        </p>
-        <!-- delete button -->
-        <p class="control" v-if="inManagementMode && showDelete">
-            <button
-                id="btnDelete" 
-                :disabled='areDisabled || !canDelete' class="button is-rounded"
-                :class="[{ 'is-outlined': mode == 'dark' || areDisabled }, areDisabled ? 'is-dark': 'is-link']"
-                @click="$emit('delete-button-clicked')"
-                :title="$t('tooltip.delete_selected_accounts')" >
-                    <span class="is-hidden-desktop icon is-small mx-0">
-                        <LucideTrash2 />
-                    </span>
-                    <span class="is-hidden-touch">{{ $t('label.delete') }}</span>
-            </button>
-        </p>
+        <button
+            v-if="showUnshare"
+            id="btnShare"
+            type="button"
+            :disabled="areDisabled || !canUnshare"
+            class="md-btn md-btn-tonal max-lg:px-3"
+            @click="$emit('unshare-button-clicked')"
+            :title="$t('tooltip.unshare_selected_accounts')"
+            :aria-label="$t('tooltip.unshare_selected_accounts')"
+        >
+            <LucideUserX />
+            <span class="max-lg:sr-only">{{ $t('label.unshare') }}</span>
+        </button>
         <!-- export button -->
-        <p class="control" v-if="inManagementMode && showExport">
-            <button
-                id="btnExport" 
-                :disabled='areDisabled || !canExport' class="button is-rounded"
-                :class="[{ 'is-outlined': mode == 'dark' || areDisabled }, areDisabled ? 'is-dark': 'is-link']"
-                @click="$emit('export-button-clicked')"
-                :title="$t('tooltip.export_selected_accounts')" >
-                <span class="is-hidden-desktop icon is-small mx-0">
-                    <LucidePackage />
-                </span>
-                <span class="is-hidden-touch">{{ $t('label.export') }}</span>
-            </button>
-        </p>
-    </UseColorMode>
+        <button
+            v-if="showExport"
+            id="btnExport"
+            type="button"
+            :disabled="areDisabled || !canExport"
+            class="md-btn md-btn-tonal max-lg:px-3"
+            @click="$emit('export-button-clicked')"
+            :title="$t('tooltip.export_selected_accounts')"
+            :aria-label="$t('tooltip.export_selected_accounts')"
+        >
+            <LucidePackage />
+            <span class="max-lg:sr-only">{{ $t('label.export') }}</span>
+        </button>
+        <!-- delete button -->
+        <button
+            v-if="showDelete"
+            id="btnDelete"
+            type="button"
+            :disabled="areDisabled || !canDelete"
+            class="md-btn md-btn-danger-tonal max-lg:px-3"
+            @click="$emit('delete-button-clicked')"
+            :title="$t('tooltip.delete_selected_accounts')"
+            :aria-label="$t('tooltip.delete_selected_accounts')"
+        >
+            <LucideTrash2 />
+            <span class="max-lg:sr-only">{{ $t('label.delete') }}</span>
+        </button>
+    </template>
 </template>

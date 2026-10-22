@@ -18,11 +18,13 @@
     <StackLayout>
         <template #content>
             <ResponsiveWidthWrapper>
-                <h1 class="title">
+                <h1 class="md-page-title">
                     {{ $t('heading.otp_generation_log') }}
                 </h1>
-                <TwofaccountMedia :twofaccount="twofaccount" />
-                <LogViewer :twofaccountId="props.twofaccountId" :logType="'otp'" :sortingKey="'generated_at'" :lastOnly="false" :showSearch="true" :period="1" />
+                <div class="mt-6 animate-enter pb-8">
+                    <TwofaccountMedia :twofaccount="twofaccount" />
+                    <LogViewer :twofaccountId="props.twofaccountId" :logType="'otp'" :sortingKey="'generated_at'" :lastOnly="false" :showSearch="true" :period="1" />
+                </div>
             </ResponsiveWidthWrapper>
         </template>
         <template #footer>

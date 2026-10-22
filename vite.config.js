@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
 import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import version from './vite.version'
@@ -10,6 +11,7 @@ const ASSET_URL = process.env.ASSET_URL || ''
 export default defineConfig({
     base: `${ASSET_URL}`,
     plugins: [
+        tailwindcss(),
         laravel([
             'resources/js/app.js',
         ]),
@@ -81,6 +83,9 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': '/resources/js',
+            '@2fauth/ui': '/resources/js/packages/ui/src/index.js',
+            '@2fauth/formcontrols': '/resources/js/packages/formcontrols/src/index.js',
+            '@2fauth/stores': '/resources/js/packages/stores/src/index.js',
         },
         dedupe: [
             'pinia',

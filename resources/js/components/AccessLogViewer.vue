@@ -1,16 +1,11 @@
 <script setup>
+    import LogItem from '@/components/LogItem.vue'
     import userService from '@/services/userService'
-    import { UseColorMode } from '@vueuse/components'
     import { useErrorHandler } from '@2fauth/stores'
     import { SearchBox } from '@2fauth/ui'
     import {
         LucideCalendarArrowDown,
         LucideCalendarArrowUp,
-        LucideSmartphone,
-        LucideMonitor,
-        LucideTablet,
-        LucideCheck,
-        LucideX
     } from '@lucide/vue'
 
     const errorHandler = useErrorHandler()
@@ -130,96 +125,44 @@
                 return 'display'
         }
     }
-
-    const isSuccessfulLogin = (authentication) => {
-        return authentication.login_successful && authentication.login_at
-    }
-
-    const isSuccessfulLogout = (authentication) => {
-        return !authentication.login_at && authentication.logout_at
-    }
-
-    const isFailedEntry = (authentication) => {
-        return !authentication.login_successful && !authentication.logout_at
-    }
 </script>
 
 <template>
-    <SearchBox v-if="props.showSearch" v-model:keyword="searched" :hasNoBackground="true" />
-    <nav v-if="props.showSearch" class="level is-mobile mb-2">
-        <div class="level-item has-text-centered">
-            <div class="buttons"> 
-                <button id="btnShowOneMonth" :title="$t('tooltip.show_last_month_log')" v-on:click="setPeriod(periods.aMonth)" :class="{ 'has-text-grey' : period !== periods.aMonth }" type="button" class="button is-ghost p-1">
+    <div v-if="props.showSearch" class="mb-4 flex flex-col gap-3">
+        <SearchBox v-model:keyword="searched" :hasNoBackground="true" :isSmall="true" />
+        <nav class="flex flex-wrap items-center justify-center gap-2">
+            <div class="md-segmented h-9" role="group">
+                <button id="btnShowOneMonth" :title="$t('tooltip.show_last_month_log')" v-on:click="setPeriod(periods.aMonth)" :aria-checked="period === periods.aMonth" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.one_month') }}
                 </button>
-                <button id="btnShowThreeMonths" :title="$t('tooltip.show_three_months_log')" v-on:click="setPeriod(periods.threeMonths)" :class="{ 'has-text-grey' : period !== periods.threeMonths }" type="button" class="button is-ghost p-1">
+                <button id="btnShowThreeMonths" :title="$t('tooltip.show_three_months_log')" v-on:click="setPeriod(periods.threeMonths)" :aria-checked="period === periods.threeMonths" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.x_month', { 'x' : '3' }) }}
                 </button>
-                <button id="btnShowSixMonths" :title="$t('tooltip.show_six_months_log')" v-on:click="setPeriod(periods.halfYear)" :class="{ 'has-text-grey' : period !== periods.halfYear }" type="button" class="button is-ghost p-1">
+                <button id="btnShowSixMonths" :title="$t('tooltip.show_six_months_log')" v-on:click="setPeriod(periods.halfYear)" :aria-checked="period === periods.halfYear" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.x_month', { 'x' : '6' }) }}
                 </button>
-                <button id="btnShowOneYear" :title="$t('tooltip.show_one_year_log')" v-on:click="setPeriod(periods.aYear)" :class="{ 'has-text-grey' : period !== periods.aYear }" type="button" class="button is-ghost p-1 mr-5">
+                <button id="btnShowOneYear" :title="$t('tooltip.show_one_year_log')" v-on:click="setPeriod(periods.aYear)" :aria-checked="period === periods.aYear" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.one_year') }}
                 </button>
-                <button id="btnSortLogDesc" v-on:click="setDesc" :title="$t('tooltip.sort_by_date_desc')" :class="{ 'has-text-grey' : !orderIsDesc }" type="button" class="button p-1 is-ghost">
+            </div>
+            <div class="flex items-center gap-1">
+                <button id="btnSortLogDesc" v-on:click="setDesc" :title="$t('tooltip.sort_by_date_desc')" :aria-label="$t('tooltip.sort_by_date_desc')" :aria-pressed="orderIsDesc" type="button" class="md-icon-btn md-icon-btn-sm aria-pressed:bg-md-secondary-container aria-pressed:text-md-on-secondary-container">
                     <LucideCalendarArrowDown />
                 </button>
-                <button id="btnSortLogAsc" v-on:click="setAsc" :title="$t('tooltip.sort_by_date_asc')" :class="{ 'has-text-grey' : orderIsDesc }" type="button" class="button p-1 is-ghost">
+                <button id="btnSortLogAsc" v-on:click="setAsc" :title="$t('tooltip.sort_by_date_asc')" :aria-label="$t('tooltip.sort_by_date_asc')" :aria-pressed="!orderIsDesc" type="button" class="md-icon-btn md-icon-btn-sm aria-pressed:bg-md-secondary-container aria-pressed:text-md-on-secondary-container">
                     <LucideCalendarArrowUp />
                 </button>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
     <Spinner v-if="isFetching" :isVisible="true" :type="'list-loading'" />
-    <div v-else-if="authentications.length == 0" class="mt-4">
+    <p v-else-if="authentications.length == 0" class="md-card mt-4 text-center text-body text-md-on-surface-variant">
         {{ $t('message.no_entry_yet') }}
+    </p>
+    <div v-else-if="visibleAuthentications.length > 0" class="md-list">
+        <LogItem v-for="authentication in visibleAuthentications" :key="authentication.id" :log="authentication" log-type="auth" />
     </div>
-    <div v-else-if="visibleAuthentications.length > 0">
-        <div v-for="authentication in visibleAuthentications" :key="authentication.id" class="list-item is-size-6 is-size-7-mobile has-text-grey is-flex is-justify-content-space-between">
-            <UseColorMode v-slot="{ mode }">
-                <div>
-                    <div>
-                        <i18n-t v-if="isFailedEntry(authentication)" keypath="message.failed_login_on" tag="span">
-                            <template v-slot:login_at>
-                                <span class="light-or-darker">{{ authentication.login_at }}</span>
-                            </template>
-                        </i18n-t>
-                        <i18n-t v-else-if="isSuccessfulLogout(authentication)" keypath="message.successful_logout_on" tag="span">
-                            <template v-slot:logout_at>
-                                <span class="light-or-darker">{{ authentication.logout_at }}</span>
-                            </template>
-                        </i18n-t>
-                        <i18n-t v-else-if="$2fauth.config.proxyAuth" keypath="message.viewed_on" tag="span">
-                            <template v-slot:login_at>
-                                <span class="light-or-darker">{{ authentication.login_at }}</span>
-                            </template>
-                        </i18n-t>
-                        <i18n-t v-else keypath="message.successful_login_on" tag="span">
-                            <template v-slot:login_at>
-                                <span class="light-or-darker">{{ authentication.login_at }}</span>
-                            </template>
-                        </i18n-t>
-                    </div>
-                    <div>
-                        {{ $t('label.IP') }}: <span class="light-or-darker">{{ authentication.ip_address }}</span> -
-                        {{ $t('label.browser') }}: <span class="light-or-darker">{{ authentication.browser }}</span> -
-                        {{ $t('label.operating_system_short') }}: <span class="light-or-darker">{{ authentication.platform }}</span>
-                    </div>
-                </div>
-                <div :class="mode == 'dark' ? 'has-text-grey-darker' : 'has-text-grey-lighter'"
-                    class="is-align-self-center ">
-                    <div class="log-icon-wrapper">
-                        <LucideSmartphone v-if="authentication.device=='phone'" class="log-icon-bg" />
-                        <LucideTablet v-else-if="authentication.device=='tablet'" class="log-icon-bg" />
-                        <LucideMonitor v-else class="log-icon-bg" />
-                        <LucideX v-if="isFailedEntry(authentication)" stroke-width=3 class="log-icon-mark" :class="'has-text-danger'" />
-                        <LucideCheck v-else stroke-width=3 class="log-icon-mark" :class="'has-text-success-50'" />
-                    </div>
-                </div>
-            </UseColorMode>
-        </div>
-    </div>
-    <div v-else class="mt-5 pl-3">
+    <p v-else class="mt-5 px-3 text-body text-md-on-surface-variant">
         {{ $t('message.no_result') }}
-    </div>
+    </p>
 </template>

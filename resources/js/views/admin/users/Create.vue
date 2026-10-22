@@ -33,7 +33,7 @@
     <StackLayout>
         <template #content>
             <FormWrapper title="heading.new_user">
-                <form @submit.prevent="createUser" @keydown="registerForm.onKeydown($event)">
+                <form @submit.prevent="createUser" @keydown="registerForm.onKeydown($event)" class="md-card sm:p-8">
                     <FormField v-model="registerForm.name" fieldName="name" :errorMessage="registerForm.errors.get('name')" inputType="text" label="field.name" autocomplete="username" :maxLength="255" autofocus />
                     <FormField v-model="registerForm.email" fieldName="email" :errorMessage="registerForm.errors.get('email')" inputType="email" label="field.email" autocomplete="email" :maxLength="255" />
                     <FormPasswordField v-model="registerForm.password" fieldName="password" :errorMessage="registerForm.errors.get('password')" :showRules="true" label="field.password" autocomplete="new-password" />

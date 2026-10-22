@@ -16,6 +16,18 @@
     <link rel="apple-touch-icon" href="{{ asset('favicon_lg.png') }}" />
     <link rel="apple-touch-icon-precomposed" href="{{ asset('favicon_lg.png') }}" />
     <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#fffbfe" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#141218" media="(prefers-color-scheme: dark)">
+    <script type="text/javascript" {!! isset($cspNonce) ? "nonce='" . $cspNonce . "'" : "" !!}>
+        // Apply the colour scheme before first paint (same storage key as VueUse's useColorMode).
+        (function () {
+            try {
+                var mode = localStorage.getItem('vueuse-color-scheme') || '{{ $defaultPreferences['theme'] == 'system' ? 'auto' : $defaultPreferences['theme'] }}';
+                var dark = mode === 'dark' || (mode !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', dark);
+            } catch (e) {}
+        })();
+    </script>
 
 </head>
 <body>

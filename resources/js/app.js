@@ -3,7 +3,7 @@ import Notifications from '@kyvg/vue3-notification'
 import App from './App.vue'
 import router from './router'
 
-import '@2fauth/styles/src/app.scss';
+import '../css/app.css'
 
 const app = createApp(App)
 

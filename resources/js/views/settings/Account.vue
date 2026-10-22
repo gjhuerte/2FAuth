@@ -1,4 +1,5 @@
 <script setup>
+    import { LucideLink, LucideShieldUser, LucideTriangleAlert } from '@lucide/vue'
     import tabs from './tabs'
     import Form from '@/components/formElements/Form'
     import { useUserStore } from '@/stores/user'
@@ -122,28 +123,32 @@
         </template>
         <template #content>
             <ResponsiveWidthWrapper>
-                <div v-if="isLaptop && user.preferences.showQuickNavMenus" class="pr-5 settings-menu">
+                <div v-if="isLaptop && user.preferences.showQuickNavMenus" class="settings-menu fixed top-32 -ml-60 w-52">
                     <aside class="menu">
-                        <ul class="menu-list">
-                            <li><button @click="scrollTo(profileRef)">{{ $t('heading.profile') }}</button></li>
-                            <li><button @click="scrollTo(changePasswordRef)">{{ $t('heading.change_password') }}</button></li>
-                            <li><button @click="scrollTo(deleteAccountRef)">{{ $t('heading.delete_account') }}</button></li>
+                        <ul class="menu-list flex flex-col gap-0.5">
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(profileRef)">{{ $t('heading.profile') }}</button></li>
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(changePasswordRef)">{{ $t('heading.change_password') }}</button></li>
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(deleteAccountRef)">{{ $t('heading.delete_account') }}</button></li>
                         </ul>
                     </aside>
                 </div>
-                <div v-if="user.oauth_provider" class="notification is-info has-text-centered">
-                    {{ $t('message.account_linked_to_sso_x_provider', { provider: user.oauth_provider }) }}
-                </div>
-                <form @submit.prevent="submitProfile" @keydown="formProfile.onKeydown($event)">
-                    <div v-if="$2fauth.config.proxyAuth" class="notification is-warning has-text-centered">
-                        {{ $t('message.user_account_controlled_by_proxy') + ' ' + $t('message.manage_account_at_proxy_level') }}
-                    </div>
-                    <h4 ref="heading-profile" class="title is-4">
+                <div class="animate-enter pb-8">
+                <p v-if="user.oauth_provider" class="md-callout md-callout-info mb-6">
+                    <LucideLink />
+                    <span>{{ $t('message.account_linked_to_sso_x_provider', { provider: user.oauth_provider }) }}</span>
+                </p>
+                <form @submit.prevent="submitProfile" @keydown="formProfile.onKeydown($event)" class="md-card mb-4 sm:p-8">
+                    <p v-if="$2fauth.config.proxyAuth" class="md-callout md-callout-warning mb-6">
+                    <LucideTriangleAlert />
+                    <span>{{ $t('message.user_account_controlled_by_proxy') + ' ' + $t('message.manage_account_at_proxy_level') }}</span>
+                </p>
+                    <h2 ref="heading-profile" class="md-section-title mb-6 flex scroll-mt-6 items-center gap-3">
                         {{ $t('heading.profile') }}
-                        <span v-if="user.isAdmin" class="tag is-warning ml-1">
+                        <span v-if="user.isAdmin" class="md-badge md-badge-warning">
+                            <LucideShieldUser />
                             {{ $t('label.administrator') }}
                         </span>
-                    </h4>
+                    </h2>
                     <fieldset :disabled="$2fauth.config.proxyAuth || user.oauth_provider">
                         <FormField v-model="formProfile.name" fieldName="name" :errorMessage="formProfile.errors.get('name')" label="field.name" :maxLength="255" autocomplete="username" autofocus />
                         <FormField v-model="formProfile.email" fieldName="email" :errorMessage="formProfile.errors.get('email')" inputType="email" label="field.email" autocomplete="email" :maxLength="255" autofocus />
@@ -151,10 +156,10 @@
                         <FormButtons :isBusy="formProfile.isBusy" submitLabel="label.update" />
                     </fieldset>
                 </form>
-                <form @submit.prevent="submitPassword" @keydown="formPassword.onKeydown($event)">
+                <form @submit.prevent="submitPassword" @keydown="formPassword.onKeydown($event)" class="md-card mb-4 sm:p-8">
                     <input hidden type="text" name="name" :value="formProfile.name" autocomplete="username" />
                     <input hidden type="text" name="email" :value="formProfile.email" autocomplete="email" />
-                    <h4 ref="heading-changePassword" class="title is-4 pt-6">{{ $t('heading.change_password') }}</h4>
+                    <h2 ref="heading-changePassword" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.change_password') }}</h2>
                     <fieldset :disabled="$2fauth.config.proxyAuth || user.oauth_provider">
                         <FormPasswordField v-model="formPassword.password" fieldName="password" :errorMessage="formPassword.errors.get('password')" idSuffix="ForUpdate" autocomplete="new-password" :showRules="true" label="field.new_password" />
                         <FormPasswordField v-model="formPassword.password_confirmation" :showRules="false" fieldName="password_confirmation" :errorMessage="formPassword.errors.get('password_confirmation')" inputType="password" autocomplete="new-password" label="field.confirm_new_password" />
@@ -162,20 +167,24 @@
                         <FormButtons :isBusy="formPassword.isBusy" submitId="btnSubmitChangePwd" submitLabel="label.change_password" />
                     </fieldset>
                 </form>
-                <form id="frmDeleteAccount" @submit.prevent="submitDelete" @keydown="formDelete.onKeydown($event)">
+                <form id="frmDeleteAccount" @submit.prevent="submitDelete" @keydown="formDelete.onKeydown($event)" class="md-card mb-4 bg-md-error-container/40 ring-1 ring-md-error/30 sm:p-8">
                     <input hidden type="text" name="name" :value="formProfile.name" autocomplete="username" />
                     <input hidden type="text" name="email" :value="formProfile.email" autocomplete="email" />
-                    <h4 ref="heading-deleteAccount" class="title is-4 pt-6 has-text-danger">{{ $t('heading.delete_account') }}</h4>
-                    <div class="field is-size-7-mobile">
-                        <p class="block">{{ $t('message.delete_your_account_and_reset_all_data')}}</p>
+                    <h2 ref="heading-deleteAccount" class="md-section-title mb-4 flex scroll-mt-6 items-center gap-2 text-md-error!">
+                        <LucideTriangleAlert class="size-6!" />
+                        {{ $t('heading.delete_account') }}
+                    </h2>
+                    <div class="mb-6 flex flex-col gap-2 text-body leading-relaxed text-md-on-surface-variant">
+                        <p>{{ $t('message.delete_your_account_and_reset_all_data')}}</p>
                         <p>{{ $t('message.reset_your_password_to_delete_your_account') }}</p>
                         <p>{{ $t('message.deleting_2fauth_account_does_not_impact_provider') }}</p>
                     </div>
                     <fieldset :disabled="$2fauth.config.proxyAuth">
                         <FormField v-model="formDelete.password" fieldName="password" :errorMessage="formDelete.errors.get('password')" inputType="password" idSuffix="ForDelete" autocomplete="new-password" label="field.current_password" help="field.current_password.help" />
-                        <FormButtons :isBusy="formDelete.isBusy" submitLabel="label.delete_your_account" submitId="btnDeleteAccount" color="is-danger" />
+                        <FormButtons :isBusy="formDelete.isBusy" submitLabel="label.delete_your_account" submitId="btnDeleteAccount" color="danger" />
                     </fieldset>
                 </form>
+                </div>
             </ResponsiveWidthWrapper>
         </template>
         <template #footer>

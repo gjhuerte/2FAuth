@@ -3,12 +3,11 @@
     import AccessLogViewer from '@/components/AccessLogViewer.vue'
     import userService from '@/services/userService'
     import { useNotify } from '@2fauth/ui'
-    import { UseColorMode } from '@vueuse/components'
     import { useUserStore } from '@/stores/user'
     import { useBusStore } from '@/stores/bus'
     import { useI18n } from 'vue-i18n'
     import { useErrorHandler } from '@2fauth/stores'
-    import { LucideSquareUser } from '@lucide/vue'
+    import { LucideLink, LucideTrash2, LucideTriangleAlert } from '@lucide/vue'
     import { useSettingsBreakpoints } from '@/composables/breakpoints'
 
     const errorHandler = useErrorHandler()
@@ -209,149 +208,145 @@
 
 
 <template>
-    <UseColorMode v-slot="{ mode }">
     <StackLayout>
         <template #content>
             <ResponsiveWidthWrapper>
-                <h1 ref="heading-user" class="title mb-6">
+                <h1 ref="heading-user" class="md-page-title mb-6 scroll-mt-6">
                     {{ $t('heading.user_management') }}
                 </h1>
-                <div v-if="isLaptop && user.preferences.showQuickNavMenus" class="pr-5 settings-menu">
+                <div v-if="isLaptop && user.preferences.showQuickNavMenus" class="settings-menu fixed top-32 -ml-60 w-52">
                     <aside class="menu">
-                        <ul class="menu-list">
-                            <li><button @click="scrollTo(userRef)">{{ $t('heading.user') }}</button></li>
+                        <ul class="menu-list flex flex-col gap-0.5">
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(userRef)">{{ $t('heading.user') }}</button></li>
                             <li v-if="!$2fauth.config.proxyAuth">
-                                <button @click="scrollTo(accessRef)" class="has-ellipsis">{{ $t('heading.access') }}</button>
-                                <ul class="mt-1">
-                                    <li><button @click="scrollTo(lastAccessesRef)">{{ $t('heading.last_accesses') }}</button></li>
+                                <button type="button" class="md-menu-item h-10 truncate rounded-full" @click="scrollTo(accessRef)">{{ $t('heading.access') }}</button>
+                                <ul class="ml-4 flex flex-col gap-0.5 border-l border-md-outline-variant pl-2">
+                                    <li><button type="button" class="md-menu-item h-9 rounded-full text-md-on-surface-variant" @click="scrollTo(lastAccessesRef)">{{ $t('heading.last_accesses') }}</button></li>
                                 </ul>
                             </li>
-                            <li><button @click="scrollTo(preferencesRef)">{{ $t('heading.preferences') }}</button></li>
-                            <li><button @click="scrollTo(dangerZoneRef)">{{ $t('heading.danger_zone') }}</button></li>
+                            <li><button type="button" class="md-menu-item h-10 rounded-full" @click="scrollTo(preferencesRef)">{{ $t('heading.preferences') }}</button></li>
+                            <li><button type="button" class="md-menu-item h-10 rounded-full md-menu-item-danger" @click="scrollTo(dangerZoneRef)">{{ $t('heading.danger_zone') }}</button></li>
                         </ul>
                     </aside>
                 </div>
                 <!-- user info -->
-                <div v-if="! isFetching && managedUser">
-                    <div class="columns is-mobile is-2">
-                        <div class="column is-narrow" :class="mode == 'dark' ? 'has-text-grey' : 'has-text-grey-dark'">
-                            <LucideSquareUser :strokeWidth="1" class="icon-size-3" />
+                <div v-if="! isFetching && managedUser" class="animate-enter pb-8">
+                    <section class="relative mb-4 overflow-hidden rounded-xl bg-md-surface-container p-6 shadow-md sm:p-8">
+                        <div aria-hidden="true" class="pointer-events-none absolute -right-16 -top-20 size-56 rounded-full bg-md-primary/20 blur-3xl"></div>
+                        <div class="relative flex items-center gap-4">
+                            <span class="inline-flex size-16 shrink-0 items-center justify-center rounded-full bg-md-primary-container text-title-lg text-md-on-primary-container">
+                                {{ managedUser.info.name.charAt(0).toUpperCase() }}
+                            </span>
+                            <div class="min-w-0 flex-1">
+                                <p class="flex items-center gap-2 text-title-lg text-md-on-surface">
+                                    <span class="truncate">{{ managedUser.info.name }}</span>
+                                    <span class="md-badge md-badge-outline shrink-0 font-mono">#{{ managedUser.info.id }}</span>
+                                </p>
+                                <p class="truncate text-body text-md-on-surface-variant">{{ managedUser.info.email }}</p>
+                            </div>
                         </div>
-                        <div class="column">
-                            <p class="title is-4" :class="mode == 'dark' ? 'has-text-grey-lighter' : 'has-text-grey-dark'">
-                                <span class="has-text-weight-light has-text-grey-dark is-pulled-right">#{{ managedUser.info.id }}</span>{{ managedUser.info.name }}
-                            </p>
-                            <p class="subtitle is-6">{{ managedUser.info.email }}</p>
+                        <p class="relative mt-4 text-label font-normal text-md-on-surface-variant">
+                            {{ $t('message.registered_on_date', { date: managedUser.info.created_at }) }} · {{ $t('message.last_seen_on_date', { date: managedUser.info.last_seen_at }) }}
+                        </p>
+                        <!-- oauth banner -->
+                        <p v-if="managedUser.info.oauth_provider" class="md-callout md-callout-info relative mt-4">
+                            <LucideLink />
+                            {{ $t('message.account_bound_to_x_via_oauth', { provider: managedUser.info.oauth_provider }) }}
+                        </p>
+                        <!-- isAdmin option -->
+                        <div class="relative mt-6">
+                            <FormCheckbox v-model="managedUser.info.is_admin" @update:model-value="val => saveAdminRole(val === true)" :isDanger="true" fieldName="is_admin" label="field.is_admin" help="field.is_admin.help" />
                         </div>
-                    </div>
-                    <!-- oauth banner -->
-                    <div v-if="managedUser.info.oauth_provider" class="notification is-dark is-size-7-mobile has-text-centered">
-                        {{ $t('message.account_bound_to_x_via_oauth', { provider: managedUser.info.oauth_provider }) }}
-                    </div>
-                    <div class="block is-size-6 is-size-7-mobile has-text-grey">
-                        {{ $t('message.registered_on_date', { date: managedUser.info.created_at }) }} - {{ $t('message.last_seen_on_date', { date: managedUser.info.last_seen_at }) }}
-                    </div>
-                    <!-- isAdmin option -->
-                    <div class="block">
-                        <FormCheckbox v-model="managedUser.info.is_admin" @update:model-value="val => saveAdminRole(val === true)" :isDanger="true" fieldName="is_admin" label="field.is_admin" help="field.is_admin.help" />
-                    </div>
-                    <h2 v-if="!$2fauth.config.proxyAuth" ref="heading-access" class="title is-4">{{ $t('heading.access') }}</h2>
+                    </section>
                     <!-- access -->
-                    <div v-if="!$2fauth.config.proxyAuth" class="block">
-                        <!-- reset password -->
-                        <div class="list-item is-size-6 is-size-6-mobile has-text-grey">
-                            <div class="mb-3 is-flex is-justify-content-space-between">
-                                <div>
-                                    <span class="has-text-weight-bold">{{ $t('heading.password') }}</span>
-                                </div>
-                                <div>
-                                    <div class="tags ml-3 is-right">
-                                        <!-- resend email button -->
-                                        <button type="button" v-if="managedUser.password_reset" class="button tag is-pulled-right" :class="mode == 'dark' ? 'is-dark has-background-link' : 'is-white'" @click="resendPasswordEmail" :title="$t('tooltip.resend_email_title')">
-                                            {{ $t('label.resend_email') }}
-                                        </button>
-                                        <!-- reset password button -->
-                                        <button type="button" class="button tag is-pulled-right " :class="mode == 'dark' ? 'is-dark has-background-link' : 'is-white'" @click="resetPassword" :title="$t('tooltip.reset_password_title')">
-                                            {{ $t('label.reset_password') }}
-                                        </button>
+                    <section v-if="!$2fauth.config.proxyAuth" class="md-card mb-4 sm:p-8">
+                        <h2 ref="heading-access" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.access') }}</h2>
+                        <div class="md-list">
+                            <!-- reset password -->
+                            <div class="md-list-item flex-wrap items-start bg-md-surface-container-high">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-body font-medium text-md-on-surface">{{ $t('heading.password') }}</p>
+                                    <div class="mt-1 flex flex-col gap-1 text-label font-normal text-md-on-surface-variant">
+                                        <span v-if="managedUser.password_reset === 0">{{ $t('message.password_request_expired') }}</span>
+                                        <span v-else-if="managedUser.password_reset">{{ $t('message.password_requested_on_t', { datetime: managedUser.password_reset }) }}</span>
+                                        <span v-if="managedUser.password_reset">{{ $t('message.resend_email_help') }}</span>
+                                        <span>{{ $t('message.reset_password_help') }}</span>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="is-size-7 is-size-7-mobile has-text-grey-dark">
-                                <span v-if="managedUser.password_reset === 0" class="is-block block">{{ $t('message.password_request_expired') }}</span>
-                                <span v-else-if="managedUser.password_reset" class="is-block block">{{ $t('message.password_requested_on_t', { datetime: managedUser.password_reset }) }}</span>
-                                <span v-if="managedUser.password_reset" class="is-block block">{{ $t('message.resend_email_help') }}</span>
-                                <span class="is-block block">{{ $t('message.reset_password_help') }}</span>
-                            </div>
-                        </div>
-                        <!-- personal access tokens -->
-                        <div class="list-item is-size-6 is-size-6-mobile has-text-grey is-flex is-justify-content-space-between">
-                            <div>
-                                <span class="has-text-weight-bold">{{ $t('heading.personal_access_tokens') }}</span>
-                                <span class="is-block is-family-primary has-text-grey-dark">
-                                    {{ $t('message.user_has_x_active_pat', { count: managedUser.valid_personal_access_tokens }) }}
-                                </span>
-                            </div>
-                            <div v-if="managedUser.valid_personal_access_tokens > 0">
-                                <div class="tags ml-3 is-right">
-                                    <!-- manage link -->
-                                    <button type="button" class="button tag is-pulled-right" :class="mode == 'dark' ? 'is-dark has-background-link' : 'is-white'" @click="revokePATs" :title="$t('tooltip.revoke_all_pat_for_user')">
-                                        {{ $t('label.revoke') }}
+                                <div class="flex flex-wrap gap-1.5">
+                                    <!-- resend email button -->
+                                    <button type="button" v-if="managedUser.password_reset" class="md-btn md-btn-tonal md-btn-xs" @click="resendPasswordEmail" :title="$t('tooltip.resend_email_title')">
+                                        {{ $t('label.resend_email') }}
+                                    </button>
+                                    <!-- reset password button -->
+                                    <button type="button" class="md-btn md-btn-tonal md-btn-xs" @click="resetPassword" :title="$t('tooltip.reset_password_title')">
+                                        {{ $t('label.reset_password') }}
                                     </button>
                                 </div>
                             </div>
-                        </div>
-                        <!-- webauthn devices -->
-                        <div class="list-item is-size-6 is-size-6-mobile has-text-grey is-flex is-justify-content-space-between">
-                            <div>
-                                <span class="has-text-weight-bold">{{ $t('heading.security_devices') }}</span>
-                                <span class="is-block has-text-grey-dark">
-                                    {{ $t('message.user_has_x_security_devices', { count: managedUser.webauthn_credentials }) }}
-                                </span>
-                            </div>
-                            <div v-if="managedUser.webauthn_credentials > 0">
-                                <div class="tags ml-3 is-right">
-                                    <!-- manage link -->
-                                    <button type="button" class="button tag is-pulled-right" :class="mode == 'dark' ? 'is-dark has-background-link' : 'is-white'" :title="$t('tooltip.revoke_all_devices_for_user')">
-                                        {{ $t('label.revoke') }}
-                                    </button>
+                            <!-- personal access tokens -->
+                            <div class="md-list-item bg-md-surface-container-high">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-body font-medium text-md-on-surface">{{ $t('heading.personal_access_tokens') }}</p>
+                                    <p class="text-label font-normal text-md-on-surface-variant">
+                                        {{ $t('message.user_has_x_active_pat', { count: managedUser.valid_personal_access_tokens }) }}
+                                    </p>
                                 </div>
+                                <button v-if="managedUser.valid_personal_access_tokens > 0" type="button" class="md-btn md-btn-danger-text md-btn-xs" @click="revokePATs" :title="$t('tooltip.revoke_all_pat_for_user')">
+                                    {{ $t('label.revoke') }}
+                                </button>
+                            </div>
+                            <!-- webauthn devices -->
+                            <div class="md-list-item bg-md-surface-container-high">
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-body font-medium text-md-on-surface">{{ $t('heading.security_devices') }}</p>
+                                    <p class="text-label font-normal text-md-on-surface-variant">
+                                        {{ $t('message.user_has_x_security_devices', { count: managedUser.webauthn_credentials }) }}
+                                    </p>
+                                </div>
+                                <button v-if="managedUser.webauthn_credentials > 0" type="button" class="md-btn md-btn-danger-text md-btn-xs" :title="$t('tooltip.revoke_all_devices_for_user')">
+                                    {{ $t('label.revoke') }}
+                                </button>
                             </div>
                         </div>
-                    </div>
-                    <!-- last access -->
-                    <div class="block">
-                        <h3 ref="heading-lastAccesses" class="title is-5 mb-2">{{ $t('heading.last_accesses') }}</h3>
+                        <!-- last access -->
+                        <h3 ref="heading-lastAccesses" class="mb-4 mt-8 scroll-mt-6 text-title text-md-primary">{{ $t('heading.last_accesses') }}</h3>
                         <AccessLogViewer v-if="managedUser" :userId="props.userId" :lastOnly="true" @has-more-entries="showFullLogLink = true"/>
-                    </div>
-                    <div v-if="showFullLogLink" class="block is-size-6 is-size-7-mobile has-text-grey">
-                        {{ $t('message.log_has_more_entries') }} <router-link id="lnkFullLogs" class="is-link" :to="{ name: 'admin.logs.access', params: { userId: props.userId }}" >
-                            {{ $t('link.see_full_log') }}.
-                        </router-link>
-                    </div>
+                        <p v-if="showFullLogLink" class="mt-4 text-label font-normal text-md-on-surface-variant">
+                            {{ $t('message.log_has_more_entries') }} <router-link id="lnkFullLogs" class="md-link" :to="{ name: 'admin.logs.access', params: { userId: props.userId }}" >
+                                {{ $t('link.see_full_log') }}.
+                            </router-link>
+                        </p>
+                    </section>
                     <!-- preferences -->
-                    <h2 ref="heading-preferences" class="title is-4">{{ $t('heading.preferences') }}</h2>
-                    <div class="about-debug box is-family-monospace is-size-7 is-shadowless">
-                        <CopyButton id="btnCopyEnvVars" :token="listUserPreferences?.innerText" />
-                        <ul ref="listUserPreferences" id="listUserPreferences">
-                            <li v-for="(value, preference) in managedUser.info.preferences" :value="value" :key="preference">
-                                <b>{{preference}}</b>: <span class="has-text-grey">{{value}}</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <!-- danger zone -->
-                    <h2 ref="heading-dangerZone" class="title is-4 has-text-danger">{{ $t('heading.danger_zone') }}</h2>
-                    <div class="is-left-bordered-danger">
-                        <div class="block is-size-6 is-size-7-mobile">
-                            {{  $t('message.delete_this_user_legend') }}
-                            <span class="is-block has-text-grey has-text-weight-bold">
-                                {{  $t('message.this_is_not_soft_delete') }}
-                            </span>
+                    <section class="md-card mb-4 sm:p-8">
+                        <h2 ref="heading-preferences" class="md-section-title mb-6 scroll-mt-6">{{ $t('heading.preferences') }}</h2>
+                        <div class="about-debug relative rounded-md bg-md-surface-container-highest p-5 font-mono text-label-sm shadow-inner">
+                            <CopyButton id="btnCopyEnvVars" :token="listUserPreferences?.innerText" />
+                            <ul ref="listUserPreferences" id="listUserPreferences" class="flex flex-col gap-1">
+                                <li v-for="(value, preference) in managedUser.info.preferences" :value="value" :key="preference" class="break-all">
+                                    <b class="font-medium text-md-on-surface">{{preference}}</b>: <span class="text-md-on-surface-variant">{{value}}</span>
+                                </li>
+                            </ul>
                         </div>
-                        <button type="button" class="button is-danger" @click="deleteUser" title="delete">
+                    </section>
+                    <!-- danger zone -->
+                    <section class="md-card mb-4 sm:p-8 bg-md-error-container/40 ring-1 ring-md-error/30">
+                        <h2 ref="heading-dangerZone" class="md-section-title mb-4 flex scroll-mt-6 items-center gap-2 text-md-error!">
+                            <LucideTriangleAlert class="size-6!" />
+                            {{ $t('heading.danger_zone') }}
+                        </h2>
+                        <p class="text-body leading-relaxed text-md-on-surface-variant">
+                            {{  $t('message.delete_this_user_legend') }}
+                        </p>
+                        <p class="mt-2 text-body font-medium text-md-on-surface">
+                            {{  $t('message.this_is_not_soft_delete') }}
+                        </p>
+                        <button type="button" class="md-btn md-btn-danger mt-6" @click="deleteUser" title="delete">
+                            <LucideTrash2 />
                             {{  $t('label.delete_this_user') }}
                         </button>
-                    </div>
+                    </section>
                 </div>
             </ResponsiveWidthWrapper>
             <!-- loader -->
@@ -361,10 +356,9 @@
             <VueFooter>
                 <template #default>
                     <NavigationButton action="back" @goback="router.push({ name: 'admin.users' })" :previous-page-title="$t('title.admin.users')" />
-                    <NavigationButton action="close" @closed="router.push({ name: 'accounts' })" :current-page-title="$t('title.admin.manageUser')" />
+                    <NavigationButton action="close" :isText="true" @closed="router.push({ name: 'accounts' })" :current-page-title="$t('title.admin.manageUser')" />
                 </template>
             </VueFooter>
         </template>
     </StackLayout>
-    </UseColorMode>
 </template>

@@ -1,0 +1,56 @@
+# 2FAuth — development stack
+#
+#   cp docker-dev/.env.example docker-dev/.env     # set UID/GID, ports
+#   cp .env.example .env                           # app settings (DB_*, APP_URL …)
+#   docker compose -f docker-dev/docker-compose.yml up -d --build
+#   docker exec -it 2fauth composer install
+#   docker exec -it 2fauth php artisan 2fauth:install
+#
+# The project folder is bind-mounted and the app talks to MariaDB over the
+# external `proxy` network (SQLite also works: DB_CONNECTION=sqlite). The
+# Docker socket is NOT mounted (it gives full control of the host).
+#
+# APP_URL in the project .env must match the URL you open (e.g.
+# http://localhost:8009), otherwise WebAuthn will refuse to work.
+
+name: 2fauth
+
+services:
+  app:
+    container_name: 2fauth
+    image: 2fauth:dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    working_dir: /var/www/html
+    restart: unless-stopped
+    environment:
+      XDEBUG_MODE: ${XDEBUG_MODE:-off}
+      # 2FAuth has no jobs table; Laravel's default would be "database".
+      QUEUE_CONNECTION: sync
+    ports:
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-8009}:8080"
+    volumes:
+      - ${PROJECT_PATH:-..}:/var/www/html
+      - /etc/localtime:/etc/localtime:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:8080/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    networks:
+      - default
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: ${TWOFAUTH_PROXY_NETWORK:-proxy}

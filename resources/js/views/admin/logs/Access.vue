@@ -33,20 +33,22 @@
     <StackLayout>
         <template #content>
             <ResponsiveWidthWrapper>
-                <h1 class="title">
+                <h1 class="md-page-title">
                     {{ $t('heading.access_log') }}
                 </h1>
-                <div class="block is-size-7-mobile">
-                    {{ $t('message.access_log_legend_for_user', { username: username }) }} (#{{ props.userId }})
+                <p class="mb-6 mt-2 text-body text-md-on-surface-variant">
+                    {{ $t('message.access_log_legend_for_user', { username: username }) }} <span class="md-badge md-badge-outline font-mono">#{{ props.userId }}</span>
+                </p>
+                <div class="animate-enter pb-8">
+                    <AccessLogViewer :userId="props.userId" :lastOnly="false" :showSearch="true" :period="1" />
                 </div>
-                <AccessLogViewer :userId="props.userId" :lastOnly="false" :showSearch="true" :period="1" />
             </ResponsiveWidthWrapper>
         </template>
         <template #footer>
             <VueFooter>
                 <template #default>
                     <NavigationButton action="back" @goback="router.push({ name: 'admin.manageUser', params: { userId: props.userId }})" :previous-page-title="$t('title.admin.manageUser')" />
-                    <NavigationButton action="close" @closed="router.push({ name: 'accounts' })" :current-page-title="$t('title.admin.logs.access')" />
+                    <NavigationButton action="close" :isText="true" @closed="router.push({ name: 'accounts' })" :current-page-title="$t('title.admin.logs.access')" />
                 </template>
             </VueFooter>
         </template>

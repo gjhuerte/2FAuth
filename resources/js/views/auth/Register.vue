@@ -1,4 +1,5 @@
 <script setup>
+    import AuthCard from '@/components/AuthCard.vue'
     import Form from '@/components/formElements/Form'
     import { useUserStore } from '@/stores/user'
     import { useAppSettingsStore } from '@/stores/appSettings'
@@ -6,7 +7,7 @@
     import { useNotify } from '@2fauth/ui'
     import { useI18n } from 'vue-i18n'
     import { useErrorHandler } from '@2fauth/stores'
-    import { LucideCheck } from '@lucide/vue'
+    import { LucideCheck, LucideFingerprint } from '@lucide/vue'
 
     const errorHandler = useErrorHandler()
     const { t } = useI18n()
@@ -91,45 +92,42 @@
     <StackLayout>
         <template #content>
             <!-- webauthn registration -->
-            <FormWrapper v-if="showWebauthnRegistration" title="heading.authentication" punchline="message.enhance_security_using_webauthn">
-                <div class="block">
+            <AuthCard v-if="showWebauthnRegistration" title="heading.authentication" punchline="message.enhance_security_using_webauthn">
+                <p class="mb-6 text-body leading-relaxed text-md-on-surface-variant">
                     {{ $t('message.webauthn_uses_trusted_devices') }}
-                </div>
-                <div v-if="deviceId" class="field">
-                    <label id="lblDeviceRegistrationSuccess" class="label mb-5">
-                        {{ $t('notification.device_successfully_registered') }}<LucideCheck class="ml-1 inline" />
-                    </label>
+                </p>
+                <div v-if="deviceId">
+                    <p id="lblDeviceRegistrationSuccess" class="md-callout md-callout-success mb-6">
+                        <LucideCheck />
+                        {{ $t('notification.device_successfully_registered') }}
+                    </p>
                     <form @submit.prevent="RenameDevice" @keydown="renameDeviceForm.onKeydown($event)">
                         <FormField v-model="renameDeviceForm.name" fieldName="name" :errorMessage="renameDeviceForm.errors.get('name')" inputType="text" placeholder="iPhone 12, TouchID, Yubikey 5C" label="field.name_this_device" />
-                        <FormButtons :isBusy="renameDeviceForm.isBusy" :isDisabled="renameDeviceForm.isDisabled" submitLabel="label.continue" />
+                        <FormButtons :isBusy="renameDeviceForm.isBusy" :isDisabled="renameDeviceForm.isDisabled" submitLabel="label.continue" :isFullWidth="true" />
                     </form>
                 </div>
-                <div v-else class="field is-grouped">
+                <div v-else class="flex flex-col gap-3">
                     <!-- register button -->
-                    <div class="control">
-                        <button type="button" id="btnRegisterNewDevice" @click="registerWebauthnDevice()" class="button is-link">{{ $t('label.register_a_device') }}</button>
-                    </div>
+                    <button type="button" id="btnRegisterNewDevice" @click="registerWebauthnDevice()" class="md-btn md-btn-filled md-btn-lg w-full">
+                        <LucideFingerprint />
+                        {{ $t('label.register_a_device') }}
+                    </button>
                     <!-- dismiss button -->
-                    <div class="control">
-                        <RouterLink id="btnMaybeLater" :to="{ name: 'accounts' }" class="button is-text">{{ $t('link.maybe_later') }}</RouterLink>
-                    </div>
+                    <RouterLink id="btnMaybeLater" :to="{ name: 'accounts' }" class="md-btn md-btn-text md-btn-lg w-full">{{ $t('link.maybe_later') }}</RouterLink>
                 </div>
-            </FormWrapper>
+            </AuthCard>
             <!-- User registration form -->
-            <FormWrapper v-else title="heading.register" punchline="message.welcome_to_2fauth">
-                <div class="block">
-                    {{ $t('message.you_need_an_account_to_go_further') }}
-                </div>
+            <AuthCard v-else title="heading.register" punchline="message.you_need_an_account_to_go_further">
                 <form @submit.prevent="register" @keydown="registerForm.onKeydown($event)">
                     <FormField v-model="registerForm.name" fieldName="name" :errorMessage="registerForm.errors.get('name')" inputType="text" label="field.name" autocomplete="username" :maxLength="255" autofocus />
                     <FormField v-model="registerForm.email" fieldName="email" :errorMessage="registerForm.errors.get('email')" inputType="email" label="field.email" autocomplete="email" :maxLength="255" />
                     <FormPasswordField v-model="registerForm.password" fieldName="password" :errorMessage="registerForm.errors.get('password')" :showRules="true" autocomplete="new-password" label="field.password" />
-                    <FormButtons :isBusy="registerForm.isBusy" :isDisabled="registerForm.isDisabled" submitLabel="label.register" submitId="btnRegister" />
+                    <FormButtons :isBusy="registerForm.isBusy" :isDisabled="registerForm.isDisabled" submitLabel="label.register" submitId="btnRegister" :isFullWidth="true" />
                 </form>
-                <div class="nav-links">
-                    <p>{{ $t('message.already_register') }}&nbsp;<RouterLink id="lnkSignIn" :to="{ name: 'login' }" class="is-link">{{ $t('link.sign_in') }}</RouterLink></p>
-                </div>
-            </FormWrapper>
+                <template #links>
+                    <p>{{ $t('message.already_register') }} <RouterLink id="lnkSignIn" :to="{ name: 'login' }" class="md-link">{{ $t('link.sign_in') }}</RouterLink></p>
+                </template>
+            </AuthCard>
         </template>
         <template #footer>
             <VueFooter />

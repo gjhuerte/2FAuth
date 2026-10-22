@@ -13,7 +13,7 @@ ${GROUP SWITCH}    groupSwitch
 ${SEARCH FIELD}    txtSearch
 ${GRID CLASS}    tfa-grid
 ${LIST CLASS}    tfa-list
-${ACCOUNTS CONTAINER}    css:.accounts > span
+${ACCOUNTS CONTAINER}    css:#dv
 ${2FA ACCOUNT}    class:tfa-cell
 ${MODAL OTP}    class:modal-otp
 ${ALWAYS ON OTP}    class:always-on-otp

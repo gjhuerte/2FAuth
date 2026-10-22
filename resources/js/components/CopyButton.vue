@@ -18,7 +18,7 @@
 </script>
 
 <template>
-    <button type="button" :aria-label="$t('label.copy_to_clipboard')" :title="$t('tooltip.copy_to_clipboard')" class="button is-like-text is-pulled-right is-text" @click.stop="copyToClipboard()">
+    <button type="button" :aria-label="$t('label.copy_to_clipboard')" :title="$t('tooltip.copy_to_clipboard')" class="md-icon-btn md-icon-btn-sm float-right" @click.stop="copyToClipboard()">
         <LucideCopy />
     </button>
 </template>

@@ -1,7 +1,7 @@
 <script setup>
     import twofaccountService from '@/services/twofaccountService'
     import groupService from '@/services/groupService'
-    import { UseColorMode } from '@vueuse/components'
+    import { LucideFolderMinus } from '@lucide/vue'
 
     const props = defineProps({
         showDestinationGroupSelector: Boolean,
@@ -32,35 +32,38 @@
     <!-- Group selector -->
     <StackLayout>
         <template #content>
-            <div class="columns is-centered is-multiline m-0 mt-6">
-                <div class="column is-full has-text-centered">
-                    {{ $t('message.move_selected_to') }}
+            <div class="mx-auto w-full max-w-md pb-6 pt-10 animate-enter">
+                <h2 class="md-section-title mb-6 text-center">{{ $t('message.move_selected_to') }}</h2>
+                <div class="md-list shadow-sm" role="radiogroup">
+                    <template v-for="group in groups" :key="group.id">
+                        <button
+                            v-if="group.id > 0"
+                            type="button"
+                            role="radio"
+                            :aria-checked="destinationGroupId === group.id"
+                            class="flex min-h-14 w-full items-center gap-4 border-b border-md-surface px-5 text-left text-body text-md-on-surface transition-colors duration-200 ease-md hover:bg-md-on-surface/8 aria-checked:bg-md-secondary-container aria-checked:text-md-on-secondary-container"
+                            @click="destinationGroupId = group.id"
+                        >
+                            <span class="flex size-5 shrink-0 items-center justify-center rounded-full border-2" :class="destinationGroupId === group.id ? 'border-md-primary' : 'border-md-on-surface-variant'">
+                                <span v-if="destinationGroupId === group.id" class="size-2.5 rounded-full bg-md-primary"></span>
+                            </span>
+                            <span class="truncate">{{ group.name }}</span>
+                        </button>
+                    </template>
                 </div>
-                <div class="column is-one-third-tablet is-one-quarter-desktop is-one-quarter-widescreen is-one-quarter-fullhd">
-                    <div class="columns is-multiline">
-                        <UseColorMode v-slot="{ mode }">
-                            <template v-for="group in groups" :key="group.id">
-                                <div v-if="group.id > 0" class="column is-full">
-                                    <button type="button" class="button is-fullwidth" :class="{'is-link' : destinationGroupId === group.id, 'is-dark has-text-light is-outlined': mode == 'dark'}" @click="destinationGroupId = group.id">
-                                        {{ group.name }}
-                                    </button>
-                                </div>
-                            </template>
-                            <div class="column has-text-centered">
-                                {{ $t('message.or') }}
-                            </div>
-                            <div class="column is-full">
-                                <button type="button" class="button is-fullwidth" :class="{'is-link' : destinationGroupId === 0, 'is-dark has-text-light is-outlined': mode == 'dark'}" @click="destinationGroupId = 0">
-                                    {{ $t('label.remove_from_group') }}
-                                </button>
-                            </div>
-                        </UseColorMode>
-                    </div>
-                    <div class="columns is-centered">
-                        <div class="column has-text-centered">
-                            <RouterLink :to="{ name: 'groups' }" >{{ $t('link.manage_groups') }}</RouterLink>
-                        </div>
-                    </div>
+                <p class="my-4 text-center text-label text-md-on-surface-variant">{{ $t('message.or') }}</p>
+                <button
+                    type="button"
+                    role="radio"
+                    :aria-checked="destinationGroupId === 0"
+                    class="md-card md-card-interactive flex w-full items-center gap-4 p-4 text-left text-body text-md-on-surface aria-checked:bg-md-secondary-container aria-checked:text-md-on-secondary-container"
+                    @click="destinationGroupId = 0"
+                >
+                    <LucideFolderMinus class="text-md-on-surface-variant" />
+                    {{ $t('label.remove_from_group') }}
+                </button>
+                <div class="mt-6 text-center">
+                    <RouterLink :to="{ name: 'groups' }" class="md-link">{{ $t('link.manage_groups') }}</RouterLink>
                 </div>
             </div>
         </template>
@@ -68,9 +71,7 @@
             <VueFooter>
                 <template #default>
                     <!-- Move to selected group button -->
-                    <p class="control">
-                        <button type="button" class="button is-link is-rounded" @click="moveAccounts">{{ $t('label.apply') }}</button>
-                    </p>
+                    <button type="button" class="md-btn md-btn-filled md-btn-lg" :disabled="destinationGroupId === null" @click="moveAccounts">{{ $t('label.apply') }}</button>
                     <NavigationButton action="cancel" :useLinkTag="false" @canceled="$emit('update:showDestinationGroupSelector', false)" />
                 </template>
             </VueFooter>

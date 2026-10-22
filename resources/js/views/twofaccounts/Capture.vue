@@ -2,12 +2,11 @@
     import Form from '@/components/formElements/Form'
     import QrContentDisplay from '@/components/QrContentDisplay.vue'
     import { useBusStore } from '@/stores/bus'
-    import { UseColorMode } from '@vueuse/components'
     import { useNotify } from '@2fauth/ui'
     import { QrcodeStream } from 'vue-qrcode-reader'
     import { useI18n } from 'vue-i18n'
     import { useErrorHandler } from '@2fauth/stores'
-    import { LucideLock, LucideVideoOff, LucideStar, LucideCamera } from '@lucide/vue'
+    import { LucideChevronDown, LucideLock, LucideRefreshCw, LucideVideoOff, LucideStar, LucideCamera } from '@lucide/vue'
 
     const errorHandler = useErrorHandler()
     const { t } = useI18n()
@@ -118,7 +117,8 @@
         for (const detectedCode of detectedCodes) {
             const [firstPoint, ...otherPoints] = detectedCode.cornerPoints
 
-            ctx.strokeStyle = 'red'
+            ctx.strokeStyle = '#d0bcff'
+            ctx.lineWidth = 4
 
             ctx.beginPath()
             ctx.moveTo(firstPoint.x, firstPoint.y)
@@ -137,62 +137,53 @@
 </script>
 
 <template>
-    <div class="modal is-active">
-        <div class="modal-background"></div>
-        <div class="modal-card is-flex-grow-1">
-            <section class="modal-card-body modal-slot py-0 is-align-content-center has-text-centered">
-                <div class="columns is-centered">
-                    <div class="column is-three-quarters">
-                        <div class="modal-slot has-text-centered is-shadowless">
-                            <UseColorMode v-slot="{ mode }">
-                                <div v-if="errorPhrase">
-                                    <p class="block is-size-5">{{ $t('message.stream.live_scan_cant_start') }}</p>
-                                    <p class="block" :class="{'has-text-light': mode == 'dark'}">{{ $t('message.stream.' + errorPhrase + '.reason') }}</p>
-                                    <div v-if="errorPhrase == 'need_grant_permission'" >
-                                        <p class="is-size-7 mb-3">{{ $t('message.stream.need_grant_permission.solution') }}</p>
-                                        <p class="is-size-7 mb-3">{{ $t('message.stream.need_grant_permission.click_camera_icon') }}</p>
-                                        
-                                        <div class="addressbar columns is-mobile is-gapless">
-                                            <div class="column is-narrow has-text-left circled">
-                                                <LucideLock class="ml-1 inline icon-size-1-15" />
-                                                <LucideVideoOff class="ml-3 inline icon-size-1-15" />
-                                            </div>
-                                            <div class="column has-text-left ml-3">
-                                                http://my.2fauth.app/...
-                                            </div>
-                                            <div class="column is-narrow has-text-right">
-                                                <LucideStar class="mr-1 inline icon-size-1-15" />
-                                            </div>
-                                        </div>
-                                        <p>
-                                            <a class="is-link" @click.stop="reloadLocation">{{ $t('label.refresh') }}</a>
-                                        </p>
-                                    </div>
-                                    <p v-else class="is-size-7">{{ $t('message.stream.' + errorPhrase + '.solution') }}</p>
-                                </div>
-                                <span v-else class="is-size-4" :class="mode == 'dark' ? 'has-text-light':'has-text-grey-dark'">
-                                    <Spinner :isVisible="true" :type="'raw'" :rawSize="32" />
-                                </span>
-                            </UseColorMode>
-                        </div>
+    <div class="modal is-active fixed inset-0 z-[2000] flex flex-col bg-md-scrim text-white" role="dialog" aria-modal="true">
+        <section class="modal-slot relative flex flex-1 flex-col items-center justify-center overflow-y-auto px-4 pt-[max(1rem,env(safe-area-inset-top))]">
+            <!-- errors / loading -->
+            <div v-if="errorPhrase" class="relative z-10 w-full max-w-md rounded-xl bg-md-surface-container p-8 text-center text-md-on-surface shadow-xl animate-enter">
+                <span class="mx-auto mb-5 inline-flex size-16 items-center justify-center rounded-lg bg-md-error-container text-md-on-error-container" aria-hidden="true">
+                    <LucideVideoOff class="size-8!" />
+                </span>
+                <p class="text-title text-md-on-surface">{{ $t('message.stream.live_scan_cant_start') }}</p>
+                <p class="mt-2 text-body text-md-on-surface-variant">{{ $t('message.stream.' + errorPhrase + '.reason') }}</p>
+                <div v-if="errorPhrase == 'need_grant_permission'" class="mt-5">
+                    <p class="mb-2 text-label font-normal text-md-on-surface-variant">{{ $t('message.stream.need_grant_permission.solution') }}</p>
+                    <p class="mb-4 text-label font-normal text-md-on-surface-variant">{{ $t('message.stream.need_grant_permission.click_camera_icon') }}</p>
+                    <!-- mock address bar -->
+                    <div class="addressbar flex items-center gap-3 rounded-full bg-md-surface-container-highest px-4 py-2.5 text-left font-mono text-label-sm text-md-on-surface-variant" aria-hidden="true">
+                        <span class="relative flex items-center gap-2">
+                            <LucideLock class="size-4!" />
+                            <span class="relative inline-flex">
+                                <span class="absolute -inset-1.5 rounded-full ring-2 ring-md-error"></span>
+                                <LucideVideoOff class="size-4!" />
+                            </span>
+                        </span>
+                        <span class="flex-1 truncate">http://my.2fauth.app/...</span>
+                        <LucideStar class="size-4!" />
                     </div>
+                    <button type="button" class="md-btn md-btn-tonal mt-5" @click.stop="reloadLocation">
+                        <LucideRefreshCw />
+                        {{ $t('label.refresh') }}
+                    </button>
                 </div>
-                <div v-show="!errorPhrase" class="fullscreen-streamer">
-                    <!-- device selector -->
-                    <div v-if="cameraIsOn && cameras.length > 1" class="field has-addons has-addons-centered">
-                        <p class="control has-icons-left">
-                            <span class="select">
-                                <select v-model="selectedCamera">
-                                    <option v-for="camera in cameras" :key="camera.label" :value="camera">
-                                        {{ camera.label ? camera.label : $t('label.default') }}
-                                    </option>
-                                </select>
-                            </span>
-                            <span class="icon is-small is-left">
-                                <LucideCamera />
-                            </span>
-                        </p>
-                    </div>
+                <p v-else class="mt-3 text-label font-normal text-md-on-surface-variant">{{ $t('message.stream.' + errorPhrase + '.solution') }}</p>
+            </div>
+            <span v-else-if="!cameraIsOn" class="relative z-10 inline-flex size-16 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+                <Spinner :isVisible="true" :type="'raw'" :rawSize="32" />
+            </span>
+            <!-- stream -->
+            <div v-show="!errorPhrase" class="fullscreen-streamer absolute inset-x-0 top-[6%] mx-auto flex h-[68%] max-w-3xl flex-col gap-3 px-4">
+                <!-- device selector -->
+                <div v-if="cameraIsOn && cameras.length > 1" class="relative z-10 mx-auto w-full max-w-xs">
+                    <LucideCamera class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/80" />
+                    <select v-model="selectedCamera" class="h-11 w-full cursor-pointer appearance-none rounded-full border border-white/20 bg-white/10 pl-12 pr-10 text-label text-white outline-none backdrop-blur-md focus-visible:ring-2 focus-visible:ring-white" :aria-label="$t('label.default')">
+                        <option v-for="camera in cameras" :key="camera.label" :value="camera" class="text-black">
+                            {{ camera.label ? camera.label : $t('label.default') }}
+                        </option>
+                    </select>
+                    <LucideChevronDown class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-white/80" />
+                </div>
+                <div class="relative flex-1 overflow-hidden rounded-2xl ring-1 ring-white/10">
                     <qrcode-stream
                         v-if="selectedCamera !== null"
                         :track="paintOutline"
@@ -201,16 +192,23 @@
                         @camera-on="cameraOn"
                         @camera-off="cameraOff"
                     ></qrcode-stream>
+                    <!-- viewfinder -->
+                    <div v-if="cameraIsOn" aria-hidden="true" class="pointer-events-none absolute left-1/2 top-1/2 size-56 -translate-x-1/2 -translate-y-1/2 sm:size-64">
+                        <span class="absolute left-0 top-0 size-10 rounded-tl-[28px] border-l-4 border-t-4 border-white/90"></span>
+                        <span class="absolute right-0 top-0 size-10 rounded-tr-[28px] border-r-4 border-t-4 border-white/90"></span>
+                        <span class="absolute bottom-0 left-0 size-10 rounded-bl-[28px] border-b-4 border-l-4 border-white/90"></span>
+                        <span class="absolute bottom-0 right-0 size-10 rounded-br-[28px] border-b-4 border-r-4 border-white/90"></span>
+                    </div>
                 </div>
-                <Modal v-model:is-active="showQrContent">
-                    <QrContentDisplay :qrContent="form.uri" />
-                </Modal>
-            </section>
-            <VueFooter>
-                <template #default>
-                    <NavigationButton action="cancel" :isCapture="true" :useLinkTag="false" @canceled="exitStream()" />
-                </template>
-            </VueFooter>
-        </div>
+            </div>
+            <Modal v-model:is-active="showQrContent">
+                <QrContentDisplay :qrContent="form.uri" />
+            </Modal>
+        </section>
+        <VueFooter>
+            <template #default>
+                <NavigationButton action="cancel" :isCapture="true" :useLinkTag="false" @canceled="exitStream()" />
+            </template>
+        </VueFooter>
     </div>
 </template>

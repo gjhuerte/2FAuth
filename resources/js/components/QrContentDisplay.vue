@@ -1,7 +1,7 @@
 <script setup>
     const { copy } = useClipboard({ legacy: true })
     import { useNotify } from '@2fauth/ui'
-    import { LucideExternalLink } from '@lucide/vue'
+    import { LucideCopy, LucideExternalLink, LucideQrCode } from '@lucide/vue'
     import { useI18n } from 'vue-i18n'
 
     const { t } = useI18n()
@@ -46,24 +46,28 @@
 </script>
 
 <template>
-    <div class="too-bad"></div>
-    <div class="block">
-        {{ $t('error.data_of_qrcode_is_not_valid_URI') }}
-    </div>
-    <div class="block mb-6 light-or-darker">{{ qrContent ? qrContent : '[' + $t('message.nothing') + ']' }}</div>
-    <!-- Copy to clipboard -->
-    <div class="block has-text-link" v-if="qrContent">
-        <button type="button" class="button is-link is-outlined is-rounded" @click.stop="copyToClipboard(qrContent)">
-            {{ $t('label.copy_to_clipboard') }}
-        </button>
-    </div>
-    <!-- Open in browser -->
-    <div class="block has-text-link" v-if="isUrl(qrContent)" @click="openInBrowser(qrContent)">
-        <button type="button" class="button is-link is-outlined is-rounded">
-            <span>{{ $t('label.open_in_browser') }}</span>
-            <span class="icon is-small">
+    <div class="flex flex-col items-center gap-5 text-center">
+        <span class="too-bad inline-flex size-16 items-center justify-center rounded-lg bg-md-error-container text-md-on-error-container" aria-hidden="true">
+            <LucideQrCode class="size-8!" />
+        </span>
+        <p class="text-body text-md-on-surface">
+            {{ $t('error.data_of_qrcode_is_not_valid_URI') }}
+        </p>
+        <p
+            class="light-or-darker w-full break-all rounded-md bg-md-surface-container-highest px-4 py-3 font-mono text-label text-md-on-surface-variant"
+            
+        >{{ qrContent ? qrContent : '[' + $t('message.nothing') + ']' }}</p>
+        <div class="flex flex-wrap justify-center gap-3">
+            <!-- Copy to clipboard -->
+            <button v-if="qrContent" type="button" class="md-btn md-btn-tonal" @click.stop="copyToClipboard(qrContent)">
+                <LucideCopy />
+                {{ $t('label.copy_to_clipboard') }}
+            </button>
+            <!-- Open in browser -->
+            <button v-if="isUrl(qrContent)" type="button" class="md-btn md-btn-outlined" @click="openInBrowser(qrContent)">
+                {{ $t('label.open_in_browser') }}
                 <LucideExternalLink />
-            </span>
-        </button>
+            </button>
+        </div>
     </div>
 </template>

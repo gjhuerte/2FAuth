@@ -1,4 +1,5 @@
 <script setup>
+    import { LucideCamera, LucideClipboardPaste, LucideFileInput, LucideImageUp, LucideKeyboard, LucideLoaderCircle, LucideScanQrCode } from '@lucide/vue'
     import Form from '@/components/formElements/Form'
     import { useUserStore } from '@/stores/user'
     import { useBusStore } from '@/stores/bus'
@@ -106,59 +107,81 @@
     <StackLayout :is-vertical-centered="true">
         <template #content>
             <Spinner v-if="isPasting" :type="'fullscreen-overlay'" :isVisible="true" message="message.parsing_data" />
-            <div v-else class="has-text-centered">
-                <!-- trailer phrase that invite to add an account -->
-                <div :class="{ 'is-hidden' : twofaccounts.count !== 0 }">
-                    {{ $t('message.no_account_here') }}<br>
-                    {{ $t('message.add_first_account') }}
-                </div>
-                <!-- Livescan button -->
-                <div class="quick-uploader-wrapper p-0 mt-6 mb-5" >
-                    <div class="quick-uploader-background"></div>
-                    <div class="quick-uploader-button is-align-content-center">
-                        <!-- upload a qr code (with basic file field and backend decoding) -->
-                        <label role="button" tabindex="0" v-if="user.preferences.useBasicQrcodeReader" class="button is-link is-medium is-rounded is-main"  :class="{ 'is-loading' : isUploading }" ref="qrcodeInputLabel" @keyup.enter="qrcodeInputLabel.click()">
-                            <input aria-hidden="true" tabindex="-1" class="file-input" type="file" accept="image/*" v-on:change="submitQrCode" ref="qrcodeInput">
-                            {{ $t('label.upload_qrcode') }}
-                        </label>
-                        <!-- scan button that launch camera stream -->
-                        <button v-else type="button" class="button is-link is-medium is-rounded is-main" @click="capture()">
-                            {{ $t('label.scan_qrcode') }}
-                        </button>
+            <div v-else class="mx-auto w-full max-w-3xl py-6">
+                <!-- hero -->
+                <section class="relative overflow-hidden rounded-2xl bg-md-surface-container px-6 py-10 text-center shadow-lg animate-enter sm:rounded-3xl sm:px-12 sm:py-14">
+                    <div aria-hidden="true" class="pointer-events-none absolute -left-24 -top-24 size-72 rounded-[100px] rounded-tr-[20px] bg-md-primary/25 blur-3xl mix-blend-multiply dark:mix-blend-screen"></div>
+                    <div aria-hidden="true" class="pointer-events-none absolute -bottom-32 -right-16 size-72 rounded-full bg-md-tertiary/20 blur-3xl mix-blend-multiply dark:mix-blend-screen"></div>
+                    <div class="relative">
+                        <span class="mx-auto mb-6 inline-flex size-20 items-center justify-center rounded-xl bg-md-primary-container text-md-on-primary-container shadow-md">
+                            <LucideScanQrCode class="size-10!" :stroke-width="1.5" />
+                        </span>
+                        <!-- trailer phrase that invite to add an account -->
+                        <div v-if="twofaccounts.count === 0" class="mb-8">
+                            <h1 class="md-page-title">{{ $t('message.no_account_here') }}</h1>
+                            <p class="mt-2 text-body-lg text-md-on-surface-variant max-sm:text-body">{{ $t('message.add_first_account') }}</p>
+                        </div>
+                        <div class="quick-uploader-wrapper">
+                            <!-- upload a qr code (with basic file field and backend decoding) -->
+                            <label v-if="user.preferences.useBasicQrcodeReader" role="button" tabindex="0" class="md-btn md-btn-filled md-btn-lg h-14 px-10 text-body shadow-md" :aria-busy="isUploading" ref="qrcodeInputLabel" @keyup.enter="qrcodeInputLabel.click()">
+                                <input aria-hidden="true" tabindex="-1" class="file-input sr-only" type="file" accept="image/*" v-on:change="submitQrCode" ref="qrcodeInput">
+                                <LucideLoaderCircle v-if="isUploading" class="md-btn-spinner" />
+                                <LucideImageUp v-else />
+                                {{ $t('label.upload_qrcode') }}
+                            </label>
+                            <!-- scan button that launch camera stream -->
+                            <button v-else type="button" class="md-btn md-btn-filled md-btn-lg h-14 px-10 text-body shadow-md" @click="capture()">
+                                <LucideCamera />
+                                {{ $t('label.scan_qrcode') }}
+                            </button>
+                            <FormFieldError v-if="form.errors.hasAny('qrcode')" :error="form.errors.get('qrcode')" :field="'qrcode'" />
+                        </div>
+                        <p class="mt-6 inline-flex items-center gap-2 rounded-full bg-md-surface-container-high px-4 py-2 text-label font-normal text-md-on-surface-variant">
+                            <LucideClipboardPaste class="size-4!" />
+                            {{ $t('message.you_can_also_paste') }}
+                        </p>
                     </div>
-                    <FormFieldError v-if="form.errors.hasAny('qrcode')" :error="form.errors.get('qrcode')" :field="'qrcode'" />
-                </div>
+                </section>
                 <!-- alternative methods -->
-                <div class="block light-or-darker">{{ $t('message.alternative_methods') }}</div>
-                <!-- upload a qr code -->
-                <div class="block has-text-link" v-if="!user.preferences.useBasicQrcodeReader">
-                    <label role="button" tabindex="0" class="button is-link is-outlined is-rounded" :class="{ 'is-loading' : isUploading }" ref="qrcodeInputLabel" @keyup.enter="qrcodeInputLabel.click()">
-                        <input aria-hidden="true" tabindex="-1" class="file-input" type="file" accept="image/*" v-on:change="handleUploadQR" ref="qrcodeInput">
-                        {{ $t('label.upload_qrcode') }}
+                <p class="md-overline mb-4 mt-10 px-2 text-center">{{ $t('message.alternative_methods') }}</p>
+                <div class="grid gap-3 sm:grid-cols-3">
+                    <!-- upload a qr code -->
+                    <label
+                        v-if="!user.preferences.useBasicQrcodeReader"
+                        role="button"
+                        tabindex="0"
+                        class="md-card md-card-interactive group flex items-center gap-4 p-5 text-left hover:scale-[1.02] sm:flex-col sm:items-start"
+                        ref="qrcodeInputLabel"
+                        @keyup.enter="qrcodeInputLabel.click()"
+                    >
+                        <input aria-hidden="true" tabindex="-1" class="file-input sr-only" type="file" accept="image/*" v-on:change="handleUploadQR" ref="qrcodeInput">
+                        <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md bg-md-secondary-container text-md-on-secondary-container transition-transform duration-300 ease-md group-hover:scale-110">
+                            <LucideLoaderCircle v-if="isUploading" class="animate-spin-md" />
+                            <LucideImageUp v-else />
+                        </span>
+                        <span class="text-title text-md-on-surface">{{ $t('label.upload_qrcode') }}</span>
                     </label>
-                </div>
-                <!-- link to advanced form -->
-                <div class="block has-text-link">
-                    <RouterLink class="button is-link is-outlined is-rounded" :to="{ name: 'createAccount' }" >
-                        {{ $t('link.use_advanced_form') }}
+                    <!-- link to advanced form -->
+                    <RouterLink class="md-card md-card-interactive group flex items-center gap-4 p-5 text-left no-underline hover:scale-[1.02] sm:flex-col sm:items-start" :to="{ name: 'createAccount' }">
+                        <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md bg-md-secondary-container text-md-on-secondary-container transition-transform duration-300 ease-md group-hover:scale-110">
+                            <LucideKeyboard />
+                        </span>
+                        <span class="text-title text-md-on-surface">{{ $t('link.use_advanced_form') }}</span>
                     </RouterLink>
-                </div>
-                <!-- link to import view -->
-                <div class="block has-text-link">
-                    <RouterLink id="btnImport" class="button is-link is-outlined is-rounded" :to="{ name: 'importAccounts' }" >
-                        {{ $t('label.import') }}
+                    <!-- link to import view -->
+                    <RouterLink id="btnImport" class="md-card md-card-interactive group flex items-center gap-4 p-5 text-left no-underline hover:scale-[1.02] sm:flex-col sm:items-start" :to="{ name: 'importAccounts' }">
+                        <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md bg-md-tertiary-container text-md-on-tertiary-container transition-transform duration-300 ease-md group-hover:scale-110">
+                            <LucideFileInput />
+                        </span>
+                        <span class="text-title text-md-on-surface">{{ $t('label.import') }}</span>
                     </RouterLink>
-                </div>
-                <!-- paste message -->
-                <div class="block">
-                    {{ $t('message.you_can_also_paste') }}<br>
                 </div>
             </div>
         </template>
         <template #footer>
             <VueFooter>
-                <template #default>
-                    <NavigationButton v-if="!twofaccounts.isEmpty" action="back" @goback="router.push({ name: 'accounts' })" :previous-page-title="$t('title.accounts')" />
+                <template v-if="!twofaccounts.isEmpty" #default>
+                    <NavigationButton action="back" @goback="router.push({ name: 'accounts' })" :previous-page-title="$t('title.accounts')" />
                 </template>
             </VueFooter>
         </template>

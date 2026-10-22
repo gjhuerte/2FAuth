@@ -135,39 +135,41 @@
 </script>
 
 <template>
-    <SearchBox v-if="props.showSearch" v-model:keyword="searched" :hasNoBackground="true" />
-    <nav v-if="props.showSearch" class="level is-mobile mb-2">
-        <div class="level-item has-text-centered">
-            <div class="buttons"> 
-                <button id="btnShowOneMonth" :title="$t('tooltip.show_last_month_log')" v-on:click="setPeriod(periods.aMonth)" :class="{ 'has-text-grey' : period !== periods.aMonth }" type="button" class="button is-ghost p-1">
+    <div v-if="props.showSearch" class="mb-4 flex flex-col gap-3">
+        <SearchBox v-model:keyword="searched" :hasNoBackground="true" :isSmall="true" />
+        <nav class="flex flex-wrap items-center justify-center gap-2">
+            <div class="md-segmented h-9" role="group">
+                <button id="btnShowOneMonth" :title="$t('tooltip.show_last_month_log')" v-on:click="setPeriod(periods.aMonth)" :aria-checked="period === periods.aMonth" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.one_month') }}
                 </button>
-                <button id="btnShowThreeMonths" :title="$t('tooltip.show_three_months_log')" v-on:click="setPeriod(periods.threeMonths)" :class="{ 'has-text-grey' : period !== periods.threeMonths }" type="button" class="button is-ghost p-1">
+                <button id="btnShowThreeMonths" :title="$t('tooltip.show_three_months_log')" v-on:click="setPeriod(periods.threeMonths)" :aria-checked="period === periods.threeMonths" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.x_month', { 'x' : '3' }) }}
                 </button>
-                <button id="btnShowSixMonths" :title="$t('tooltip.show_six_months_log')" v-on:click="setPeriod(periods.halfYear)" :class="{ 'has-text-grey' : period !== periods.halfYear }" type="button" class="button is-ghost p-1">
+                <button id="btnShowSixMonths" :title="$t('tooltip.show_six_months_log')" v-on:click="setPeriod(periods.halfYear)" :aria-checked="period === periods.halfYear" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.x_month', { 'x' : '6' }) }}
                 </button>
-                <button id="btnShowOneYear" :title="$t('tooltip.show_one_year_log')" v-on:click="setPeriod(periods.aYear)" :class="{ 'has-text-grey' : period !== periods.aYear }" type="button" class="button is-ghost p-1 mr-5">
+                <button id="btnShowOneYear" :title="$t('tooltip.show_one_year_log')" v-on:click="setPeriod(periods.aYear)" :aria-checked="period === periods.aYear" role="radio" type="button" class="md-segment min-h-9 px-3 py-0 text-label-sm">
                     {{ $t('label.one_year') }}
                 </button>
-                <button id="btnSortLogDesc" v-on:click="setDesc()" :title="$t('tooltip.sort_by_date_desc')" :class="{ 'has-text-grey' : !orderIsDesc }" type="button" class="button p-1 is-ghost">
+            </div>
+            <div class="flex items-center gap-1">
+                <button id="btnSortLogDesc" v-on:click="setDesc()" :title="$t('tooltip.sort_by_date_desc')" :aria-label="$t('tooltip.sort_by_date_desc')" :aria-pressed="orderIsDesc" type="button" class="md-icon-btn md-icon-btn-sm aria-pressed:bg-md-secondary-container aria-pressed:text-md-on-secondary-container">
                     <LucideCalendarArrowDown />
                 </button>
-                <button id="btnSortLogAsc" v-on:click="setAsc()" :title="$t('tooltip.sort_by_date_asc')" :class="{ 'has-text-grey' : orderIsDesc }" type="button" class="button p-1 is-ghost">
+                <button id="btnSortLogAsc" v-on:click="setAsc()" :title="$t('tooltip.sort_by_date_asc')" :aria-label="$t('tooltip.sort_by_date_asc')" :aria-pressed="!orderIsDesc" type="button" class="md-icon-btn md-icon-btn-sm aria-pressed:bg-md-secondary-container aria-pressed:text-md-on-secondary-container">
                     <LucideCalendarArrowUp />
                 </button>
             </div>
-        </div>
-    </nav>
-    <Spinner v-if="isFetching" :isVisible="true" :type="'list-loading'" />
-    <div v-else-if="logs.length == 0" class="mt-4">
-        {{ $t('message.no_entry_yet') }}
+        </nav>
     </div>
-    <div v-else-if="visibleLogs.length > 0">
+    <Spinner v-if="isFetching" :isVisible="true" :type="'list-loading'" />
+    <p v-else-if="logs.length == 0" class="md-card mt-4 text-center text-body text-md-on-surface-variant">
+        {{ $t('message.no_entry_yet') }}
+    </p>
+    <div v-else-if="visibleLogs.length > 0" class="md-list">
         <LogItem v-for="log in visibleLogs" :key="log.id" :log="log" :log-type="props.logType" />
     </div>
-    <div v-else class="mt-5 pl-3">
+    <p v-else class="mt-5 px-3 text-body text-md-on-surface-variant">
         {{ $t('message.no_result') }}
-    </div>
+    </p>
 </template>

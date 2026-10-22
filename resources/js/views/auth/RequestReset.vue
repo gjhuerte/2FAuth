@@ -1,4 +1,6 @@
 <script setup>
+    import AuthCard from '@/components/AuthCard.vue'
+    import { LucideMailCheck } from '@lucide/vue'
     import Form from '@/components/formElements/Form'
     import { useNotify } from '@2fauth/ui'
     import { useErrorHandler } from '@2fauth/stores'
@@ -40,20 +42,22 @@
 <template>
     <StackLayout>
         <template #content>
-            <FormWrapper :title="isWebauthnReset ? 'heading.account_recovery' : 'heading.reset_password'" :punchline="isWebauthnReset ? 'message.recovery_punchline' : 'message.reset_punchline'">
-                <div v-if="isWebauthnReset" class="block">
+            <AuthCard :title="isWebauthnReset ? 'heading.account_recovery' : 'heading.reset_password'" :punchline="isWebauthnReset ? 'message.recovery_punchline' : 'message.reset_punchline'">
+                <p v-if="isWebauthnReset" class="md-callout md-callout-info mb-6">
+                    <LucideMailCheck />
                     {{ $t('message.ensure_you_open_mail_in_trusted_device') }}
-                </div>
+                </p>
                 <form @submit.prevent="requestPasswordReset" @keydown="form.onKeydown($event)">
-                    <FormField v-model="form.email" fieldName="email" :errorMessage="form.errors.get('email')" label="field.email" autofocus />
+                    <FormField v-model="form.email" fieldName="email" :errorMessage="form.errors.get('email')" label="field.email" inputType="email" autofocus />
                     <FormButtons
                         :submitId="'btnSendResetPwd'"
                         :isBusy="form.isBusy"
                         :submitLabel="isWebauthnReset ? 'label.send_recovery_link' : 'label.send_password_reset_link'"
                         :showCancelButton="true"
+                        :isFullWidth="true"
                         @cancel="router.push({ name: 'login' })" />
                 </form>
-            </FormWrapper>
+            </AuthCard>
         </template>
         <template #footer>
             <VueFooter />
