@@ -513,10 +513,10 @@
                         <div
                             v-for="account in twofaccounts.filtered"
                             :key="account.id"
-                            class="group relative rounded-lg bg-md-surface-container shadow-sm transition-[box-shadow,transform,background-color] duration-300 ease-md hover:shadow-md"
+                            class="group relative rounded-[24px] bg-md-surface-container transition-[border-radius,scale,background-color] duration-500 ease-spring hover:rounded-[32px] hover:bg-md-surface-container-high active:scale-[0.98] active:rounded-[16px]"
                             :class="[
-                                isGrid ? 'tfa-grid flex flex-col items-center px-3 pb-4 pt-5 text-center hover:scale-[1.02]' : 'tfa-list flex items-center gap-3 px-3 py-2.5 sm:px-4',
-                                bus.inManagementMode && twofaccounts.selectedIds.includes(account.id) ? 'bg-md-secondary-container ring-1 ring-md-primary' : '',
+                                isGrid ? 'tfa-grid flex flex-col items-center px-3 pb-4 pt-5 text-center' : 'tfa-list flex items-center gap-3 px-3 py-2.5 sm:px-4',
+                                bus.inManagementMode && twofaccounts.selectedIds.includes(account.id) ? 'rounded-[36px]! bg-md-secondary-container! hover:bg-md-secondary-container-hover!' : '',
                             ]"
                         >
                             <!-- checkbox -->
@@ -552,7 +552,7 @@
                                         v-if="account.icon"
                                         role="presentation"
                                         class="tfa-icon md-account-icon transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
-                                        :class="[isGrid ? 'size-16 rounded-md p-2.5' : 'size-11', 'md-tone-' + (account.id % 5)]"
+                                        :class="[isGrid ? 'size-16 rounded-md p-2.5' : 'size-11', 'md-tone-' + (account.id % 5), 'md-shape-' + (account.id % 5)]"
                                         :src="$2fauth.config.subdirectory + '/storage/icons/' + account.icon"
                                         alt=""
                                     >
@@ -560,7 +560,7 @@
                                         v-else-if="account.icon == null"
                                         role="presentation"
                                         class="tfa-icon md-account-icon transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
-                                        :class="[isGrid ? 'size-16 rounded-md p-3' : 'size-11 p-2', 'md-tone-' + (account.id % 5)]"
+                                        :class="[isGrid ? 'size-16 rounded-md p-3' : 'size-11 p-2', 'md-tone-' + (account.id % 5), 'md-shape-' + (account.id % 5)]"
                                         :src="$2fauth.config.subdirectory + '/storage/noicon.svg'"
                                         alt=""
                                     >
@@ -568,7 +568,7 @@
                                         v-else
                                         aria-hidden="true"
                                         class="md-account-icon font-display font-semibold transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
-                                        :class="[isGrid ? 'size-16 rounded-md text-title-lg' : 'size-11 text-title', 'md-tone-' + (account.id % 5)]"
+                                        :class="[isGrid ? 'size-16 rounded-md text-title-lg' : 'size-11 text-title', 'md-tone-' + (account.id % 5), 'md-shape-' + (account.id % 5)]"
                                     >{{ initialOf(account) }}</span>
                                 </template>
                                 <div class="tfa-text min-w-0 max-w-full" :class="{ 'flex-1': !isGrid }">

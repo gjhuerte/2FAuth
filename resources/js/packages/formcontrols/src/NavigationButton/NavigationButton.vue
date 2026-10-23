@@ -1,5 +1,6 @@
 <script setup>
     import { computed } from 'vue'
+    import { LucideX, LucideArrowLeft } from '@lucide/vue'
 
     const props = defineProps({
         currentPageTitle: {
@@ -53,6 +54,7 @@
             role="button"
             :aria-label="$t('tooltip.close_the_x_page', { pagetitle: currentPageTitle })"
         >
+            <LucideX aria-hidden="true" />
             {{ $t('label.close') }}
         </a>
         <a
@@ -64,6 +66,7 @@
             role="button"
             :aria-label="$t('tooltip.go_back_to_the_x_page', { pagetitle: previousPageTitle })"
         >
+            <LucideArrowLeft aria-hidden="true" />
             {{ $t('label.back') }}
         </a>
         <a
@@ -74,6 +77,7 @@
             :class="classes"
             role="button"
         >
+            <LucideX aria-hidden="true" />
             {{ $t('label.cancel') }}
         </a>
     </template>
@@ -85,6 +89,7 @@
             @click="$emit('closed')"
             type="button"
         >
+            <LucideX aria-hidden="true" />
             {{ $t('label.close') }}
         </button>
         <button
@@ -94,6 +99,7 @@
             @click="$emit('canceled')"
             type="button"
         >
+            <LucideX aria-hidden="true" />
             {{ $t('label.cancel') }}
         </button>
     </template>

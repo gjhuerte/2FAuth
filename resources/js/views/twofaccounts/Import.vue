@@ -335,7 +335,7 @@
                         <LucideTriangleAlert />
                         {{ $t('message.do_not_set_password_or_encryption') }}
                     </p>
-                    <div class="md-list overflow-x-auto">
+                    <div class="md-card overflow-x-auto p-2">
                         <table class="md-table">
                             <thead>
                                 <tr>

@@ -45,7 +45,7 @@
 <template>
     <template v-if="$2fauth.context == 'webext'" >
         <!-- action buttons -->
-        <div v-if="$slots.default" class="mb-3 flex flex-wrap items-center justify-center gap-3">
+        <div v-if="$slots.default" class="md-dock mb-3">
             <slot name="default" />
         </div>
         <!-- sub-links -->
@@ -58,7 +58,7 @@
             <!-- action buttons -->
             <div
                 v-if="$slots.default"
-                class="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-xl border border-md-outline-variant bg-md-surface-container-high p-2 shadow-md"
+                class="md-dock"
                 :inert="showMenu"
             >
                 <slot name="default" />
@@ -127,11 +127,14 @@
                         type="button"
                         id="btnEmailMenu"
                         @click="showMenu = !showMenu"
-                        class="md-btn md-btn-neutral md-btn-sm max-w-full"
+                        class="md-account-chip"
                         :aria-expanded="showMenu"
                         aria-haspopup="menu"
                     >
-                        <span v-if="showReleaseFlag" class="release-flag size-2 shrink-0 rounded-full bg-md-tertiary" aria-hidden="true"></span>
+                        <span class="relative" aria-hidden="true"><span class="md-avatar md-shape-cookie">
+                            {{ (user.email || '?').charAt(0) }}</span>
+                            <span v-if="showReleaseFlag" class="release-flag absolute -right-0.5 -top-0.5 size-2.5 rounded-full bg-md-tertiary ring-2 ring-md-surface"></span>
+                        </span>
                         <span class="truncate">{{ user.email }}</span>
                         <LucideChevronUp class="transition-transform duration-300 ease-md" :class="{ 'rotate-180': !showMenu }" />
                     </button>

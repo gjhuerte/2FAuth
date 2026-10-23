@@ -1,5 +1,4 @@
 <script setup>
-    import { LucideLoaderCircle } from '@lucide/vue';
 
     const props = defineProps({
         isVisible: Boolean,
@@ -30,17 +29,17 @@
             :class="type == 'fullscreen' ? 'inset-y-0 bg-md-surface' : 'top-1/4 h-1/2'"
             role="status"
         >
-            <div class="flex flex-col items-center gap-5 rounded-xl bg-md-surface-container px-10 py-8 shadow-lg animate-enter">
-                <span id="icnSpinnerFull" class="relative inline-flex size-16 items-center justify-center">
-                    <LucideLoaderCircle class="relative size-12! animate-spin-md text-md-primary" />
+            <div class="flex flex-col items-center gap-5 rounded-[32px] bg-md-surface-container px-10 py-8 animate-enter">
+                <span id="icnSpinnerFull" class="md-loader-contained size-16">
+                    <span class="md-loader size-10"></span>
                 </span>
                 <span class="text-label text-md-on-surface-variant">{{ $t(message) }}</span>
             </div>
         </div>
-        <LucideLoaderCircle v-else-if="type == 'raw'" class="inline-block animate-spin-md text-md-primary" :size="rawSize" :style="{ width: rawSize + 'px', height: rawSize + 'px' }" />
+        <span v-else-if="type == 'raw'" class="md-loader" :style="{ width: rawSize + 'px', height: rawSize + 'px' }" role="status"></span>
         <div v-else-if="type == 'list-loading'" class="mt-16 flex justify-center" role="status">
-            <span id="icnSpinner" class="inline-flex size-12 items-center justify-center rounded-full bg-md-surface-container shadow-sm">
-                <LucideLoaderCircle class="size-6! animate-spin-md text-md-primary" />
+            <span id="icnSpinner" class="md-loader-contained size-14">
+                <span class="md-loader size-9"></span>
             </span>
         </div>
     </div>

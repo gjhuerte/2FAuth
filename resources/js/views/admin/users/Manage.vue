@@ -233,7 +233,7 @@
                 <div v-if="! isFetching && managedUser" class="animate-enter pb-8">
                     <section class="relative mb-4 overflow-hidden rounded-xl bg-md-surface-container p-6 shadow-md sm:p-8">
                         <div class="relative flex items-center gap-4">
-                            <span class="inline-flex size-16 shrink-0 -rotate-6 items-center justify-center rounded-full font-display text-title-lg font-semibold shadow-md" :class="'md-tone-' + (managedUser.info.id % 5)">
+                            <span class="md-shape-burst inline-flex size-16 shrink-0 items-center justify-center font-display text-title-lg font-semibold" :class="'md-tone-' + (managedUser.info.id % 5)">
                                 {{ managedUser.info.name.charAt(0).toUpperCase() }}
                             </span>
                             <div class="min-w-0 flex-1">

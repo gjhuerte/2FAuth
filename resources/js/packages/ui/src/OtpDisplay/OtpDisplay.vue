@@ -395,8 +395,8 @@
 <template>
     <div class="flex flex-col items-center">
         <figure
-            class="mb-5 inline-flex size-20 rotate-[-4deg] items-center justify-center overflow-hidden rounded-lg shadow-md animate-pop"
-            :class="otpauthParams.icon ? 'md-tone-' + ((otpauthParams.service || '').length % 5) : 'no-icon border border-dashed border-md-outline-variant bg-md-surface shadow-none'"
+            class="mb-5 inline-flex size-24 items-center justify-center overflow-hidden animate-pop transition-[rotate] duration-700 ease-spring hover:rotate-45"
+            :class="otpauthParams.icon ? ['md-tone-' + ((otpauthParams.service || '').length % 5), 'md-shape-' + ((otpauthParams.service || '').length % 5)] : 'no-icon rounded-[28px] border border-dashed border-md-outline-variant bg-md-surface'"
         >
             <img class="size-14 object-contain" :src="iconPathPrefix + '/storage/icons/' + otpauthParams.icon" v-if="otpauthParams.icon" :alt="$t('alttext.icon_to_illustrate_the_account')">
         </figure>

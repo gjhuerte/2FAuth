@@ -308,9 +308,9 @@
     --radius-xs: 10px;
     --radius-sm: 14px;
     --radius-md: 18px;
-    --radius-lg: 26px;
-    --radius-xl: 30px;
-    --radius-2xl: 36px;
+    --radius-lg: 28px;
+    --radius-xl: 32px;
+    --radius-2xl: 40px;
     --radius-3xl: 48px;
 
     /* Easing: MD3 emphasized for color, a gentle overshoot for movement. */
@@ -421,41 +421,41 @@
         @apply rounded-xs text-md-on-surface-variant underline-offset-4 transition-colors duration-200 ease-md hover:text-md-primary hover:underline;
     }
 
-    /* ---- Buttons: pill-shaped, "pushable" with a solid lip ---------------- */
+    /* ---- Buttons (M3 Expressive) -------------------------------------------
+       Round at rest; corners tighten into a squircle while pressed and spring
+       back on release. Flat, tonal colour — no lips, no shadows. */
     .md-btn {
-        @apply relative inline-flex h-10 shrink-0 cursor-pointer select-none items-center justify-center gap-2 whitespace-nowrap rounded-full px-6 text-label no-underline outline-none transition-[background-color,box-shadow,color,translate,scale] duration-200 ease-md focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2 focus-visible:ring-offset-md-surface disabled:pointer-events-none disabled:cursor-not-allowed disabled:text-md-on-disabled disabled:shadow-none aria-disabled:pointer-events-none aria-disabled:text-md-on-disabled;
+        @apply relative inline-flex h-10 shrink-0 cursor-pointer select-none items-center justify-center gap-2 whitespace-nowrap rounded-[20px] px-6 text-label no-underline outline-none transition-[background-color,color,border-color,border-radius,scale] duration-500 ease-spring focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2 focus-visible:ring-offset-md-surface active:rounded-[10px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:text-md-on-disabled aria-disabled:pointer-events-none aria-disabled:text-md-on-disabled;
     }
-    /* Raised variants sit on a lip and sink into it when pressed. */
     .md-btn-filled {
-        @apply bg-md-primary text-md-on-primary shadow-[0_3px_0_0_var(--md-primary-press)] hover:-translate-y-px hover:bg-md-primary-hover hover:shadow-[0_4px_0_0_var(--md-primary-press)] active:translate-y-[3px] active:shadow-none;
+        @apply bg-md-primary text-md-on-primary hover:bg-md-primary-hover active:bg-md-primary-press;
     }
     .md-btn-tonal {
-        @apply bg-md-secondary-container text-md-on-secondary-container shadow-[0_3px_0_0_var(--md-secondary-container-press)] hover:-translate-y-px hover:bg-md-secondary-container-hover hover:shadow-[0_4px_0_0_var(--md-secondary-container-press)] active:translate-y-[3px] active:shadow-none;
+        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover active:bg-md-secondary-container-press;
     }
     .md-btn-danger {
-        @apply bg-md-error text-md-on-error shadow-[0_3px_0_0_var(--md-error-press)] hover:-translate-y-px hover:bg-md-error-hover hover:shadow-[0_4px_0_0_var(--md-error-press)] active:translate-y-[3px] active:shadow-none;
+        @apply bg-md-error text-md-on-error hover:bg-md-error-hover active:bg-md-error-press;
     }
     .md-btn-danger-tonal {
-        @apply bg-md-error-container text-md-on-error-container shadow-[0_3px_0_0_var(--md-error-container-hover)] hover:-translate-y-px hover:bg-md-error-container-hover active:translate-y-[3px] active:shadow-none;
+        @apply bg-md-error-container text-md-on-error-container hover:bg-md-error-container-hover;
     }
     .md-btn-tertiary {
-        @apply bg-md-tertiary text-md-on-tertiary shadow-[0_3px_0_0_var(--md-tertiary-press)] hover:-translate-y-px hover:bg-md-tertiary-hover active:translate-y-[3px] active:shadow-none;
+        @apply bg-md-tertiary text-md-on-tertiary hover:bg-md-tertiary-hover active:bg-md-tertiary-press;
     }
     .md-btn-elevated {
-        @apply bg-md-surface-container-low text-md-primary shadow-md hover:-translate-y-px hover:bg-md-surface-container active:translate-y-1 active:shadow-none;
+        @apply bg-md-surface-container-high text-md-primary hover:bg-md-surface-container-highest;
     }
-    /* Flat variants: solid tint state layers, playful squish on press. */
     .md-btn-outlined {
-        @apply border border-md-outline bg-transparent text-md-primary hover:border-md-primary hover:bg-md-primary-soft active:scale-95 active:bg-md-primary-soft-press;
+        @apply border border-md-outline-variant bg-transparent text-md-on-surface-variant hover:border-md-outline hover:bg-md-hover active:bg-md-press;
     }
     .md-btn-text {
-        @apply bg-transparent px-4 text-md-primary hover:bg-md-primary-soft active:scale-95 active:bg-md-primary-soft-press;
+        @apply bg-transparent px-4 text-md-primary hover:bg-md-primary-soft active:bg-md-primary-soft-press;
     }
     .md-btn-neutral {
-        @apply bg-transparent px-4 text-md-on-surface-variant hover:bg-md-hover active:scale-95 active:bg-md-press;
+        @apply bg-transparent px-4 text-md-on-surface-variant hover:bg-md-hover active:bg-md-press;
     }
     .md-btn-danger-text {
-        @apply bg-transparent px-4 text-md-error hover:bg-md-error-soft active:scale-95;
+        @apply bg-transparent px-4 text-md-error hover:bg-md-error-soft;
     }
     .md-btn:is(.md-btn-filled, .md-btn-tonal, .md-btn-danger, .md-btn-danger-tonal, .md-btn-tertiary, .md-btn-elevated):disabled,
     .md-btn:is(.md-btn-filled, .md-btn-tonal, .md-btn-danger, .md-btn-danger-tonal, .md-btn-tertiary, .md-btn-elevated)[aria-disabled='true'] {
@@ -464,22 +464,28 @@
     .md-btn-outlined:disabled {
         @apply border-md-disabled;
     }
+    .md-btn-xs {
+        @apply h-8 gap-1.5 rounded-[16px] px-3 text-label-sm font-medium active:rounded-[8px];
+    }
     .md-btn-sm {
-        @apply h-9 px-4 text-[0.8125rem];
+        @apply h-9 rounded-[18px] px-4 text-[0.8125rem] active:rounded-[9px];
     }
     .md-btn-lg {
-        @apply h-12 px-8 text-[0.9375rem];
-    }
-    .md-btn-xs {
-        @apply h-8 gap-1.5 px-3 text-label-sm font-medium;
+        @apply h-14 gap-2.5 rounded-[28px] px-8 text-body font-medium active:rounded-[16px];
     }
     .md-btn svg.lucide {
-        @apply size-[1.125rem];
+        @apply size-[1.125rem] transition-[rotate,scale] duration-500 ease-spring;
+    }
+    .md-btn-lg svg.lucide {
+        @apply size-[1.375rem];
+    }
+    .md-btn:hover svg.lucide {
+        @apply -rotate-8 scale-110;
     }
 
-    /* Icon button: 40px circle */
+    /* Icon button: circle that squares off while pressed */
     .md-icon-btn {
-        @apply inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-md-on-surface-variant outline-none transition-[background-color,color,scale,rotate] duration-200 ease-spring hover:bg-md-hover hover:text-md-on-surface active:scale-85 active:bg-md-press focus-visible:ring-2 focus-visible:ring-md-primary disabled:pointer-events-none disabled:text-md-on-disabled;
+        @apply inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-[20px] text-md-on-surface-variant outline-none transition-[background-color,color,border-radius,rotate] duration-500 ease-spring hover:bg-md-hover hover:text-md-on-surface active:rounded-[10px] active:bg-md-press focus-visible:ring-2 focus-visible:ring-md-primary disabled:pointer-events-none disabled:text-md-on-disabled;
     }
     .md-icon-btn-tonal {
         @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
@@ -488,15 +494,15 @@
         @apply bg-md-error-container text-md-on-error-container hover:bg-md-error-container-hover hover:text-md-on-error-container;
     }
     .md-icon-btn-sm {
-        @apply size-8;
+        @apply size-8 rounded-[16px] active:rounded-[8px];
     }
     .md-icon-btn-sm svg.lucide {
         @apply size-4;
     }
 
-    /* Floating action button (tertiary, squircle). */
+    /* Floating action button: squircle that rounds out on hover */
     .md-fab {
-        @apply inline-flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-md bg-md-tertiary-container text-md-on-tertiary-container shadow-md outline-none transition-[box-shadow,translate,rotate] duration-300 ease-spring hover:-translate-y-0.5 hover:-rotate-6 hover:shadow-lg active:translate-y-1 active:shadow-none focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2;
+        @apply inline-flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-[16px] bg-md-tertiary-container text-md-on-tertiary-container outline-none transition-[border-radius,background-color,rotate] duration-500 ease-spring hover:rounded-[28px] hover:bg-md-tertiary-container-hover active:rounded-[12px] focus-visible:ring-2 focus-visible:ring-md-primary focus-visible:ring-offset-2;
     }
     .md-fab svg.lucide {
         @apply size-6;
@@ -507,9 +513,13 @@
         @apply size-[1.125rem] animate-spin-md;
     }
 
-    /* ---- Text fields (MD3 filled) ----------------------------------------- */
+    /* ---- Text fields (M3 Expressive filled, fully rounded) ---------------- */
     .md-label {
-        @apply mb-1.5 flex items-center gap-1.5 px-1 text-label text-md-on-surface-variant;
+        @apply mb-2 flex items-center gap-1.5 px-2 text-label font-medium text-md-on-surface-variant transition-colors duration-200 ease-md;
+    }
+    .md-field:focus-within > div > .md-label,
+    .md-field:focus-within > .md-label {
+        @apply text-md-primary;
     }
     .md-label-disabled {
         @apply text-md-on-disabled;
@@ -517,45 +527,45 @@
     .md-input,
     .md-textarea,
     .md-select {
-        @apply block w-full rounded-t-sm rounded-b-none border-0 border-b border-md-outline bg-md-surface-container-highest px-4 text-body text-md-on-surface caret-md-primary outline-none transition-[border-color,background-color,box-shadow] duration-200 ease-md placeholder:text-md-outline hover:bg-md-hover focus:border-md-primary focus:bg-md-primary-soft focus:shadow-[0_1px_0_0_var(--md-primary)] disabled:cursor-not-allowed disabled:border-md-disabled disabled:bg-md-disabled disabled:text-md-on-disabled aria-invalid:border-md-error;
+        @apply block w-full rounded-[16px] border-0 bg-md-surface-container-highest px-5 text-body text-md-on-surface caret-md-primary outline-none transition-[border-radius,background-color,box-shadow] duration-500 ease-spring placeholder:text-md-outline hover:bg-md-secondary-container focus:rounded-[28px] focus:bg-md-surface-container-high focus:shadow-[inset_0_0_0_2px_var(--md-primary)] disabled:cursor-not-allowed disabled:bg-md-disabled disabled:text-md-on-disabled aria-invalid:shadow-[inset_0_0_0_2px_var(--md-error)];
     }
     .md-input,
     .md-select {
         @apply h-14;
     }
     .md-textarea {
-        @apply min-h-28 resize-none py-3 font-mono text-label leading-relaxed;
+        @apply min-h-28 resize-none py-4 font-mono text-label leading-relaxed focus:rounded-[24px];
     }
     .md-select {
         @apply cursor-pointer appearance-none pr-12;
     }
     .md-input-sm {
-        @apply h-11 text-label;
+        @apply h-11 text-label focus:rounded-[22px];
     }
     /* Pill search field */
     .md-search {
-        @apply h-12 w-full rounded-full border border-transparent bg-md-surface-container-high px-5 pl-12 text-body text-md-on-surface outline-none transition-[background-color,border-color] duration-200 ease-md placeholder:text-md-on-surface-variant hover:bg-md-surface-container-highest focus:border-md-primary focus:bg-md-surface-container-highest;
+        @apply h-14 w-full rounded-full border-0 bg-md-surface-container-high px-5 pl-13 text-body text-md-on-surface outline-none transition-[background-color,box-shadow] duration-300 ease-md placeholder:text-md-on-surface-variant hover:bg-md-surface-container-highest focus:bg-md-surface-container-highest focus:shadow-[inset_0_0_0_2px_var(--md-primary)];
     }
     .md-help {
-        @apply mt-1.5 px-4 text-label-sm text-md-on-surface-variant;
+        @apply mt-2 px-5 text-label-sm text-md-on-surface-variant;
     }
     .md-help-error {
-        @apply mt-1.5 px-4 text-label-sm font-medium text-md-error;
+        @apply mt-2 px-5 text-label-sm font-medium text-md-error;
     }
     .md-help-warning {
-        @apply mt-1.5 px-4 text-label-sm font-medium text-md-warning;
+        @apply mt-2 px-5 text-label-sm font-medium text-md-warning;
     }
     .md-field {
-        @apply mb-5;
+        @apply mb-6;
     }
     .md-field-indent {
         @apply flex gap-1;
     }
 
-    /* ---- Checkbox --------------------------------------------------------- */
+    /* ---- Checkbox: squircle that pops when checked ------------------------ */
     .md-checkbox {
-        @apply relative size-[20px] shrink-0 cursor-pointer appearance-none rounded-[6px] border-2 border-md-on-surface-variant bg-md-surface bg-center bg-no-repeat outline-none transition-[background-color,border-color,box-shadow,scale] duration-200 ease-spring checked:scale-110 checked:border-md-primary checked:bg-md-primary hover:shadow-[0_0_0_10px_var(--md-hover)] focus-visible:shadow-[0_0_0_10px_var(--md-primary-soft-press)] active:scale-90 disabled:cursor-not-allowed disabled:border-md-on-disabled disabled:bg-md-disabled;
-        background-size: 14px;
+        @apply relative size-[22px] shrink-0 cursor-pointer appearance-none rounded-[7px] border-2 border-md-on-surface-variant bg-md-surface bg-center bg-no-repeat outline-none transition-[background-color,border-color,box-shadow,scale,border-radius] duration-500 ease-spring checked:scale-110 checked:rounded-[9px] checked:border-md-primary checked:bg-md-primary hover:shadow-[0_0_0_10px_var(--md-hover)] focus-visible:shadow-[0_0_0_10px_var(--md-primary-soft-press)] active:scale-90 disabled:cursor-not-allowed disabled:border-md-on-disabled disabled:bg-md-disabled;
+        background-size: 15px;
     }
     .md-checkbox:checked {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
@@ -564,27 +574,93 @@
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a1460' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
     }
 
-    /* ---- Segmented button (MD3) ------------------------------------------- */
-    .md-segmented {
-        @apply inline-flex max-w-full overflow-hidden rounded-full border border-md-outline-variant bg-md-surface;
+    /* ---- Switch (M3 Expressive: thumb grows + shows a check) -------------- */
+    .md-switch {
+        @apply relative inline-flex h-8 w-[52px] shrink-0;
     }
-    .md-segment {
-        @apply relative inline-flex min-h-10 flex-1 cursor-pointer items-center justify-center gap-1.5 border-l border-md-outline-variant px-4 py-2 text-label text-md-on-surface outline-none transition-[background-color,color] duration-200 ease-md first:border-l-0 hover:bg-md-hover focus-visible:z-10 focus-visible:bg-md-press disabled:cursor-not-allowed disabled:bg-md-disabled disabled:text-md-on-disabled;
+    .md-switch > input {
+        @apply absolute inset-0 z-10 m-0 size-full cursor-pointer appearance-none rounded-full opacity-0 disabled:cursor-not-allowed;
     }
-    .md-segment[aria-checked='true'] {
-        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
+    .md-switch-track {
+        @apply absolute inset-0 rounded-full border-2 border-md-outline bg-md-surface-container-highest transition-[background-color,border-color] duration-300 ease-md;
     }
-    .md-segment[aria-checked='true'] svg.lucide {
-        animation: md-pop 380ms var(--ease-spring) both;
+    .md-switch-thumb {
+        @apply absolute flex items-center justify-center rounded-full bg-md-outline text-md-primary transition-[left,width,height,background-color] duration-500 ease-spring;
+        top: 50%;
+        left: 8px;
+        width: 16px;
+        height: 16px;
+        translate: 0 -50%;
+    }
+    .md-switch-thumb svg.lucide {
+        @apply size-4 scale-0 transition-[scale] duration-500 ease-spring;
+    }
+    .md-switch > input:hover ~ .md-switch-thumb {
+        @apply bg-md-on-surface-variant;
+    }
+    .md-switch > input:checked ~ .md-switch-track {
+        @apply border-md-primary bg-md-primary;
+    }
+    .md-switch > input:checked ~ .md-switch-thumb {
+        @apply bg-md-on-primary;
+        left: 24px;
+        width: 24px;
+        height: 24px;
+    }
+    .md-switch > input:checked ~ .md-switch-thumb svg.lucide {
+        @apply scale-100;
+    }
+    .md-switch > input:active ~ .md-switch-thumb {
+        left: 2px;
+        width: 28px;
+        height: 28px;
+    }
+    .md-switch > input:checked:active ~ .md-switch-thumb {
+        left: 20px;
+    }
+    .md-switch > input:focus-visible ~ .md-switch-track {
+        @apply ring-2 ring-md-primary ring-offset-2 ring-offset-md-surface;
+    }
+    .md-switch > input:disabled ~ .md-switch-track {
+        @apply border-md-disabled bg-md-disabled;
+    }
+    .md-switch > input:disabled ~ .md-switch-thumb {
+        @apply bg-md-on-disabled;
+    }
+    .md-switch > input:checked:disabled ~ .md-switch-track {
+        @apply border-md-on-disabled bg-md-on-disabled;
+    }
+    .md-switch > input:checked:disabled ~ .md-switch-thumb {
+        @apply bg-md-disabled text-md-on-disabled;
     }
 
-    /* ---- Chips ------------------------------------------------------------ */
+    /* ---- Connected button group (segmented) ------------------------------ */
+    .md-segmented {
+        @apply inline-flex max-w-full gap-[3px];
+    }
+    .md-segment {
+        @apply relative inline-flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-[10px] bg-md-surface-container-highest px-4 py-2 text-label font-medium text-md-on-surface-variant outline-none transition-[background-color,color,border-radius] duration-500 ease-spring hover:bg-md-secondary-container hover:text-md-on-secondary-container focus-within:ring-2 focus-within:ring-md-primary disabled:cursor-not-allowed disabled:bg-md-disabled disabled:text-md-on-disabled;
+    }
+    .md-segment:first-child {
+        @apply rounded-l-[24px];
+    }
+    .md-segment:last-child {
+        @apply rounded-r-[24px];
+    }
+    .md-segment[aria-checked='true'] {
+        @apply rounded-[24px] bg-md-primary text-md-on-primary hover:bg-md-primary-hover hover:text-md-on-primary;
+    }
+    .md-segment[aria-checked='true'] svg.lucide {
+        animation: md-pop 420ms var(--ease-spring) both;
+    }
+
+    /* ---- Chips: soft square at rest, pill when selected ------------------- */
     .md-chip {
-        @apply inline-flex h-8 max-w-48 shrink-0 cursor-pointer select-none items-center gap-1.5 rounded-full border border-md-outline-variant bg-md-surface px-3.5 text-label text-md-on-surface-variant no-underline outline-none transition-[background-color,border-color,color,scale,rotate] duration-200 ease-spring hover:-rotate-2 hover:bg-md-hover active:scale-90 focus-visible:ring-2 focus-visible:ring-md-primary;
+        @apply inline-flex h-9 max-w-48 shrink-0 cursor-pointer select-none items-center gap-1.5 rounded-[10px] border border-md-outline-variant bg-md-surface px-3.5 text-label text-md-on-surface-variant no-underline outline-none transition-[background-color,border-color,color,border-radius,scale] duration-500 ease-spring hover:rounded-[14px] hover:bg-md-hover active:scale-95 focus-visible:ring-2 focus-visible:ring-md-primary;
     }
     .md-chip[aria-pressed='true'],
     .md-chip-selected {
-        @apply border-md-secondary-container bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
+        @apply rounded-[18px] border-md-secondary-container bg-md-secondary-container text-md-on-secondary-container hover:rounded-[18px] hover:bg-md-secondary-container-hover;
     }
     .md-chip svg.lucide {
         @apply size-4;
@@ -612,25 +688,37 @@
 
     /* ---- Cards & surfaces ------------------------------------------------- */
     .md-card {
-        @apply rounded-lg bg-md-surface-container p-6 shadow-sm transition-[box-shadow,translate,scale,background-color] duration-300 ease-spring;
+        @apply rounded-[28px] bg-md-surface-container p-6 transition-[border-radius,scale,background-color] duration-500 ease-spring;
     }
     .md-card-interactive {
-        @apply cursor-pointer hover:-translate-y-1 hover:bg-md-surface-container-high active:translate-y-0 active:bg-md-surface-container-highest;
+        @apply cursor-pointer hover:rounded-[36px] hover:bg-md-surface-container-high active:scale-[0.98] active:rounded-[20px] active:bg-md-surface-container-highest;
     }
     .md-card-outlined {
-        @apply rounded-lg border border-md-outline-variant bg-md-surface p-6;
+        @apply rounded-[28px] border border-md-outline-variant bg-md-surface p-6;
     }
-    /* Grouped list (settings-style) */
+    /* Segmented list: separate tiles with tight inner corners and round ends */
     .md-list {
-        @apply overflow-hidden rounded-lg bg-md-surface-container shadow-sm;
+        @apply flex flex-col gap-[3px];
+    }
+    .md-list > * {
+        @apply rounded-[6px] border-b-0 bg-md-surface-container transition-[border-radius,background-color] duration-500 ease-spring;
+    }
+    .md-list > :first-child {
+        @apply rounded-t-[24px];
+    }
+    .md-list > :last-child {
+        @apply rounded-b-[24px];
+    }
+    .md-list > :is(button, a):hover {
+        @apply rounded-[24px] bg-md-surface-container-high;
     }
     .md-list-item {
-        @apply flex min-h-14 items-center gap-4 border-b border-md-surface-container-highest px-5 py-3 last:border-b-0;
+        @apply flex min-h-16 items-center gap-4 px-5 py-3;
     }
 
     /* Inline alert / callout */
     .md-callout {
-        @apply flex items-start gap-3 rounded-md bg-md-surface-container-high px-5 py-4 text-label leading-relaxed text-md-on-surface;
+        @apply flex items-start gap-3 rounded-[24px] bg-md-surface-container-high px-5 py-4 text-label leading-relaxed text-md-on-surface;
     }
     .md-callout-info {
         @apply bg-md-primary-container text-md-on-primary-container;
@@ -648,12 +736,20 @@
         @apply mt-0.5 size-5;
     }
 
-    /* Option groups (settings) are tinted rails rather than borders. */
+    /* Option groups (settings): tinted tile with a pill-shaped rail */
+    .md-rail-warning,
+    .md-rail-danger {
+        @apply relative rounded-[20px] py-2 pl-5;
+    }
+    .md-rail-warning::before,
+    .md-rail-danger::before {
+        @apply absolute bottom-3 left-2 top-3 w-1 rounded-full content-[''];
+    }
     .md-rail-warning {
-        @apply rounded-r-sm border-l-2 border-md-warning bg-md-warning-soft py-2 pl-4;
+        @apply bg-md-warning-soft before:bg-md-warning;
     }
     .md-rail-danger {
-        @apply rounded-r-sm border-l-2 border-md-error bg-md-error-soft py-2 pl-4;
+        @apply bg-md-error-soft before:bg-md-error;
     }
 
     /* Danger-zone section */
@@ -677,44 +773,36 @@
 
     /* ---- Menus ------------------------------------------------------------ */
     .md-menu {
-        @apply z-40 w-64 rounded-md border border-md-outline-variant bg-md-surface-container p-2 shadow-lg;
+        @apply z-40 flex w-64 flex-col gap-0.5 rounded-[24px] border border-md-outline-variant bg-md-surface-container p-2;
     }
     .md-menu-item {
-        @apply flex h-12 w-full cursor-pointer items-center gap-3 rounded-sm px-4 text-left text-label text-md-on-surface no-underline outline-none transition-colors duration-200 ease-md hover:bg-md-hover focus-visible:bg-md-press;
+        @apply flex h-12 w-full cursor-pointer items-center gap-3 rounded-[12px] px-4 text-left text-label text-md-on-surface no-underline outline-none transition-[background-color,border-radius] duration-500 ease-spring hover:rounded-[24px] hover:bg-md-secondary-container hover:text-md-on-secondary-container focus-visible:bg-md-press;
     }
     .md-menu-item svg.lucide {
-        @apply text-md-on-surface-variant;
+        @apply text-md-on-surface-variant transition-[rotate] duration-500 ease-spring;
     }
-    .md-menu-item-danger {
-        @apply text-md-error;
+    .md-menu-item:hover svg.lucide {
+        @apply -rotate-12 text-md-on-secondary-container;
     }
+    .md-menu-item-danger,
     .md-menu-item-danger svg.lucide {
         @apply text-md-error;
     }
+    .md-menu-item-danger:hover {
+        @apply bg-md-error-container text-md-on-error-container;
+    }
 
-    /* ---- Navigation tabs (primary tabs) ----------------------------------- */
+    /* ---- Navigation tabs: pill indicator ---------------------------------- */
+    .tabs {
+        @apply gap-1 py-2;
+    }
     .md-tab {
-        @apply relative flex min-h-12 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-t-md px-3 pb-2.5 pt-2 text-label text-md-on-surface-variant no-underline outline-none transition-colors duration-200 ease-md hover:bg-md-hover hover:text-md-on-surface focus-visible:bg-md-press;
+        @apply relative flex min-h-12 flex-1 cursor-pointer flex-col items-center justify-center gap-1 rounded-[24px] px-3 py-2 text-label text-md-on-surface-variant no-underline outline-none transition-[background-color,color,border-radius] duration-500 ease-spring hover:bg-md-hover hover:text-md-on-surface focus-visible:bg-md-press sm:flex-row sm:gap-2;
     }
     .md-tab[aria-current='page'] {
-        @apply text-md-primary;
+        @apply bg-md-secondary-container text-md-on-secondary-container hover:bg-md-secondary-container-hover;
+        animation: md-tab-pill 480ms var(--ease-spring) both;
     }
-    .md-tab[aria-current='page']::after {
-        @apply absolute inset-x-[22%] bottom-0 h-[3px] rounded-t-full bg-md-primary content-[''];
-        animation: md-tab-in 400ms var(--ease-spring) both;
-    }
-
-    /* ---- Snackbars (vue-notification) ------------------------------------- */
-    .md-snackbar {
-        @apply mx-auto mt-3 flex w-[min(36rem,calc(100%-2rem))] items-center justify-center gap-3 rounded-md bg-md-inverse-surface px-5 py-3.5 text-center text-label font-normal text-md-inverse-on-surface;
-        animation: md-snack 500ms var(--ease-spring) both;
-    }
-    .md-snackbar.is-success { @apply bg-md-success-container text-md-on-success-container; }
-    .md-snackbar.is-warning { @apply bg-md-warning-container text-md-on-warning-container; }
-    .md-snackbar.is-danger  { @apply bg-md-error-container text-md-on-error-container; }
-    .md-snackbar.is-info    { @apply bg-md-primary-container text-md-on-primary-container; }
-    .md-snackbar .notification-title { @apply font-medium; }
-    .md-snackbar a { @apply font-medium underline; color: inherit; }
 
     /* ---- OTP timer dots --------------------------------------------------- */
     .md-dots {
@@ -748,7 +836,27 @@
 
     /* ---- Account icon ------------------------------------------------------ */
     .md-account-icon {
-        @apply inline-flex shrink-0 items-center justify-center overflow-hidden rounded-sm bg-md-surface-container-highest object-contain p-1.5;
+        @apply inline-flex shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-md-surface-container-highest object-contain p-1.5;
+    }
+
+
+    /* ---- Expressive shapes (masks) ---------------------------------------- */
+    .md-shape-cookie, .md-shape-0 { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.4 52.9L97.7 55.6L95.3 58.0L92.8 60.1L90.7 62.2L89.5 64.4L89.1 66.8L89.3 69.7L89.8 73.0L90.1 76.4L89.7 79.5L88.3 82.1L86.0 83.9L82.9 84.9L79.6 85.2L76.3 85.3L73.4 85.5L71.0 86.4L69.1 88.0L67.4 90.4L65.7 93.2L63.8 96.0L61.4 98.1L58.7 99.2L55.7 99.1L52.8 97.9L50.0 96.0L47.4 93.9L45.1 92.2L42.7 91.4L40.2 91.4L37.4 92.2L34.3 93.2L31.0 94.1L27.8 94.2L25.0 93.3L22.8 91.3L21.3 88.5L20.4 85.2L19.8 82.0L19.1 79.2L17.8 77.0L15.9 75.4L13.2 74.2L10.2 73.0L7.1 71.5L4.6 69.6L3.0 67.1L2.6 64.2L3.3 61.1L4.7 58.0L6.3 55.1L7.5 52.5L8.0 50.0L7.5 47.5L6.3 44.9L4.7 42.0L3.3 38.9L2.6 35.8L3.0 32.9L4.6 30.4L7.1 28.5L10.2 27.0L13.2 25.8L15.9 24.6L17.8 23.0L19.1 20.8L19.8 18.0L20.4 14.8L21.3 11.5L22.8 8.7L25.0 6.7L27.8 5.8L31.0 5.9L34.3 6.8L37.4 7.8L40.2 8.6L42.7 8.6L45.1 7.8L47.4 6.1L50.0 4.0L52.8 2.1L55.7 0.9L58.7 0.8L61.4 1.9L63.8 4.0L65.7 6.8L67.4 9.6L69.1 12.0L71.0 13.6L73.4 14.5L76.3 14.7L79.6 14.8L82.9 15.1L86.0 16.1L88.3 17.9L89.7 20.5L90.1 23.6L89.8 27.0L89.3 30.3L89.1 33.2L89.5 35.6L90.7 37.8L92.8 39.9L95.3 42.0L97.7 44.4L99.4 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.4 52.9L97.7 55.6L95.3 58.0L92.8 60.1L90.7 62.2L89.5 64.4L89.1 66.8L89.3 69.7L89.8 73.0L90.1 76.4L89.7 79.5L88.3 82.1L86.0 83.9L82.9 84.9L79.6 85.2L76.3 85.3L73.4 85.5L71.0 86.4L69.1 88.0L67.4 90.4L65.7 93.2L63.8 96.0L61.4 98.1L58.7 99.2L55.7 99.1L52.8 97.9L50.0 96.0L47.4 93.9L45.1 92.2L42.7 91.4L40.2 91.4L37.4 92.2L34.3 93.2L31.0 94.1L27.8 94.2L25.0 93.3L22.8 91.3L21.3 88.5L20.4 85.2L19.8 82.0L19.1 79.2L17.8 77.0L15.9 75.4L13.2 74.2L10.2 73.0L7.1 71.5L4.6 69.6L3.0 67.1L2.6 64.2L3.3 61.1L4.7 58.0L6.3 55.1L7.5 52.5L8.0 50.0L7.5 47.5L6.3 44.9L4.7 42.0L3.3 38.9L2.6 35.8L3.0 32.9L4.6 30.4L7.1 28.5L10.2 27.0L13.2 25.8L15.9 24.6L17.8 23.0L19.1 20.8L19.8 18.0L20.4 14.8L21.3 11.5L22.8 8.7L25.0 6.7L27.8 5.8L31.0 5.9L34.3 6.8L37.4 7.8L40.2 8.6L42.7 8.6L45.1 7.8L47.4 6.1L50.0 4.0L52.8 2.1L55.7 0.9L58.7 0.8L61.4 1.9L63.8 4.0L65.7 6.8L67.4 9.6L69.1 12.0L71.0 13.6L73.4 14.5L76.3 14.7L79.6 14.8L82.9 15.1L86.0 16.1L88.3 17.9L89.7 20.5L90.1 23.6L89.8 27.0L89.3 30.3L89.1 33.2L89.5 35.6L90.7 37.8L92.8 39.9L95.3 42.0L97.7 44.4L99.4 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; border-radius: 0; }
+    .md-shape-clover, .md-shape-1 { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M85.4 85.4L83.1 87.2L80.6 88.7L77.9 89.8L75.0 90.5L72.0 90.8L69.0 90.8L66.1 90.6L63.3 90.1L60.6 89.6L58.1 89.1L55.7 88.6L53.3 88.2L51.1 88.0L48.9 88.0L46.7 88.2L44.3 88.6L41.9 89.1L39.4 89.6L36.7 90.1L33.9 90.6L31.0 90.8L28.0 90.8L25.0 90.5L22.1 89.8L19.4 88.7L16.9 87.2L14.6 85.4L12.8 83.1L11.3 80.6L10.2 77.9L9.5 75.0L9.2 72.0L9.2 69.0L9.4 66.1L9.9 63.3L10.4 60.6L10.9 58.1L11.4 55.7L11.8 53.3L12.0 51.1L12.0 48.9L11.8 46.7L11.4 44.3L10.9 41.9L10.4 39.4L9.9 36.7L9.4 33.9L9.2 31.0L9.2 28.0L9.5 25.0L10.2 22.1L11.3 19.4L12.8 16.9L14.6 14.6L16.9 12.8L19.4 11.3L22.1 10.2L25.0 9.5L28.0 9.2L31.0 9.2L33.9 9.4L36.7 9.9L39.4 10.4L41.9 10.9L44.3 11.4L46.7 11.8L48.9 12.0L51.1 12.0L53.3 11.8L55.7 11.4L58.1 10.9L60.6 10.4L63.3 9.9L66.1 9.4L69.0 9.2L72.0 9.2L75.0 9.5L77.9 10.2L80.6 11.3L83.1 12.8L85.4 14.6L87.2 16.9L88.7 19.4L89.8 22.1L90.5 25.0L90.8 28.0L90.8 31.0L90.6 33.9L90.1 36.7L89.6 39.4L89.1 41.9L88.6 44.3L88.2 46.7L88.0 48.9L88.0 51.1L88.2 53.3L88.6 55.7L89.1 58.1L89.6 60.6L90.1 63.3L90.6 66.1L90.8 69.0L90.8 72.0L90.5 75.0L89.8 77.9L88.7 80.6L87.2 83.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M85.4 85.4L83.1 87.2L80.6 88.7L77.9 89.8L75.0 90.5L72.0 90.8L69.0 90.8L66.1 90.6L63.3 90.1L60.6 89.6L58.1 89.1L55.7 88.6L53.3 88.2L51.1 88.0L48.9 88.0L46.7 88.2L44.3 88.6L41.9 89.1L39.4 89.6L36.7 90.1L33.9 90.6L31.0 90.8L28.0 90.8L25.0 90.5L22.1 89.8L19.4 88.7L16.9 87.2L14.6 85.4L12.8 83.1L11.3 80.6L10.2 77.9L9.5 75.0L9.2 72.0L9.2 69.0L9.4 66.1L9.9 63.3L10.4 60.6L10.9 58.1L11.4 55.7L11.8 53.3L12.0 51.1L12.0 48.9L11.8 46.7L11.4 44.3L10.9 41.9L10.4 39.4L9.9 36.7L9.4 33.9L9.2 31.0L9.2 28.0L9.5 25.0L10.2 22.1L11.3 19.4L12.8 16.9L14.6 14.6L16.9 12.8L19.4 11.3L22.1 10.2L25.0 9.5L28.0 9.2L31.0 9.2L33.9 9.4L36.7 9.9L39.4 10.4L41.9 10.9L44.3 11.4L46.7 11.8L48.9 12.0L51.1 12.0L53.3 11.8L55.7 11.4L58.1 10.9L60.6 10.4L63.3 9.9L66.1 9.4L69.0 9.2L72.0 9.2L75.0 9.5L77.9 10.2L80.6 11.3L83.1 12.8L85.4 14.6L87.2 16.9L88.7 19.4L89.8 22.1L90.5 25.0L90.8 28.0L90.8 31.0L90.6 33.9L90.1 36.7L89.6 39.4L89.1 41.9L88.6 44.3L88.2 46.7L88.0 48.9L88.0 51.1L88.2 53.3L88.6 55.7L89.1 58.1L89.6 60.6L90.1 63.3L90.6 66.1L90.8 69.0L90.8 72.0L90.5 75.0L89.8 77.9L88.7 80.6L87.2 83.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; border-radius: 0; }
+    .md-shape-flower, .md-shape-2 { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.6 52.9L98.3 55.6L96.3 58.2L93.8 60.4L91.2 62.3L88.5 64.0L86.2 65.6L84.3 67.2L82.9 69.0L82.1 71.1L81.6 73.5L81.4 76.4L81.2 79.5L80.9 82.8L80.2 86.0L79.0 89.0L77.3 91.5L75.0 93.3L72.3 94.4L69.2 94.6L66.1 94.2L62.9 93.1L59.9 91.8L57.1 90.4L54.6 89.1L52.2 88.3L50.0 88.0L47.8 88.3L45.4 89.1L42.9 90.4L40.1 91.8L37.1 93.1L33.9 94.2L30.8 94.6L27.7 94.4L25.0 93.3L22.7 91.5L21.0 89.0L19.8 86.0L19.1 82.8L18.8 79.5L18.6 76.4L18.4 73.5L17.9 71.1L17.1 69.0L15.7 67.2L13.8 65.6L11.5 64.0L8.8 62.3L6.2 60.4L3.7 58.2L1.7 55.6L0.4 52.9L0.0 50.0L0.4 47.1L1.7 44.4L3.7 41.8L6.2 39.6L8.8 37.7L11.5 36.0L13.8 34.4L15.7 32.8L17.1 31.0L17.9 28.9L18.4 26.5L18.6 23.6L18.8 20.5L19.1 17.2L19.8 14.0L21.0 11.0L22.7 8.5L25.0 6.7L27.7 5.6L30.8 5.4L33.9 5.8L37.1 6.9L40.1 8.2L42.9 9.6L45.4 10.9L47.8 11.7L50.0 12.0L52.2 11.7L54.6 10.9L57.1 9.6L59.9 8.2L62.9 6.9L66.1 5.8L69.2 5.4L72.3 5.6L75.0 6.7L77.3 8.5L79.0 11.0L80.2 14.0L80.9 17.2L81.2 20.5L81.4 23.6L81.6 26.5L82.1 28.9L82.9 31.0L84.3 32.8L86.2 34.4L88.5 36.0L91.2 37.7L93.8 39.6L96.3 41.8L98.3 44.4L99.6 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.6 52.9L98.3 55.6L96.3 58.2L93.8 60.4L91.2 62.3L88.5 64.0L86.2 65.6L84.3 67.2L82.9 69.0L82.1 71.1L81.6 73.5L81.4 76.4L81.2 79.5L80.9 82.8L80.2 86.0L79.0 89.0L77.3 91.5L75.0 93.3L72.3 94.4L69.2 94.6L66.1 94.2L62.9 93.1L59.9 91.8L57.1 90.4L54.6 89.1L52.2 88.3L50.0 88.0L47.8 88.3L45.4 89.1L42.9 90.4L40.1 91.8L37.1 93.1L33.9 94.2L30.8 94.6L27.7 94.4L25.0 93.3L22.7 91.5L21.0 89.0L19.8 86.0L19.1 82.8L18.8 79.5L18.6 76.4L18.4 73.5L17.9 71.1L17.1 69.0L15.7 67.2L13.8 65.6L11.5 64.0L8.8 62.3L6.2 60.4L3.7 58.2L1.7 55.6L0.4 52.9L0.0 50.0L0.4 47.1L1.7 44.4L3.7 41.8L6.2 39.6L8.8 37.7L11.5 36.0L13.8 34.4L15.7 32.8L17.1 31.0L17.9 28.9L18.4 26.5L18.6 23.6L18.8 20.5L19.1 17.2L19.8 14.0L21.0 11.0L22.7 8.5L25.0 6.7L27.7 5.6L30.8 5.4L33.9 5.8L37.1 6.9L40.1 8.2L42.9 9.6L45.4 10.9L47.8 11.7L50.0 12.0L52.2 11.7L54.6 10.9L57.1 9.6L59.9 8.2L62.9 6.9L66.1 5.8L69.2 5.4L72.3 5.6L75.0 6.7L77.3 8.5L79.0 11.0L80.2 14.0L80.9 17.2L81.2 20.5L81.4 23.6L81.6 26.5L82.1 28.9L82.9 31.0L84.3 32.8L86.2 34.4L88.5 36.0L91.2 37.7L93.8 39.6L96.3 41.8L98.3 44.4L99.6 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; border-radius: 0; }
+    .md-shape-soft, .md-shape-3 { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.8 52.9L99.1 55.7L98.1 58.5L96.7 61.1L95.0 63.5L93.1 65.7L91.1 67.7L88.9 69.6L86.8 71.2L84.7 72.8L82.7 74.4L80.9 75.9L79.1 77.5L77.5 79.1L75.9 80.9L74.4 82.7L72.8 84.7L71.2 86.8L69.6 88.9L67.7 91.1L65.7 93.1L63.5 95.0L61.1 96.7L58.5 98.1L55.7 99.1L52.9 99.8L50.0 100.0L47.1 99.8L44.3 99.1L41.5 98.1L38.9 96.7L36.5 95.0L34.3 93.1L32.3 91.1L30.4 88.9L28.8 86.8L27.2 84.7L25.6 82.7L24.1 80.9L22.5 79.1L20.9 77.5L19.1 75.9L17.3 74.4L15.3 72.8L13.2 71.2L11.1 69.6L8.9 67.7L6.9 65.7L5.0 63.5L3.3 61.1L1.9 58.5L0.9 55.7L0.2 52.9L0.0 50.0L0.2 47.1L0.9 44.3L1.9 41.5L3.3 38.9L5.0 36.5L6.9 34.3L8.9 32.3L11.1 30.4L13.2 28.7L15.3 27.2L17.3 25.6L19.1 24.1L20.9 22.5L22.5 20.9L24.1 19.1L25.6 17.3L27.2 15.3L28.7 13.2L30.4 11.1L32.3 8.9L34.3 6.9L36.5 5.0L38.9 3.3L41.5 1.9L44.3 0.9L47.1 0.2L50.0 0.0L52.9 0.2L55.7 0.9L58.5 1.9L61.1 3.3L63.5 5.0L65.7 6.9L67.7 8.9L69.6 11.1L71.2 13.2L72.8 15.3L74.4 17.3L75.9 19.1L77.5 20.9L79.1 22.5L80.9 24.1L82.7 25.6L84.7 27.2L86.8 28.8L88.9 30.4L91.1 32.3L93.1 34.3L95.0 36.5L96.7 38.9L98.1 41.5L99.1 44.3L99.8 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.8 52.9L99.1 55.7L98.1 58.5L96.7 61.1L95.0 63.5L93.1 65.7L91.1 67.7L88.9 69.6L86.8 71.2L84.7 72.8L82.7 74.4L80.9 75.9L79.1 77.5L77.5 79.1L75.9 80.9L74.4 82.7L72.8 84.7L71.2 86.8L69.6 88.9L67.7 91.1L65.7 93.1L63.5 95.0L61.1 96.7L58.5 98.1L55.7 99.1L52.9 99.8L50.0 100.0L47.1 99.8L44.3 99.1L41.5 98.1L38.9 96.7L36.5 95.0L34.3 93.1L32.3 91.1L30.4 88.9L28.8 86.8L27.2 84.7L25.6 82.7L24.1 80.9L22.5 79.1L20.9 77.5L19.1 75.9L17.3 74.4L15.3 72.8L13.2 71.2L11.1 69.6L8.9 67.7L6.9 65.7L5.0 63.5L3.3 61.1L1.9 58.5L0.9 55.7L0.2 52.9L0.0 50.0L0.2 47.1L0.9 44.3L1.9 41.5L3.3 38.9L5.0 36.5L6.9 34.3L8.9 32.3L11.1 30.4L13.2 28.7L15.3 27.2L17.3 25.6L19.1 24.1L20.9 22.5L22.5 20.9L24.1 19.1L25.6 17.3L27.2 15.3L28.7 13.2L30.4 11.1L32.3 8.9L34.3 6.9L36.5 5.0L38.9 3.3L41.5 1.9L44.3 0.9L47.1 0.2L50.0 0.0L52.9 0.2L55.7 0.9L58.5 1.9L61.1 3.3L63.5 5.0L65.7 6.9L67.7 8.9L69.6 11.1L71.2 13.2L72.8 15.3L74.4 17.3L75.9 19.1L77.5 20.9L79.1 22.5L80.9 24.1L82.7 25.6L84.7 27.2L86.8 28.8L88.9 30.4L91.1 32.3L93.1 34.3L95.0 36.5L96.7 38.9L98.1 41.5L99.1 44.3L99.8 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; border-radius: 0; }
+    .md-shape-burst, .md-shape-4 { -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.2 52.9L97.2 55.5L94.8 57.9L93.0 60.2L92.3 62.7L92.8 65.6L93.6 68.8L94.1 72.1L93.3 75.0L91.2 77.1L88.1 78.4L84.9 79.2L82.1 80.3L80.3 82.1L79.2 84.9L78.4 88.1L77.1 91.2L75.0 93.3L72.1 94.1L68.8 93.6L65.6 92.8L62.7 92.3L60.2 93.0L57.9 94.8L55.5 97.2L52.9 99.2L50.0 100.0L47.1 99.2L44.5 97.2L42.1 94.8L39.8 93.0L37.3 92.3L34.4 92.8L31.2 93.6L27.9 94.1L25.0 93.3L22.9 91.2L21.6 88.1L20.8 84.9L19.7 82.1L17.9 80.3L15.1 79.2L11.9 78.4L8.8 77.1L6.7 75.0L5.9 72.1L6.4 68.8L7.2 65.6L7.7 62.7L7.0 60.2L5.2 57.9L2.8 55.5L0.8 52.9L0.0 50.0L0.8 47.1L2.8 44.5L5.2 42.1L7.0 39.8L7.7 37.3L7.2 34.4L6.4 31.2L5.9 27.9L6.7 25.0L8.8 22.9L11.9 21.6L15.1 20.8L17.9 19.7L19.7 17.9L20.8 15.1L21.6 11.9L22.9 8.8L25.0 6.7L27.9 5.9L31.2 6.4L34.4 7.2L37.3 7.7L39.8 7.0L42.1 5.2L44.5 2.8L47.1 0.8L50.0 0.0L52.9 0.8L55.5 2.8L57.9 5.2L60.2 7.0L62.7 7.7L65.6 7.2L68.8 6.4L72.1 5.9L75.0 6.7L77.1 8.8L78.4 11.9L79.2 15.1L80.3 17.9L82.1 19.7L84.9 20.8L88.1 21.6L91.2 22.9L93.3 25.0L94.1 27.9L93.6 31.2L92.8 34.4L92.3 37.3L93.0 39.8L94.8 42.1L97.2 44.5L99.2 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M100.0 50.0L99.2 52.9L97.2 55.5L94.8 57.9L93.0 60.2L92.3 62.7L92.8 65.6L93.6 68.8L94.1 72.1L93.3 75.0L91.2 77.1L88.1 78.4L84.9 79.2L82.1 80.3L80.3 82.1L79.2 84.9L78.4 88.1L77.1 91.2L75.0 93.3L72.1 94.1L68.8 93.6L65.6 92.8L62.7 92.3L60.2 93.0L57.9 94.8L55.5 97.2L52.9 99.2L50.0 100.0L47.1 99.2L44.5 97.2L42.1 94.8L39.8 93.0L37.3 92.3L34.4 92.8L31.2 93.6L27.9 94.1L25.0 93.3L22.9 91.2L21.6 88.1L20.8 84.9L19.7 82.1L17.9 80.3L15.1 79.2L11.9 78.4L8.8 77.1L6.7 75.0L5.9 72.1L6.4 68.8L7.2 65.6L7.7 62.7L7.0 60.2L5.2 57.9L2.8 55.5L0.8 52.9L0.0 50.0L0.8 47.1L2.8 44.5L5.2 42.1L7.0 39.8L7.7 37.3L7.2 34.4L6.4 31.2L5.9 27.9L6.7 25.0L8.8 22.9L11.9 21.6L15.1 20.8L17.9 19.7L19.7 17.9L20.8 15.1L21.6 11.9L22.9 8.8L25.0 6.7L27.9 5.9L31.2 6.4L34.4 7.2L37.3 7.7L39.8 7.0L42.1 5.2L44.5 2.8L47.1 0.8L50.0 0.0L52.9 0.8L55.5 2.8L57.9 5.2L60.2 7.0L62.7 7.7L65.6 7.2L68.8 6.4L72.1 5.9L75.0 6.7L77.1 8.8L78.4 11.9L79.2 15.1L80.3 17.9L82.1 19.7L84.9 20.8L88.1 21.6L91.2 22.9L93.3 25.0L94.1 27.9L93.6 31.2L92.8 34.4L92.3 37.3L93.0 39.8L94.8 42.1L97.2 44.5L99.2 47.1Z'/%3E%3C/svg%3E") center / 100% 100% no-repeat; border-radius: 0; }
+
+    /* ---- Loading indicator: a shape that morphs while it spins ------------ */
+    .md-loader {
+        @apply inline-block shrink-0 bg-md-primary;
+        animation: md-loader-spin 1.4s linear infinite, md-loader-morph 2.8s var(--ease-md) infinite;
+    }
+    .md-loader-contained {
+        @apply inline-flex shrink-0 items-center justify-center rounded-full bg-md-primary-container;
+    }
+    .md-loader-contained .md-loader {
+        @apply bg-md-on-primary-container;
     }
 
     /* ---- Playful tiles (icons / avatars), declared last so they win -------- */
@@ -770,6 +878,174 @@
 @utility scrollbar-none {
     scrollbar-width: none;
     &::-webkit-scrollbar { display: none; }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* 5b. Expressive bottom dock (M3 Expressive connected button group)          */
+/* -------------------------------------------------------------------------- */
+@layer components {
+    .md-dock {
+        display: flex;
+        max-width: 100%;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+    }
+    /* Every button: tall, flat, inner corners small, outer corners round */
+    .md-dock > .md-btn,
+    .md-dock > .md-btn:hover,
+    .md-dock > .md-btn:active {
+        box-shadow: none;
+        translate: none;
+    }
+    .md-dock > .md-btn {
+        height: 3.5rem;
+        padding-inline: 1.5rem;
+        border-radius: 12px;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        transition:
+            border-radius 500ms var(--ease-spring),
+            padding 500ms var(--ease-spring),
+            scale 300ms var(--ease-spring),
+            background-color 200ms var(--ease-md),
+            color 200ms var(--ease-md);
+        animation: md-dock-in 520ms var(--ease-spring) both;
+    }
+    .md-dock > .md-btn:first-child {
+        border-top-left-radius: 28px;
+        border-bottom-left-radius: 28px;
+    }
+    .md-dock > .md-btn:last-child {
+        border-top-right-radius: 28px;
+        border-bottom-right-radius: 28px;
+    }
+    /* Hover: corners soften. Press: the button balloons into a full pill and
+       pushes its neighbours aside. */
+    .md-dock > .md-btn:hover {
+        border-radius: 20px;
+    }
+    .md-dock > .md-btn:active {
+        border-radius: 28px;
+        padding-inline: 2.25rem;
+        scale: 0.97;
+    }
+    .md-dock > .md-btn.md-btn-filled {
+        padding-inline: 1.75rem;
+    }
+    .md-dock > .md-btn.md-btn-filled:active {
+        padding-inline: 2.5rem;
+    }
+    .md-dock > .md-btn svg.lucide {
+        width: 1.375rem;
+        height: 1.375rem;
+        transition: rotate 450ms var(--ease-spring), scale 450ms var(--ease-spring);
+    }
+    .md-dock > .md-btn:hover svg.lucide {
+        rotate: -12deg;
+        scale: 1.15;
+    }
+    .md-dock > .md-btn:hover svg.lucide-x {
+        rotate: 90deg;
+    }
+    .md-dock > .md-btn:hover svg.lucide-arrow-left {
+        rotate: 0deg;
+        translate: -3px 0;
+    }
+    /* Tonal buttons in the dock get the container tone; danger stays red */
+    .md-dock > .md-btn:disabled {
+        background-color: var(--md-disabled);
+    }
+    /* Staggered pop-in */
+    .md-dock > .md-btn:nth-child(2) { animation-delay: 50ms; }
+    .md-dock > .md-btn:nth-child(3) { animation-delay: 100ms; }
+    .md-dock > .md-btn:nth-child(4) { animation-delay: 150ms; }
+    .md-dock > .md-btn:nth-child(5) { animation-delay: 200ms; }
+    .md-dock > .md-btn:nth-child(6) { animation-delay: 250ms; }
+    @media (max-width: 63.99rem) {
+        .md-dock > .md-btn.max-lg\:px-3 {
+            padding-inline: 1.125rem;
+        }
+        .md-dock > .md-btn.max-lg\:px-3:active {
+            padding-inline: 1.75rem;
+        }
+    }
+
+    /* Account chip under the dock */
+    .md-account-chip {
+        @apply inline-flex h-10 max-w-full cursor-pointer items-center gap-2 rounded-full py-1 pl-1 pr-3 text-label font-medium text-md-on-surface-variant outline-none transition-[background-color,color,scale] duration-200 ease-spring hover:bg-md-hover hover:text-md-on-surface active:scale-95 focus-visible:ring-2 focus-visible:ring-md-primary;
+    }
+    .md-account-chip .md-avatar {
+        @apply inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-md-tertiary-container font-display text-[0.9375rem] font-semibold uppercase text-md-on-tertiary-container transition-[rotate] duration-700 ease-spring;
+    }
+    .md-account-chip:hover .md-avatar,
+    .md-account-chip[aria-expanded='true'] .md-avatar {
+        rotate: 40deg;
+    }
+}
+
+@keyframes md-dock-in {
+    from { opacity: 0; transform: translateY(18px) scale(0.6); }
+    to { opacity: 1; transform: none; }
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Snackbars (vue-notification). Kept OUTSIDE @layer on purpose: the library  */
+/* injects unlayered CSS (.vue-notification-template { background: #fff })    */
+/* which would otherwise beat any layered rule.                               */
+/* -------------------------------------------------------------------------- */
+.vue-notification-template.md-snackbar {
+    margin: 0.75rem auto 0;
+    display: flex;
+    flex-direction: column;
+    width: min(36rem, calc(100% - 2rem));
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    border-radius: 20px;
+    padding: 0.875rem 1.25rem;
+    text-align: center;
+    font-size: var(--text-label);
+    line-height: 1.45;
+    background-color: var(--md-inverse-surface);
+    color: var(--md-inverse-on-surface);
+    box-shadow: 0 0 0 1px var(--md-inverse-surface);
+    animation: md-snack 500ms var(--ease-spring) both;
+}
+.vue-notification-template.md-snackbar.is-success {
+    background-color: var(--md-success-container);
+    color: var(--md-on-success-container);
+    box-shadow: 0 0 0 1px var(--md-success);
+}
+.vue-notification-template.md-snackbar.is-warning {
+    background-color: var(--md-warning-container);
+    color: var(--md-on-warning-container);
+    box-shadow: 0 0 0 1px var(--md-warning);
+}
+.vue-notification-template.md-snackbar.is-danger {
+    background-color: var(--md-error-container);
+    color: var(--md-on-error-container);
+    box-shadow: 0 0 0 1px var(--md-error);
+}
+.vue-notification-template.md-snackbar.is-info {
+    background-color: var(--md-primary-container);
+    color: var(--md-on-primary-container);
+    box-shadow: 0 0 0 1px var(--md-primary);
+}
+.vue-notification-template.md-snackbar .notification-title {
+    font-weight: 600;
+}
+.vue-notification-template.md-snackbar .notification-content {
+    font-weight: 400;
+}
+.vue-notification-template.md-snackbar a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -806,6 +1082,20 @@
     transform: translateY(28px) scale(0.96);
 }
 
+@keyframes md-tab-pill {
+    from { transform: scaleX(0.55); }
+    to { transform: none; }
+}
+@keyframes md-loader-spin {
+    to { rotate: 360deg; }
+}
+@keyframes md-loader-morph {
+    0%, 100% { border-radius: 50%; scale: 1; }
+    20% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; scale: 0.9; }
+    40% { border-radius: 22%; scale: 0.82; }
+    60% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; scale: 0.95; }
+    80% { border-radius: 40% 60% 20% 80% / 50% 70% 30% 50%; scale: 0.88; }
+}
 @keyframes md-slide-in {
     from { opacity: 0; transform: translateX(-14px) scale(0.8); }
     to { opacity: 1; transform: none; }

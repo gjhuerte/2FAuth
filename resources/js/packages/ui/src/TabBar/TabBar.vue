@@ -20,7 +20,7 @@
 </script>
 
 <template>
-    <div class="options-header sticky top-0 z-[1000] border-b border-md-outline-variant bg-md-surface">
+    <div class="options-header sticky top-0 z-[1000] bg-md-surface">
         <ResponsiveWidthWrapper :is-active="isResponsive" :is-compact="true">
             <nav class="pt-[env(safe-area-inset-top)]">
                 <ul role="menubar" class="tabs flex">
@@ -39,7 +39,7 @@
                             :aria-current="tab.view === props.activeTab ? 'page' : undefined"
                             @click.prevent="emit('tab-selected', tab.view)"
                         >
-                            <LucideGenericIcon :name="tab.icon" :strokeWidth="tab.view === props.activeTab ? 2 : 1.5" class="size-6! sm:hidden" />
+                            <LucideGenericIcon :name="tab.icon" :strokeWidth="tab.view === props.activeTab ? 2 : 1.5" class="size-6! sm:size-5!" />
                             <span class="text-label-sm font-medium sm:text-label">
                                 {{ $t(tab.name) }}
                             </span>

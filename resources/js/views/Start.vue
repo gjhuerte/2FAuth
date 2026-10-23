@@ -153,7 +153,7 @@
                         @keyup.enter="qrcodeInputLabel.click()"
                     >
                         <input aria-hidden="true" tabindex="-1" class="file-input sr-only" type="file" accept="image/*" v-on:change="handleUploadQR" ref="qrcodeInput">
-                        <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md md-tone-0 transition-transform duration-300 ease-md group-hover:animate-wiggle">
+                        <span class="inline-flex size-14 shrink-0 items-center justify-center md-tone-0 md-shape-cookie transition-[rotate] duration-700 ease-spring group-hover:rotate-90">
                             <LucideLoaderCircle v-if="isUploading" class="animate-spin-md" />
                             <LucideImageUp v-else />
                         </span>
@@ -161,14 +161,14 @@
                     </label>
                     <!-- link to advanced form -->
                     <RouterLink class="md-card md-card-interactive group flex items-center gap-4 p-5 text-left no-underline hover:scale-[1.02] sm:flex-col sm:items-start" :to="{ name: 'createAccount' }">
-                        <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md md-tone-4 transition-transform duration-300 ease-md group-hover:animate-wiggle">
+                        <span class="inline-flex size-14 shrink-0 items-center justify-center md-tone-4 md-shape-flower transition-[rotate] duration-700 ease-spring group-hover:rotate-90">
                             <LucideKeyboard />
                         </span>
                         <span class="font-display text-title text-md-on-surface">{{ $t('link.use_advanced_form') }}</span>
                     </RouterLink>
                     <!-- link to import view -->
                     <RouterLink id="btnImport" class="md-card md-card-interactive group flex items-center gap-4 p-5 text-left no-underline hover:scale-[1.02] sm:flex-col sm:items-start" :to="{ name: 'importAccounts' }">
-                        <span class="inline-flex size-12 shrink-0 items-center justify-center rounded-md md-tone-1 transition-transform duration-300 ease-md group-hover:animate-wiggle">
+                        <span class="inline-flex size-14 shrink-0 items-center justify-center md-tone-1 md-shape-clover transition-[rotate] duration-700 ease-spring group-hover:rotate-90">
                             <LucideFileInput />
                         </span>
                         <span class="font-display text-title text-md-on-surface">{{ $t('label.import') }}</span>

@@ -139,7 +139,7 @@
                 </div>
                 <ul v-if="visibleUsers.length > 0" class="flex flex-col gap-2 pb-8">
                     <li v-for="user in visibleUsers" :key="user.id" class="md-card flex items-center gap-4 px-4 py-3 sm:px-5">
-                        <span class="inline-flex size-11 shrink-0 items-center justify-center rounded-full font-display text-title font-semibold" :class="'md-tone-' + (user.id % 5)" aria-hidden="true">
+                        <span class="inline-flex size-11 shrink-0 items-center justify-center font-display text-title font-semibold" :class="['md-tone-' + (user.id % 5), 'md-shape-' + (user.id % 5)]" aria-hidden="true">
                             {{ user.name.charAt(0).toUpperCase() }}
                         </span>
                         <div class="min-w-0 flex-1">
