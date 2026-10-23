@@ -1,23 +1,76 @@
-# Build-context filter for docker-prod/Dockerfile only (BuildKit picks up
-# <Dockerfile>.dockerignore). The repository's root .dockerignore is left
-# untouched for the upstream Dockerfile.
+# Build-context filter for docker-prod/Dockerfile.
+#
+# BuildKit reads <Dockerfile>.dockerignore next to the Dockerfile and uses it
+# INSTEAD of the root .dockerignore, so this is the file that applies to the
+# production image (locally and in GitHub Actions). The root .dockerignore is
+# left untouched for the upstream Dockerfile.
+#
+# Everything excluded here is either rebuilt inside the image, never needed at
+# runtime, or must never end up in an image (secrets, local state).
+
+# --- VCS and CI --------------------------------------------------------------
 .git
+.gitattributes
+.gitignore
 .github
+
+# --- Dependencies and build output (rebuilt inside the image) ----------------
+node_modules
+vendor
+public/build
+public/hot
+
+# --- Environment files: never in the build context ---------------------------
 .env
 .env.*
 !.env.example
-node_modules
-vendor
-public/hot
+
+# --- Local runtime state -----------------------------------------------------
 storage/logs/*
-storage/framework/cache/data/*
+storage/framework/cache/*
 storage/framework/sessions/*
 storage/framework/views/*
+storage/framework/testing/*
 storage/*.key
 bootstrap/cache/*.php
 database/*.sqlite
+
+# --- Tests, docs and tooling the image does not use --------------------------
 tests
 docs
+**/*.md
+LICENSE
+.editorconfig
+.styleci.yml
+.travis.yml
+.nvmrc
+crowdin.yml
+phpunit*.xml
+phpstan.neon
+pint.json
+eslint.config.js
+.eslintrc-auto-import.mjs
+.phpunit.result.cache
+coverage
+npm-debug.log*
+
+# --- Other deployment targets (upstream image, dev stack, Heroku) ------------
 docker
 docker-dev
 docker-prod/.env
+Dockerfile
+.dockerignore
+Procfile
+app.json
+nginx.conf
+
+# --- IDE and OS junk ---------------------------------------------------------
+.idea
+.vscode
+.fleet
+.zed
+*.swp
+*.swo
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini

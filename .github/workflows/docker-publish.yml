@@ -1,0 +1,117 @@
+name: docker-publish
+
+# Builds docker-prod/Dockerfile and pushes it to GitHub Container Registry as
+# ghcr.io/gjhuerte/2fauth. Tuned for the GitHub Free minute budget:
+# path filters, cancellation of superseded runs, amd64 only and a GHA layer cache.
+
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+    # Only build when something that can end up in the image changes.
+    # `paths` with `!` negations is used instead of `paths-ignore` because
+    # paths-ignore cannot re-include this workflow file once `.github/**` is
+    # ignored. Patterns are evaluated in order (a later match wins).
+    # Path filters are not evaluated for tag pushes: tags always build.
+    paths:
+      - '**'
+      - '!**.md'
+      - '!docs/**'
+      - '!tests/**'
+      - '!.github/**'
+      - '.github/workflows/docker-publish.yml'
+      - '!.editorconfig'
+      - '!.gitattributes'
+      - '!.gitignore'
+      - '!.styleci.yml'
+      - '!.travis.yml'
+      - '!.env.testing'
+      - '!.env.travis'
+      - '!.nvmrc'
+      - '!crowdin.yml'
+      - '!LICENSE'
+      - '!phpunit*.xml'
+      - '!phpstan.neon'
+      - '!pint.json'
+      - '!eslint.config.js'
+      - '!.eslintrc-auto-import.mjs'
+      - '!public/build/**'
+      - '!docker/**'
+      - '!docker-dev/**'
+      - '!Dockerfile'
+      - '!.dockerignore'
+      - '!Procfile'
+      - '!app.json'
+      - '!nginx.conf'
+  workflow_dispatch:
+
+# A newer push to the same branch/tag cancels the run it supersedes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  # GHCR image names must be lowercase.
+  IMAGE: ghcr.io/gjhuerte/2fauth
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker metadata (tags and labels)
+        id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ${{ env.IMAGE }}
+          # `latest` only from the default branch, never implied by a git tag.
+          flavor: |
+            latest=false
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,format=short
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=2FAuth
+            org.opencontainers.image.description=Self-hosted web app to manage 2FA accounts and generate their security codes (Material 3 Expressive UI)
+            org.opencontainers.image.source=https://github.com/gjhuerte/2FAuth
+            org.opencontainers.image.url=https://github.com/gjhuerte/2FAuth
+            org.opencontainers.image.licenses=AGPL-3.0-only
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker-prod/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # Push a plain single-platform image (no attestation manifests), so
+          # every untagged version in the registry is a genuinely old image
+          # that cleanup-packages.yml can delete safely.
+          provenance: false
+          sbom: false

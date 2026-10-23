@@ -1,0 +1,30 @@
+name: cleanup-packages
+
+# Deletes old untagged versions of ghcr.io/gjhuerte/2fauth (left behind each
+# time a tag such as `latest` or `master` moves to a new build), keeping the
+# 10 most recent untagged versions. Tagged versions are never touched.
+
+on:
+  schedule:
+    - cron: '23 3 * * 0' # Sundays, 03:23 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  packages: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Delete untagged container versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 2fauth
+          package-type: container
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: 'true'

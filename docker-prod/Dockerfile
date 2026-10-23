@@ -13,8 +13,16 @@
 #   - Every process runs as www-data; nginx listens on 8080; code is
 #     root-owned and read-only to PHP
 #
+# Layer order is tuned for the build cache (local and GitHub Actions):
+# system packages -> dependency manifests -> dependencies -> source code.
+# Editing app code only re-runs the last steps of the "assets" and "build"
+# stages; editing package-lock.json / composer.lock re-installs dependencies;
+# the slow apt layer is rebuilt only when the package list or base image changes.
+#
 # Build from the repository root:
 #   docker compose -f docker-prod/docker-compose.yml build
+# or
+#   docker build -f docker-prod/Dockerfile -t 2fauth .
 
 ARG UBUNTU_VERSION=26.04
 ARG PHP_VERSION=8.5
@@ -22,6 +30,7 @@ ARG NODE_VERSION=22
 
 # ---------------------------------------------------------------------------
 # base: runtime packages shared by the build and final stages
+# (slowest layer, changes only when this package list changes)
 # ---------------------------------------------------------------------------
 FROM ubuntu:${UBUNTU_VERSION} AS base
 
@@ -70,6 +79,7 @@ ENV npm_config_update_notifier=false \
 
 WORKDIR /app
 
+# Manifests first: `npm ci` is re-run only when they change.
 COPY package.json package-lock.json ./
 RUN npm ci
 
@@ -80,7 +90,7 @@ COPY resources ./resources
 RUN npm run build
 
 # ---------------------------------------------------------------------------
-# build: Composer dependencies
+# build: Composer dependencies + application tree
 # ---------------------------------------------------------------------------
 FROM base AS build
 
@@ -95,9 +105,11 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
 
 WORKDIR /app
 
-# Dependencies first so they are cached between code changes.
+# Manifests first: vendor/ is re-installed only when they change. The class
+# map is generated later (it needs the app code), hence --no-autoloader here.
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-progress
+RUN composer install --no-dev --no-interaction --no-scripts --no-autoloader \
+        --prefer-dist --no-progress
 
 COPY . .
 # Freshly built assets replace whatever public/build the repository holds.
@@ -106,14 +118,25 @@ COPY --from=assets /app/public/build ./public/build
 
 RUN set -eux; \
     test -f public/build/manifest.json; \
+    # Optimised, authoritative class map (a superset of --optimize-autoloader).
     # Also runs `artisan package:discover` (composer.json post-autoload-dump).
-    composer dump-autoload --optimize --classmap-authoritative --no-dev; \
+    composer dump-autoload --no-dev --no-interaction --optimize --classmap-authoritative; \
     # Keep only what the runtime needs; secrets never go into the image.
     rm -rf .env .env.* node_modules tests docs docker docker-dev docker-prod Dockerfile \
         .dockerignore phpunit*.xml phpstan.neon Procfile app.json \
         public/hot storage/logs/* storage/oauth-*.key bootstrap/cache/*.php \
         database/database.sqlite; \
-    ln -sfn ../storage/app/public public/storage
+    ln -sfn ../storage/app/public public/storage; \
+    # storage/ is the persistent volume: app data, icons, Passport keys and
+    # (with SQLite) the database file all live under it.
+    mkdir -p storage/app/public/icons storage/app/imagesLink storage/app/temp \
+        storage/app/logos storage/app/iconPacks storage/database \
+        storage/framework/cache/data storage/framework/sessions \
+        storage/framework/views storage/logs bootstrap/cache; \
+    # Code readable (not writable) by www-data regardless of host file modes.
+    # Done here, not in the runtime stage, so the modes travel with the COPY
+    # below instead of duplicating every file in an extra image layer.
+    chmod -R a+rX,go-w /app
 
 # ---------------------------------------------------------------------------
 # runtime
@@ -128,6 +151,7 @@ ENV APP_ENV=production \
     WEBAUTHN_NAME=2FAuth \
     QUEUE_CONNECTION=sync
 
+# Server configuration changes less often than the code: copy it first.
 COPY --chmod=0644 docker-prod/etc/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --chmod=0644 docker-prod/etc/nginx/conf.d/www.conf /etc/nginx/conf.d/www.conf
 COPY --chmod=0644 docker-prod/etc/php-fpm.d/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
@@ -136,34 +160,25 @@ COPY --chmod=0644 docker-prod/php/php.ini /etc/php/${PHP_VERSION}/cli/conf.d/99-
 COPY --chmod=0644 docker-prod/supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chmod=0755 docker-prod/entrypoint.sh /usr/local/bin/2fauth-entrypoint
 
-# Application code: owned by root, so a compromised PHP process cannot change it.
-COPY --from=build /app /var/www/html
-
 RUN set -eux; \
-    # Config must be readable by www-data whatever the host file modes are.
-    chmod 0644 /etc/nginx/nginx.conf /etc/nginx/conf.d/www.conf /etc/supervisor/supervisord.conf \
-        /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf /etc/php/${PHP_VERSION}/fpm/conf.d/99-2fauth.ini \
-        /etc/php/${PHP_VERSION}/cli/conf.d/99-2fauth.ini; \
     # Run PHP-FPM unprivileged: pid and logs go to /tmp and stderr.
     sed -ri \
         -e 's#^;?\s*pid\s*=.*#pid = /tmp/php-fpm.pid#' \
         -e 's#^;?\s*error_log\s*=.*#error_log = /proc/self/fd/2#' \
         /etc/php/${PHP_VERSION}/fpm/php-fpm.conf; \
     ln -s /usr/sbin/php-fpm${PHP_VERSION} /usr/local/sbin/php-fpm; \
-    cd /var/www/html; \
-    # Code readable (not writable) by www-data regardless of host file modes.
-    chmod -R a+rX,go-w /var/www/html; \
-    # storage/ is the persistent volume: app data, icons, Passport keys and
-    # (with SQLite) the database file all live under it.
-    mkdir -p storage/app/public/icons storage/app/imagesLink storage/app/temp \
-        storage/app/logos storage/app/iconPacks storage/database \
-        storage/framework/cache/data storage/framework/sessions \
-        storage/framework/views storage/logs bootstrap/cache; \
-    chown -R www-data:www-data storage bootstrap/cache; \
-    chmod -R u=rwX,g=rX,o= storage bootstrap/cache; \
     php -m | grep -qi 'zend opcache'
 
+# Application code: owned by root, so a compromised PHP process cannot change it.
+COPY --from=build /app /var/www/html
+
 WORKDIR /var/www/html
+
+# Only the writable directories are re-owned (small layer).
+RUN set -eux; \
+    chown -R www-data:www-data storage bootstrap/cache; \
+    chmod -R u=rwX,g=rX,o= storage bootstrap/cache
+
 USER www-data:www-data
 
 EXPOSE 8080
