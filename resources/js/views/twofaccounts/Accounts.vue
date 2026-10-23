@@ -505,20 +505,26 @@
                     <!-- accounts -->
                     <div
                         id="dv"
-                        class="accounts grid gap-3"
+                        class="accounts grid gap-3 sm:gap-4"
                         :class="isGrid
-                            ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 sm:gap-4'
+                            ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
                             : (bus.inManagementMode ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3')"
                     >
                         <div
                             v-for="account in twofaccounts.filtered"
                             :key="account.id"
-                            class="group relative rounded-[24px] bg-md-surface-container transition-[border-radius,scale,background-color] duration-500 ease-spring hover:rounded-[32px] hover:bg-md-surface-container-high active:scale-[0.98] active:rounded-[16px]"
+                            class="tfa-card group relative isolate overflow-hidden bg-md-surface-container transition-[border-radius,scale,background-color] duration-500 ease-spring hover:bg-md-surface-container-high active:scale-[0.98]"
                             :class="[
-                                isGrid ? 'tfa-grid flex flex-col items-center px-3 pb-4 pt-5 text-center' : 'tfa-list flex items-center gap-3 px-3 py-2.5 sm:px-4',
-                                bus.inManagementMode && twofaccounts.selectedIds.includes(account.id) ? 'rounded-[36px]! bg-md-secondary-container! hover:bg-md-secondary-container-hover!' : '',
+                                isGrid ? 'tfa-grid flex min-h-56 flex-col items-center justify-center rounded-[36px] px-4 pb-5 pt-7 text-center hover:rounded-[48px] active:rounded-[28px]' : 'tfa-list flex min-h-[6.5rem] items-center gap-3 rounded-[32px] py-4 pl-4 pr-3 sm:gap-4 hover:rounded-[44px] active:rounded-[24px] sm:pr-4',
+                                bus.inManagementMode && twofaccounts.selectedIds.includes(account.id) ? 'rounded-[52px]! bg-md-secondary-container! hover:bg-md-secondary-container-hover!' : '',
                             ]"
                         >
+                            <!-- decorative expressive shape -->
+                            <span
+                                aria-hidden="true"
+                                class="tfa-decor pointer-events-none absolute -z-10 transition-[rotate,scale] duration-1000 ease-spring group-hover:rotate-[60deg] group-hover:scale-110"
+                                :class="[isGrid ? '-right-14 -top-14 size-40' : '-bottom-16 -right-10 size-44', 'md-tone-' + (account.id % 5), 'md-shape-' + ((account.id + 2) % 5)]"
+                            ></span>
                             <!-- checkbox -->
                             <transition name="slideCheckbox">
                                 <div
@@ -551,32 +557,32 @@
                                     <img
                                         v-if="account.icon"
                                         role="presentation"
-                                        class="tfa-icon md-account-icon transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
-                                        :class="[isGrid ? 'size-16 rounded-md p-2.5' : 'size-11', 'md-tone-' + (account.id % 5), 'md-shape-' + (account.id % 5)]"
+                                        class="tfa-icon md-account-icon transition-[rotate,scale] duration-700 ease-spring group-hover:-rotate-12 group-hover:scale-110"
+                                        :class="[isGrid ? 'size-20 p-3.5' : bus.inManagementMode ? 'size-12 p-2 sm:size-16 sm:p-3' : 'size-16 p-3', 'bg-md-surface', 'md-shape-' + (account.id % 5)]"
                                         :src="$2fauth.config.subdirectory + '/storage/icons/' + account.icon"
                                         alt=""
                                     >
                                     <img
                                         v-else-if="account.icon == null"
                                         role="presentation"
-                                        class="tfa-icon md-account-icon transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
-                                        :class="[isGrid ? 'size-16 rounded-md p-3' : 'size-11 p-2', 'md-tone-' + (account.id % 5), 'md-shape-' + (account.id % 5)]"
+                                        class="tfa-icon md-account-icon transition-[rotate,scale] duration-700 ease-spring group-hover:-rotate-12 group-hover:scale-110"
+                                        :class="[isGrid ? 'size-20 p-4' : bus.inManagementMode ? 'size-12 p-2.5 sm:size-16 sm:p-3.5' : 'size-16 p-3.5', 'bg-md-surface', 'md-shape-' + (account.id % 5)]"
                                         :src="$2fauth.config.subdirectory + '/storage/noicon.svg'"
                                         alt=""
                                     >
                                     <span
                                         v-else
                                         aria-hidden="true"
-                                        class="md-account-icon font-display font-semibold transition-transform duration-300 ease-spring group-hover:-rotate-6 group-hover:scale-110"
-                                        :class="[isGrid ? 'size-16 rounded-md text-title-lg' : 'size-11 text-title', 'md-tone-' + (account.id % 5), 'md-shape-' + (account.id % 5)]"
+                                        class="md-account-icon font-display font-semibold transition-[rotate,scale] duration-700 ease-spring group-hover:-rotate-12 group-hover:scale-110"
+                                        :class="[isGrid ? 'size-20 text-headline' : 'size-16 text-title-lg', 'bg-md-surface text-md-primary', 'md-shape-' + (account.id % 5)]"
                                     >{{ initialOf(account) }}</span>
                                 </template>
                                 <div class="tfa-text min-w-0 max-w-full" :class="{ 'flex-1': !isGrid }">
-                                    <p class="flex items-center gap-1.5 truncate font-display text-title text-md-on-surface" :class="{ 'justify-center': isGrid }">
+                                    <p class="flex items-center gap-1.5 truncate font-display text-[1.3125rem] font-semibold leading-tight text-md-on-surface" :class="{ 'justify-center': isGrid }">
                                         <span class="truncate">{{ account.service ? account.service : $t('message.no_service') }}</span>
                                         <LucideCircleAlert class="shrink-0 text-md-error" v-if="account.account === $t('error.indecipherable')" />
                                     </p>
-                                    <p class="mt-0.5 flex items-center gap-1.5 text-label font-normal text-md-on-surface-variant" :class="{ 'justify-center': isGrid }">
+                                    <p class="mt-1 flex items-center gap-1.5 text-body text-md-on-surface-variant" :class="{ 'justify-center': isGrid }">
                                         <span v-if="appSettings.enableSharing && account.is_borrowed" :title="$t('tooltip.this_account_is_shared_by_x_with_you', { username: account.borrowed_by })" class="md-badge h-5 shrink-0 px-2">
                                             @{{ bus.inManagementMode ? account.borrowed_by : '' }}
                                         </span>
@@ -640,7 +646,7 @@
                                             <button
                                                 :key="account.otp.password"
                                                 type="button"
-                                                class="always-on-otp animate-pop cursor-pointer whitespace-nowrap rounded-sm px-2 font-mono text-title-lg leading-tight font-medium tabular-nums tracking-wide text-md-primary transition-[background-color,transform] duration-200 ease-md hover:bg-md-primary-soft active:scale-90"
+                                                class="always-on-otp animate-pop cursor-pointer whitespace-nowrap rounded-full bg-md-surface px-4 py-1.5 font-mono text-[1.5rem] leading-tight font-semibold tabular-nums tracking-wide text-md-primary transition-[background-color,border-radius,scale] duration-500 ease-spring hover:rounded-[14px] hover:bg-md-primary-container hover:text-md-on-primary-container active:scale-90"
                                                 @click="copyToClipboard(account.otp.password)"
                                                 :title="$t('tooltip.copy_to_clipboard')"
                                             >
@@ -653,7 +659,7 @@
                                                     )
                                                 }}
                                             </button>
-                                            <div v-if="account.otp_type.includes('totp')" class="flex h-3 items-center px-2">
+                                            <div v-if="account.otp_type.includes('totp')" class="mt-1.5 flex h-3 items-center px-3">
                                                 <Dots
                                                     ref="dotsRefs"
                                                     :isCondensed="true"
@@ -696,7 +702,7 @@
                                         <LucideUserPen />
                                     </RouterLink>
                                 </div>
-                                <div class="tfa-edit flex shrink-0 items-center gap-0.5" :class="{ 'mt-3': isGrid }" v-else-if="bus.inManagementMode && ! account.is_borrowed">
+                                <div class="tfa-edit flex shrink-0 items-center gap-0 sm:gap-0.5" :class="{ 'mt-3': isGrid }" v-else-if="bus.inManagementMode && ! account.is_borrowed">
                                     <!-- edit button -->
                                     <RouterLink :to="{ name: 'editAccount', params: { twofaccountId: account.id }}" class="md-icon-btn md-icon-btn-sm" :title="$t('tooltip.edit_account')" :aria-label="$t('link.edit')">
                                         <LucidePencil />
