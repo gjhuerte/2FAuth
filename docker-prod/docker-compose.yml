@@ -36,7 +36,7 @@ services:
     # http://2fauth:8080 over the `proxy` network. Use TWOFAUTH_BIND=0.0.0.0 only
     # when nothing sits in front of it.
     ports:
-      - "${TWOFAUTH_BIND:-127.0.0.1}:${TWOFAUTH_HTTP_PORT:-8010}:8080"
+      - "${TWOFAUTH_BIND:-127.0.0.1}:${TWOFAUTH_HTTP_PORT:-8117}:8080"
     read_only: true
     tmpfs:
       - /tmp:size=128m,mode=1777,noexec,nosuid,nodev

@@ -32,7 +32,7 @@ services:
       # 2FAuth has no jobs table; Laravel's default would be "database".
       QUEUE_CONNECTION: sync
     ports:
-      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-8009}:8080"
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-8017}:8080"
     volumes:
       - ${PROJECT_PATH:-..}:/var/www/html
       - /etc/localtime:/etc/localtime:ro
