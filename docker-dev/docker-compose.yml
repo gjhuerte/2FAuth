@@ -11,7 +11,7 @@
 # Docker socket is NOT mounted (it gives full control of the host).
 #
 # APP_URL in the project .env must match the URL you open (e.g.
-# http://localhost:8009), otherwise WebAuthn will refuse to work.
+# http://localhost:8017), otherwise WebAuthn will refuse to work.
 
 name: 2fauth
 
@@ -47,10 +47,9 @@ services:
       retries: 3
       start_period: 30s
     networks:
-      - default
       - proxy
 
 networks:
   proxy:
     external: true
-    name: ${TWOFAUTH_PROXY_NETWORK:-proxy}
+    name: ${APP_PROXY_NETWORK:-proxy}

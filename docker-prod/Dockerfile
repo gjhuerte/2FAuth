@@ -26,7 +26,7 @@
 
 ARG UBUNTU_VERSION=26.04
 ARG PHP_VERSION=8.5
-ARG NODE_VERSION=22
+ARG NODE_VERSION=26
 
 # ---------------------------------------------------------------------------
 # base: runtime packages shared by the build and final stages
